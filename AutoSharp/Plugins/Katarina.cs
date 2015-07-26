@@ -3,6 +3,7 @@ using System.Linq;
 using AutoSharp.Utils;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 
 namespace AutoSharp.Plugins
 {
@@ -38,11 +39,11 @@ namespace AutoSharp.Plugins
 
 	            }
 
-	            if (W.IsReady() && Target.IsValidTarget(W.Range))
+	            if (W.CanCast(Target))
 	            {
 	                W.Cast();
 	            }
-	            if (Player.Distance(target.ServerPosition) <= E.Range && (target.Health < 1000))
+	            if (E.IsInRange(Target) && (target.Health < 1000))
 	            {
 	                if (E.CastCheck(Target, "ComboE"))
 	                {
@@ -50,7 +51,7 @@ namespace AutoSharp.Plugins
 
 	                }
 	            }
-	            if (R.IsReady() && Target.IsValidTarget(R.Range))
+	            if (R.CanCast(Target))
 	            {
 	                if (R.IsKillable(Target))
 	                {
@@ -79,14 +80,11 @@ namespace AutoSharp.Plugins
 	            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
 	            if (target != null)
 	            {
-
-	                if (Player.Distance(target.ServerPosition) <= E.Range &&
-	                    (Player.GetSpellDamage(target, SpellSlot.E)) > target.Health)
+	                if (E.CanCast(Target) && E.IsKillable(Target))
 	                {
 	                    if (E.CastCheck(Target, "ComboE"))
 	                    {
 	                        E.CastOnUnit(target);
-
 	                    }
 	                }
 	            }

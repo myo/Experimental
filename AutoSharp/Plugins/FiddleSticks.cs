@@ -47,25 +47,24 @@ namespace AutoSharp.Plugins
             if (ComboMode)
             {
 				
-				if (target == null || Player.IsChannelingImportantSpell()) // Check if there is a target
-				{
-					return;
-				}
-				 if (R.IsReady()  && Player.CountEnemiesInRange(R.Range) > 1)
+				if (target == null || Player.IsChannelingImportantSpell()) // Check if there is a target and we are not casting W                   
+                    return;
+
+				if (R.CanCast(target)) //Using CanCast instead of IsReady && IsValidTarget since CanCast does exactly the same
 				{
 					 R.Cast(target.ServerPosition);
 				}
-                if (Q.IsReady())
+                if (Q.CanCast(target))
                 {
                     Q.CastOnUnit(target);
                 }
 
-                if (E.IsReady())
+                if (E.CanCast(target))
                 {
                     E.CastOnUnit(target);
 					return;
                 }
-				if (W.IsReady())
+				if (W.CanCast(target))
 				{
 					W.CastOnUnit(target);
 				}
@@ -82,10 +81,7 @@ namespace AutoSharp.Plugins
 
         public override void OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            if (gapcloser.Sender.IsAlly)
-            {
-                return;
-            }
+            //No need to check for ally since it is already checked in CastCheck -> IsValidTarget
 
             if (Q.CastCheck(gapcloser.Sender, "Gapcloser.Q"))
             {
@@ -96,9 +92,7 @@ namespace AutoSharp.Plugins
         public override void OnPossibleToInterrupt(Obj_AI_Hero unit, Interrupter2.InterruptableTargetEventArgs spell)
         {
             if (spell.DangerLevel < Interrupter2.DangerLevel.High || unit.IsAlly)
-            {
                 return;
-            }
 
             if (Q.CastCheck(unit, "Interrupt.Q"))
             {
