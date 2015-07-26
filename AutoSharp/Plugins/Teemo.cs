@@ -23,7 +23,7 @@ namespace AutoSharp.Plugins
 		public override void OnUpdate(EventArgs args)
 		{
 		var targetteemo = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
-		if (targetteemo==null) return;
+		if (targetteemo == null) return;
             if (ComboMode)
             {
                 if (Q.CastCheck(targetteemo, "ComboQ"))
@@ -33,8 +33,9 @@ namespace AutoSharp.Plugins
 
                 if (R.CastCheck(targetteemo, "ComboR"))
                 {
-                    R.Cast(targetteemo);
+                    R.Cast(targetteemo.ServerPosition);
                 }
+
                 if (R.IsReady())
                 {
                     var randRange = _rand.Next(-100, 100);
@@ -43,6 +44,7 @@ namespace AutoSharp.Plugins
                     _pos.Y = Player.Position.Y + randRange;
                     R.Cast(_pos.To3D());
                 }
+
                 if (Orbwalking.InAutoAttackRange(Target) && Player.HealthPercent > 30)
                 {
                     if (W.IsReady())
