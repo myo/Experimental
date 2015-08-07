@@ -249,9 +249,6 @@ namespace AutoSharp.Auto.SummonersRift.SRShopAI
 
         public static void BuyItems()
         {
-            if (FreeSlots() < 6 && !ObjectManager.Player.HasItem(ItemId.Health_Potion))
-                ObjectManager.Player.BuyItem(ItemId.Health_Potion);
-
             while ((Queue.Peek() != null && InventoryFull()) &&
                    (Queue.Peek().From == null ||
                     (Queue.Peek().From != null && !Queue.Peek().From.Contains(_lastItem.Id))))
@@ -268,6 +265,10 @@ namespace AutoSharp.Auto.SummonersRift.SRShopAI
                 _lastItem = y;
                 _priceAddup = 0;
                 x += y.Goldbase;
+            }
+            if (FreeSlots() < 6 && !ObjectManager.Player.HasItem(ItemId.Health_Potion))
+            {
+                ObjectManager.Player.BuyItem(ItemId.Health_Potion);
             }
             if (!ObjectManager.Player.HasItem(ItemId.Warding_Totem_Trinket))
             {
