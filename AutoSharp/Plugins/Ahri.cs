@@ -22,19 +22,19 @@ namespace AutoSharp.Plugins
         {
             if (ComboMode)
             {
-                if (E.CastCheck(Target, "ComboE"))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
                     E.CastIfHitchanceEquals(Target, HitChance.High);
                 }
-                if (Q.CastCheck(Target, "ComboQ") && Target.HasBuffOfType(BuffType.Charm))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range && Target.HasBuffOfType(BuffType.Charm))
                 {
                     Q.Cast(Target);
                 }
-                if (Q.CastCheck(Target, "ComboQ"))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
                 {
                     Q.Cast(Target, UsePackets);
                 }
-                if (W.CastCheck(Target, "ComboW"))
+                if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                 {
                     W.Cast();
                 }
@@ -45,11 +45,11 @@ namespace AutoSharp.Plugins
             }
             if (HarassMode)
             {
-                if (E.CastCheck(Target, "ComboE"))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
                     E.CastIfHitchanceEquals(Target, HitChance.High);
                 }
-                if (Q.CastCheck(Target, "ComboQ") && Target.HasBuffOfType(BuffType.Charm))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range && Target.HasBuffOfType(BuffType.Charm))
                 {
                     Q.Cast(Target);
                 }

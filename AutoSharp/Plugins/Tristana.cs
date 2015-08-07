@@ -23,11 +23,11 @@ namespace AutoSharp.Plugins
             if (ComboMode)
             {
                 Ks();
-                if (Q.CastCheck(Target, "ComboQ") && Orbwalking.InAutoAttackRange(Target))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range && Orbwalking.InAutoAttackRange(Target))
                 {
                     Q.Cast();
                 }
-                if (E.CastCheck(Target, "ComboE"))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
                     E.Cast(Target);
                 }
@@ -55,7 +55,7 @@ namespace AutoSharp.Plugins
                         }
                     }
 
-                    if (W.CastCheck(Target, "ComboW") && W.IsKillable(target))
+                    if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range && W.IsKillable(target))
                     {
                         W.Cast(Target);
                         return;

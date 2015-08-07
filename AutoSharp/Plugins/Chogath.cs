@@ -24,15 +24,15 @@ namespace AutoSharp.Plugins
 			var target = TargetSelector.GetTarget(675, TargetSelector.DamageType.Physical);
             if (ComboMode)
             {
-                if (Q.CastCheck(target, "ComboQ"))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
                 {
                     Q.Cast(target);
                 }
-                if (W.CastCheck(target, "ComboW"))
+                if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                 {
                     W.Cast(target);
                 }
-                if (R.CastCheck(target, "ComboR") && R.IsKillable(target))
+                if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range && R.IsKillable(target))
                 {
                     R.Cast(target);
                 }

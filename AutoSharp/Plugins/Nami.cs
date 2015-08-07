@@ -55,8 +55,8 @@ namespace AutoSharp.Plugins
         {
             get
             {
-                int[] heal = { 0, 65, 95, 125, 155, 185 };
-                return heal[W.Level] + Player.FlatMagicDamageMod * 0.3;
+                int[] heal = {0, 65, 95, 125, 155, 185};
+                return heal[W.Level] + Player.FlatMagicDamageMod*0.3;
             }
         }
 
@@ -92,69 +92,27 @@ namespace AutoSharp.Plugins
 
         public override void OnUpdate(EventArgs args)
         {
-            try
+            if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range) // TODO: add check for slowed targets by E or FrostQueen
             {
-                if (ComboMode)
-                {
-                    if (Q.CastCheck(Target, "ComboQ")) // TODO: add check for slowed targets by E or FrostQueen
-                    {
-                        Q.Cast(Target);
-                    }
-
-                    if (W.IsReady() && ConfigValue<bool>("ComboW"))
-                    {
-                        HealLogic();
-                    }
-
-                    if (R.CastCheck(Target, "ComboR"))
-                    {
-                        R.CastIfWillHit(Target, ConfigValue<Slider>("ComboCountR").Value);
-                    }
-                }
-
-                if (HarassMode)
-                {
-                    if (Q.CastCheck(Target, "HarassQ"))
-                    {
-                        Q.Cast(Target);
-                    }
-
-                    if (W.IsReady() && ConfigValue<bool>("HarassW"))
-                    {
-                        HealLogic();
-                    }
-                }
+                Q.Cast(Target);
             }
-            catch (Exception e)
+
+            if (W.IsReady())
             {
-                Console.WriteLine(e);
+                HealLogic();
+            }
+
+            if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range)
+            {
+                R.CastIfWillHit(Target, ConfigValue<Slider>("ComboCountR").Value);
             }
         }
 
         private void HealLogic()
         {
-            var ally = Helpers.AllyBelowHp(ConfigValue<Slider>("ComboHealthW").Value, W.Range);
-            if (ally != null) // force heal low ally
-            {
-                W.Cast(ally);
-                return;
-            }
-
-            if (Player.Distance(Target) > W.Range) // target out of range try bounce
-            {
-                var bounceTarget =
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .SingleOrDefault(hero => hero.IsValidAlly(W.Range) && hero.Distance(Target) < W.Range);
-
-                if (bounceTarget != null && bounceTarget.MaxHealth - bounceTarget.Health > WHeal) // use bounce & heal
-                {
-                    W.Cast(bounceTarget);
-                }
-            }
-            else // target in range
-            {
-                W.Cast(Target);
-            }
+            var ally = Heroes.AllyHeroes.OrderBy(h => h.Health).FirstOrDefault();
+            if (ally == null || Heroes.Player.Distance(ally) > W.Range || ally.HealthPercent > 70) return;
+            W.Cast(ally);
         }
 
         public override void OnEnemyGapcloser(ActiveGapcloser gapcloser)

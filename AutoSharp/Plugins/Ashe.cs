@@ -30,7 +30,7 @@ namespace AutoSharp.Plugins
             var targetR = TargetSelector.GetTarget(10000, TargetSelector.DamageType.Magical);
             if (ComboMode)
             {
-                if (Q.CastCheck(Target, "ComboQ"))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
                 {
                     if (GetQStacks() > 4)
                     {
@@ -38,7 +38,7 @@ namespace AutoSharp.Plugins
                     }
                 }
 
-                if (W.CastCheck(Target, "ComboW"))
+                if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                 {
                     W.Cast(Target);
                 }

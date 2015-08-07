@@ -23,15 +23,15 @@ namespace AutoSharp.Plugins
             if (ComboMode)
             {
 
-                if (E.CastCheck(Target, "ComboE"))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
                     E.Cast(Target);
                 }
-                if (Q.CastCheck(Target, "ComboQ"))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
                 {
                     Q.Cast(Target);
                 }
-                if (R.CastCheck(Target, "ComboR"))
+                if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range)
                 {
                     if (R.IsKillable(Target))
                     {
@@ -43,7 +43,7 @@ namespace AutoSharp.Plugins
                     }
 
                 }
-                if (W.CastCheck(Target, "ComboW") && Player.HealthPercent <=20 )
+                if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range && Player.HealthPercent <=20 )
                 {
                     W.Cast();
                 }

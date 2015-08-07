@@ -56,17 +56,17 @@ namespace AutoSharp.Plugins
                     Q.Cast(ally);
                 }
 
-                if (W.CastCheck(Target, "ComboW"))
+                if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                 {
                     W.Cast();
                 }
 
-                if (E.CastCheck(Target, "ComboE"))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
                     E.Cast(Target);
                 }
 
-                if (R.CastCheck(Target, "ComboR"))
+                if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range)
                 {
                     R.Cast();
                 }

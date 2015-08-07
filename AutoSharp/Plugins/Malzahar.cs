@@ -24,11 +24,11 @@ namespace AutoSharp.Plugins
             if (ComboMode)
             {
 
-                if (Q.CastCheck(Target, "ComboQ") && Q.GetPrediction(Target).Hitchance >= HitChance.High)
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range && Q.GetPrediction(Target).Hitchance >= HitChance.High)
                 {
                     Q.Cast(Target);
                 }
-                if (E.CastCheck(Target, "ComboE"))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
                     E.Cast(Target);
                 }
@@ -45,11 +45,11 @@ namespace AutoSharp.Plugins
             }
             if (HarassMode)
             {
-                if (Q.CastCheck(Target, "ComboQ") && Q.GetPrediction(Target).Hitchance >= HitChance.High)
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range && Q.GetPrediction(Target).Hitchance >= HitChance.High)
                 {
                     Q.Cast(Target);
                 }
-                if (E.CastCheck(Target, "ComboE"))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
                     E.Cast(Target);
                 }

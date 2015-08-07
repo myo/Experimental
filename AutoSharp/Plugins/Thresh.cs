@@ -78,7 +78,7 @@ namespace AutoSharp.Plugins
 
                 if (ComboMode)
                 {
-                    if (Q.CastCheck(Target, "ComboQ") && FollowQBlock)
+                    if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range && FollowQBlock)
                     {
                         if (Q.Cast(Target) == Spell.CastStates.SuccessfullyCasted)
                         {
@@ -94,12 +94,12 @@ namespace AutoSharp.Plugins
                         }
                     }
 
-                    if (W.CastCheck(Target, "ComboW"))
+                    if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                     {
                         EngageFriendLatern();
                     }
 
-                    if (E.CastCheck(Target, "ComboE"))
+                    if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                     {
                         if (Helpers.AllyBelowHp(ConfigValue<Slider>("ComboHealthE").Value, E.Range) != null)
                         {
@@ -111,7 +111,7 @@ namespace AutoSharp.Plugins
                         }
                     }
 
-                    if (R.CastCheck(Target, "ComboR"))
+                    if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range)
                     {
                         if (Helpers.EnemyInRange(ConfigValue<Slider>("ComboCountR").Value, R.Range))
                         {

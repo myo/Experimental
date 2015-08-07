@@ -25,11 +25,11 @@ namespace AutoSharp.Plugins
             KS();
             if (ComboMode)
             {
-                if (W.CastCheck(Target, "ComboW"))
+                if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                 {
                     W.Cast(Target);
                 }
-                if (Q.CastCheck(Target, "ComboQ"))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
                 {
                     Q.CastIfHitchanceEquals(Target, HitChance.Medium);
                 }

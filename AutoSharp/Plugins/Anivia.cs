@@ -29,23 +29,23 @@ namespace AutoSharp.Plugins
             SmartKs();
             if (ComboMode)
             {
-                if (E.CastCheck(Target, "ComboE") && ShouldE(Target))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range && ShouldE(Target))
                 {
                     E.Cast(Target);
                 }
 
                 //Q
-                if (Q.CastCheck(Target, "ComboQ") && ShouldQ())
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range && ShouldQ())
                 {
                     Q.CastIfHitchanceEquals(Target, HitChance.Medium);
                 }
 
-                if (W.CastCheck(Target, "ComboW"))
+                if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                 {
                     CastW(Target);
                 }
 
-                if (R.CastCheck(Target, "ComboR") && R.GetPrediction(Target).Hitchance >= HitChance.High)
+                if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range && R.GetPrediction(Target).Hitchance >= HitChance.High)
                 {
                     R.Cast(Target);
                 }

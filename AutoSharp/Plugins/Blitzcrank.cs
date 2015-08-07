@@ -86,7 +86,7 @@ namespace AutoSharp.Plugins
             {
                 if (ComboMode)
                 {
-                    if (Q.CastCheck(target, "ComboQ") && !BlockQ)
+                    if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range && !BlockQ)
                     {
                         Q.Cast(target);
                     }
@@ -109,12 +109,12 @@ namespace AutoSharp.Plugins
                         }
                     }
 
-                    if (W.IsReady() && ConfigValue<bool>("ComboW") && Player.CountEnemiesInRange(1500) > 0)
+                    if (W.IsReady() && Player.CountEnemiesInRange(1500) > 0)
                     {
                         W.Cast();
                     }
 
-                    if (R.CastCheck(target, "ComboR"))
+                    if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range)
                     {
                         if (Helpers.EnemyInRange(ConfigValue<Slider>("ComboCountR").Value, R.Range))
                         {

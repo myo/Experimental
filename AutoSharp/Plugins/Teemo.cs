@@ -23,7 +23,7 @@ namespace AutoSharp.Plugins
 	        var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
 	        if (target != null)
 	        {
-	            if (Q.CastCheck(target, "ComboQ"))
+	            if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
 	            {
 	                Q.Cast(target);
 	            }

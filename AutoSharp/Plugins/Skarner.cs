@@ -30,7 +30,7 @@ namespace AutoSharp.Plugins
                         W.Cast();
                     }
                 }
-                if (E.CastCheck(Target, "ComboE"))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
                     E.Cast(Target);
                 }

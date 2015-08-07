@@ -87,7 +87,7 @@ namespace AutoSharp
         private static void AntiShrooms2(EventArgs args)
         {
             if (Map == Utility.Map.MapType.SummonersRift && !Heroes.Player.InFountain() &&
-                (Heroes.Player.HealthPercent < Config.Item("recallhp").GetValue<Slider>().Value || Heroes.Player.Gold > 2000))
+                Heroes.Player.HealthPercent < Config.Item("recallhp").GetValue<Slider>().Value)
             {
                 if (Heroes.Player.HealthPercent > 0 && Heroes.Player.CountEnemiesInRange(1800) == 0 &&
                     !Turrets.EnemyTurrets.Any(t => t.Distance(Heroes.Player) < 950) &&
@@ -142,7 +142,7 @@ namespace AutoSharp
         {
             if (Config.Item("autosharp.quit").GetValue<bool>())
             {
-                Thread.Sleep(7500);
+                Thread.Sleep(15000);
                 Game.Quit();
             }
         }

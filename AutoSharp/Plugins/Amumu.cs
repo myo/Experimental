@@ -28,7 +28,7 @@ namespace AutoSharp.Plugins
             {
                 var qPred = Q.GetPrediction(Target);
 
-                if (Q.CastCheck(Target, "ComboQ"))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
                 {
                     Q.Cast(qPred.CastPosition);
                 }
@@ -44,12 +44,12 @@ namespace AutoSharp.Plugins
                     _wUse = false;
                 }
 
-                if (E.CastCheck(Target, "ComboE"))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
                     E.Cast();
                 }
 
-                if (R.CastCheck(Target, "ComboR"))
+                if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range)
                 {
                     R.CastIfWillHit(Target, 2);
                 }

@@ -637,7 +637,7 @@ namespace AutoSharp.Utils
                     }
                 }
                 if (Program.Map == Utility.Map.MapType.SummonersRift &&
-                    ObjectManager.Player.HealthPercent < Program.Config.Item("recallhp").GetValue<Slider>().Value || Heroes.Player.Gold > 2000)
+                    ObjectManager.Player.HealthPercent < Program.Config.Item("recallhp").GetValue<Slider>().Value)
                 {
                     ActiveMode = OrbwalkingMode.Combo;
                     _orbwalkingPoint = HeadQuarters.AllyHQ.Position.RandomizePosition();

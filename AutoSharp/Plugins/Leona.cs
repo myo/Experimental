@@ -79,12 +79,12 @@ namespace AutoSharp.Plugins
                     }
                 }
 
-                if (E.CastCheck(Target, "ComboE"))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
                     E.Cast(Target);
                 }
 
-                if (R.CastCheck(Target, "ComboR"))
+                if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range)
                 {
                     R.CastIfHitchanceEquals(Target, HitChance.Immobile);
                 }

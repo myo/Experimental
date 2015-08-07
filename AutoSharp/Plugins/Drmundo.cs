@@ -30,7 +30,7 @@ namespace AutoSharp.Plugins
                 Combo(target1);
             }
 
-                if (Q.CastCheck(Target, "ComboQ"))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
                 {
                     Q.CastIfHitchanceEquals(target1, HitChance.High);
                 }
@@ -41,7 +41,7 @@ namespace AutoSharp.Plugins
         private void Combo(Obj_AI_Hero target)
         {
 
-            if (Q.CastCheck(target, "ComboQ"))
+            if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
             {
                 Q.CastIfHitchanceEquals(Target, HitChance.High);
             }

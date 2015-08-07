@@ -24,11 +24,11 @@ namespace AutoSharp.Plugins
                 return;
             }
 
-                if (Q.CastCheck(Target, "ComboQ"))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
                 {
                     Q.Cast(Target);
                 }
-                if (R.CastCheck(Target, "ComboR") && R.IsKillable(Target))
+                if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range && R.IsKillable(Target))
                 {
                     R.Cast(Target);
                 }

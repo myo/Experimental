@@ -30,7 +30,7 @@ namespace AutoSharp.Plugins
                 {
                     W.Cast();
                 }
-                if (R.CastCheck(Target, "ComboR"))
+                if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range)
                 {
                     R.Cast(Target,UsePackets);
                 }

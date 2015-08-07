@@ -48,17 +48,17 @@ namespace AutoSharp.Plugins
         public override void OnUpdate(EventArgs args)
         {
             
-                if (Q.CastCheck(Target, "ComboQ"))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
                 {
                     Q.Cast(Target);
                 }
 
-                if (Player.Distance(Target) >= 575 && !Target.IsFacing(Player) && W.CastCheck(Target, "ComboW"))
+                if (Player.Distance(Target) >= 575 && !Target.IsFacing(Player) && W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                 {
                     W.Cast(Target);
                 }
 
-                if (Target.IsValidTarget(W.Range) && W.CastCheck(Target, "ComboW"))
+                if (Target.IsValidTarget(W.Range) && W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                 {
                     W.Cast(Target);
                 }

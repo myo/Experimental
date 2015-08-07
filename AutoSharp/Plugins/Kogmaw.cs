@@ -26,7 +26,7 @@ namespace AutoSharp.Plugins
 
             if (ComboMode)
             {
-                if (Q.CastCheck(Target, "ComboQ"))
+                if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
                 {
                     Q.CastIfHitchanceEquals(Target, HitChance.Medium, UsePackets);
                 }
@@ -34,7 +34,7 @@ namespace AutoSharp.Plugins
                 {
                     W.Cast();
                 }
-                if (E.CastCheck(Target, "ComboE"))
+                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
                     E.Cast(Target, UsePackets);
                 }

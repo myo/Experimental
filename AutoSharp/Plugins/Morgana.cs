@@ -56,12 +56,12 @@ namespace AutoSharp.Plugins
             {
                 if (ComboMode)
                 {
-                    if (Q.CastCheck(Target, "ComboQ"))
+                    if (Q.IsReady() && Heroes.Player.Distance(Target) < Q.Range)
                     {
                         Q.Cast(Target);
                     }
 
-                    if (W.CastCheck(Target, "ComboW"))
+                    if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                     {
                         foreach (var enemy in
                             ObjectManager.Get<Obj_AI_Hero>()
@@ -82,7 +82,7 @@ namespace AutoSharp.Plugins
                         }
                     }
 
-                    if (R.CastCheck(Target, "ComboR") &&
+                    if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range &&
                         Helpers.EnemyInRange(ConfigValue<Slider>("ComboCountR").Value, R.Range))
                     {
                         R.Cast();

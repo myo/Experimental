@@ -266,6 +266,11 @@ namespace AutoSharp.Auto.SummonersRift.SRShopAI
                 _priceAddup = 0;
                 x += y.Goldbase;
             }
+            Extras();
+        }
+
+        private static void Extras()
+        {
             if (FreeSlots() < 6 && !ObjectManager.Player.HasItem(ItemId.Health_Potion))
             {
                 ObjectManager.Player.BuyItem(ItemId.Health_Potion);

@@ -39,7 +39,7 @@ namespace AutoSharp.Plugins
         {
             if (ComboMode)
             {
-                if (W.CastCheck(Target, "ComboW"))
+                if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                 {
                     W.Cast(Target);
                 }

@@ -44,7 +44,7 @@ namespace AutoSharp.Plugins
 	            }
 	            if (Player.Distance(target.ServerPosition) <= E.Range && (target.Health < 1000))
 	            {
-	                if (E.CastCheck(Target, "ComboE"))
+	                if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
 	                {
 	                    E.Cast(target);
 
@@ -83,7 +83,7 @@ namespace AutoSharp.Plugins
 	                if (Player.Distance(target.ServerPosition) <= E.Range &&
 	                    (Player.GetSpellDamage(target, SpellSlot.E)) > target.Health)
 	                {
-	                    if (E.CastCheck(Target, "ComboE"))
+	                    if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
 	                    {
 	                        E.Cast(target);
 
