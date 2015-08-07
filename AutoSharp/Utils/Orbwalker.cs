@@ -96,7 +96,7 @@ namespace AutoSharp.Utils
         private static AttackableUnit _lastTarget;
         private static readonly Obj_AI_Hero Player;
         private static int _delay;
-        private static float _minDistance = 400;
+        private static float _minDistance = 800;
         private static bool _missileLaunched;
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
         public static Obj_AI_Hero DesiredTarget;
@@ -357,9 +357,12 @@ namespace AutoSharp.Utils
                         return;
                     }
                 }
-
                 if (CanMove(extraWindup))
                 {
+                    if (ObjectManager.Player.HasBuff("Recall") && !ObjectManager.Player.InFountain())
+                    {
+                        return;
+                    }
                     MoveTo(position, holdAreaRadius, false, useFixedDistance, randomizeMinDistance);
                 }
             }
@@ -610,13 +613,25 @@ namespace AutoSharp.Utils
             /// </summary>
             public void SetOrbwalkingPoint(Vector3 point)
             {
+                if (Program.Map == Utility.Map.MapType.SummonersRift &&
+                    ObjectManager.Player.HealthPercent < Program.Config.Item("recallhp").GetValue<Slider>().Value || Heroes.Player.Gold > 2000)
+                {
+                    ActiveMode = OrbwalkingMode.Combo;
+                    _orbwalkingPoint = HeadQuarters.AllyHQ.Position.RandomizePosition();
+                    return;
+                }
+                if (Program.Map == Utility.Map.MapType.SummonersRift && ObjectManager.Player.HealthPercent < 100)
+                {
+                    _orbwalkingPoint = ObjectManager.Player.Position.Randomize(-75, 75);
+                    return;
+                }
                 _orbwalkingPoint = point;
             }
 
             public bool ShouldWait()
             {
                 return
-                    ObjectManager.Get<Obj_AI_Minion>()
+                    Minions.EnemyMinions
                         .Any(
                             minion =>
                                 minion.IsValidTarget() && minion.Team != GameObjectTeam.Neutral &&
@@ -645,7 +660,7 @@ namespace AutoSharp.Utils
                     ActiveMode == OrbwalkingMode.LastHit)
                 {
                     foreach (var minion in
-                        ObjectManager.Get<Obj_AI_Minion>()
+                        Minions.EnemyMinions
                             .Where(
                                 minion =>
                                     minion.IsValidTarget() && InAutoAttackRange(minion) &&
@@ -684,7 +699,7 @@ namespace AutoSharp.Utils
                 {
                     /* turrets */
                     foreach (var turret in
-                        ObjectManager.Get<Obj_AI_Turret>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
+                        Turrets.EnemyTurrets.Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
                     {
                         return turret;
                     }
@@ -697,10 +712,9 @@ namespace AutoSharp.Utils
                     }
 
                     /* nexus */
-                    foreach (var nexus in
-                        ObjectManager.Get<Obj_HQ>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
+                    if (HeadQuarters.EnemyHQ.IsValidTarget(-1))
                     {
-                        return nexus;
+                        return HeadQuarters.EnemyHQ;
                     }
                 }
 
@@ -708,7 +722,7 @@ namespace AutoSharp.Utils
                 if (ActiveMode != OrbwalkingMode.LastHit)
                 {
                     var target = TargetSelector.GetTarget(-1,
-                        LeagueSharp.Common.TargetSelector.DamageType.Physical);
+                        TargetSelector.DamageType.Physical);
 
                     if (target.IsValidTarget())
                     {
@@ -720,7 +734,7 @@ namespace AutoSharp.Utils
                 if (ActiveMode == OrbwalkingMode.LaneClear || ActiveMode == OrbwalkingMode.Mixed)
                 {
                     result =
-                        ObjectManager.Get<Obj_AI_Minion>()
+                        Minions.EnemyMinions
                             .Where(
                                 mob =>
                                     mob.IsValidTarget() && InAutoAttackRange(mob) && mob.Team == GameObjectTeam.Neutral)
@@ -750,7 +764,7 @@ namespace AutoSharp.Utils
                         }
 
                         result = (from minion in
-                                      ObjectManager.Get<Obj_AI_Minion>()
+                                      Minions.EnemyMinions
                                           .Where(minion => minion.IsValidTarget() && InAutoAttackRange(minion))
                                   let predHealth =
                                       HealthPrediction.LaneClearHealthPrediction(

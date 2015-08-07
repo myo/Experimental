@@ -353,7 +353,7 @@ namespace AutoSharp.Auto.SummonersRift
                 }
             }
 
-            private static Geometry.Polygon Blue_Zone
+            public static Geometry.Polygon Blue_Zone
             {
                 get
                 {
@@ -361,7 +361,7 @@ namespace AutoSharp.Auto.SummonersRift
                 }
             }
 
-            private static Geometry.Polygon Blue_Inhib_Zone
+            public static Geometry.Polygon Blue_Inhib_Zone
             {
                 get
                 {
@@ -369,7 +369,7 @@ namespace AutoSharp.Auto.SummonersRift
                 }
             }
 
-            private static Geometry.Polygon Blue_Inner_Zone
+            public static Geometry.Polygon Blue_Inner_Zone
             {
                 get
                 {
@@ -378,7 +378,7 @@ namespace AutoSharp.Auto.SummonersRift
                 }
             }
 
-            private static Geometry.Polygon Contest_Zone
+            public static Geometry.Polygon Contest_Zone
             {
                 get
                 {
@@ -417,7 +417,7 @@ namespace AutoSharp.Auto.SummonersRift
                 }
             }
 
-            private static Geometry.Polygon Red_Zone
+            public static Geometry.Polygon Red_Zone
             {
                 get
                 {
@@ -426,7 +426,7 @@ namespace AutoSharp.Auto.SummonersRift
                 }
             }
 
-            private static Geometry.Polygon Red_Inhib_Zone
+            public static Geometry.Polygon Red_Inhib_Zone
             {
                 get
                 {
@@ -434,7 +434,7 @@ namespace AutoSharp.Auto.SummonersRift
                 }
             }
 
-            private static Geometry.Polygon Red_Inner_Zone
+            public static Geometry.Polygon Red_Inner_Zone
             {
                 get
                 {

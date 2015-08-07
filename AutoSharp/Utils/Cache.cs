@@ -15,22 +15,28 @@ namespace AutoSharp.Utils
 
         public static List<GameObject> EnemyTraps
         {
-            get { return _traps.FindAll(t => t.IsValid && t.IsEnemy); }
+            get { return _traps.FindAll(t => t != null && t.IsEnemy); }
         }
 
         public static void OnCreate(GameObject sender, EventArgs args)
         {
+            var senderName = sender.Name.ToLower();
             foreach (var trapName in _trapNames)
             {
-                if (sender.Name.ToLower().Contains(trapName)) _traps.Add(sender);
+                if (senderName.Contains(trapName)) _traps.Add(sender);
             }
         }
 
         public static void OnDelete(GameObject sender, EventArgs args)
         {
+            var iList = new List<GameObject>();
             foreach (var trap in _traps)
             {
-                if (trap.NetworkId == sender.NetworkId) _traps.Remove(trap);
+                if (trap.NetworkId == sender.NetworkId) iList.Add(trap);
+            }
+            foreach (var i in iList)
+            {
+                _traps.Remove(i);
             }
         }
 
@@ -87,9 +93,14 @@ namespace AutoSharp.Utils
 
         private static void OnDelete(GameObject sender, EventArgs args)
         {
+            var iList = new List<GameObject>();
             foreach (var buff in _healingBuffs)
             {
-                if (buff.NetworkId == sender.NetworkId) _healingBuffs.Remove(buff);
+                if (buff.NetworkId == sender.NetworkId) iList.Add(buff);
+            }
+            foreach (var i in iList)
+            {
+                _healingBuffs.Remove(i);
             }
         }
     }
@@ -109,7 +120,7 @@ namespace AutoSharp.Utils
 
         public static void Load()
         {
-            Utility.DelayAction.Add(6000, () => _turrets = ObjectManager.Get<Obj_AI_Turret>().ToList());
+            _turrets = ObjectManager.Get<Obj_AI_Turret>().ToList();
             Obj_AI_Turret.OnCreate += OnCreate;
             Obj_AI_Turret.OnDelete += OnDelete;
         }
@@ -121,9 +132,14 @@ namespace AutoSharp.Utils
 
         private static void OnDelete(GameObject sender, EventArgs args)
         {
+            var iList = new List<Obj_AI_Turret>();
             foreach (var turret in _turrets)
             {
-                if (turret.NetworkId == sender.NetworkId) _turrets.Remove(turret);
+                if (turret.NetworkId == sender.NetworkId) iList.Add(turret);
+            }
+            foreach (var i in iList)
+            {
+                _turrets.Remove(i);
             }
         }
     }
@@ -143,7 +159,7 @@ namespace AutoSharp.Utils
 
         public static void Load()
         {
-            Utility.DelayAction.Add(6000, () => _headQuarters = ObjectManager.Get<Obj_HQ>().ToList());
+            _headQuarters = ObjectManager.Get<Obj_HQ>().ToList();
         }
     }
 
@@ -153,6 +169,9 @@ namespace AutoSharp.Utils
 
         public static Obj_AI_Hero Player = ObjectManager.Player;
 
+        /// <summary>
+        /// Ally Heroes, excluding the player
+        /// </summary>
         public static List<Obj_AI_Hero> AllyHeroes
         {
             get { return _heroes.FindAll(h => h.IsValid<Obj_AI_Hero>() && h.IsAlly); }
@@ -166,7 +185,7 @@ namespace AutoSharp.Utils
         public static void Load()
         {
             Player = ObjectManager.Player;
-            Utility.DelayAction.Add(6000, () => _heroes = ObjectManager.Get<Obj_AI_Hero>().ToList());
+            _heroes = ObjectManager.Get<Obj_AI_Hero>().Where(h=>!h.IsMe).ToList();
         }
     }
 
@@ -177,11 +196,11 @@ namespace AutoSharp.Utils
 
         public static List<Obj_AI_Minion> AllyMinions
         {
-            get { return _minions.FindAll(t => t.IsValid<Obj_AI_Minion>() && !t.IsDead && t.IsAlly); }
+            get { return _minions.FindAll(t => t != null && t.IsValid<Obj_AI_Minion>() && !t.IsDead && t.IsAlly); }
         }
         public static List<Obj_AI_Minion> EnemyMinions
         {
-            get { return _minions.FindAll(t => t.IsValid<Obj_AI_Minion>() && !t.IsDead && t.IsValidTarget()); }
+            get { return _minions.FindAll(t => t != null && t.IsValid<Obj_AI_Minion>() && !t.IsDead && t.IsValidTarget()); }
         }
 
         public static void Load()
@@ -193,15 +212,58 @@ namespace AutoSharp.Utils
 
         private static void OnDelete(GameObject sender, EventArgs args)
         {
+            var iList = new List<Obj_AI_Minion>();
             foreach (var minion in _minions)
             {
-                if (minion.NetworkId == sender.NetworkId) _minions.Remove(minion);
+                if (minion.NetworkId == sender.NetworkId) iList.Add(minion);
+            }
+            foreach (var i in iList)
+            {
+                _minions.Remove(i);
             }
         }
 
         private static void OnCreate(GameObject sender, EventArgs args)
         {
-            if (sender.IsValid<Obj_AI_Minion>() && !sender.Name.Contains("SRU_") && sender.Team != GameObjectTeam.Neutral) _minions.Add((Obj_AI_Minion)sender);
+            var name = sender.Name.ToLower();
+            if (sender.IsValid<Obj_AI_Minion>() && !name.Contains("sru_") && !name.Contains("ward") && !name.Contains("ttn") && !name.Contains("tt_") && !name.Contains("trinket") && !name.Contains("teemo") && sender.Team != GameObjectTeam.Neutral) _minions.Add((Obj_AI_Minion)sender);
+        }
+
+    }
+    public static class JungleCamps
+    {
+
+        private static List<Obj_AI_Minion> _minions;
+
+        public static List<Obj_AI_Minion> Mobs
+        {
+            get { return _minions.FindAll(t => t != null && t.IsValid<Obj_AI_Minion>() && !t.IsDead && t.IsAlly); }
+        }
+
+        public static void Load()
+        {
+            _minions = new List<Obj_AI_Minion>();
+            Obj_AI_Minion.OnCreate += OnCreate;
+            Obj_AI_Minion.OnDelete += OnDelete;
+        }
+
+        private static void OnDelete(GameObject sender, EventArgs args)
+        {
+            var iList = new List<Obj_AI_Minion>();
+            foreach (var minion in _minions)
+            {
+                if (minion.NetworkId == sender.NetworkId) iList.Add(minion);
+            }
+            foreach (var i in iList)
+            {
+                _minions.Remove(i);
+            }
+        }
+
+        private static void OnCreate(GameObject sender, EventArgs args)
+        {
+            var name = sender.Name.ToLower();
+            if (sender.IsValid<Obj_AI_Minion>() && (name.Contains("sru_") || name.Contains("worm")) && sender.Team != GameObjectTeam.Neutral) _minions.Add((Obj_AI_Minion)sender);
         }
 
     }
@@ -210,11 +272,13 @@ namespace AutoSharp.Utils
     {
         public static void Load()
         {
+            Traps.Load();
             Turrets.Load();
             HeadQuarters.Load();
             Heroes.Load();
             Minions.Load();
             HealingBuffs.Load();
+            JungleCamps.Load();
         }
     }
 }

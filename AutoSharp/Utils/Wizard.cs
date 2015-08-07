@@ -103,13 +103,13 @@ namespace AutoSharp.Utils
 
         public static Vector3 RandomizePosition(this GameObject o)
         {
+            if (o == null) return Vector3.Zero;
             var r = new Random(Environment.TickCount);
             var minRandBy = Program.Config.Item("autosharp.randomizer.minrand").GetValue<Slider>().Value;
             var maxRandBy = Program.Config.Item("autosharp.randomizer.maxrand").GetValue<Slider>().Value;
             if (Program.Config.Item("autosharp.randomizer.playdefensive").GetValue<bool>() && Heroes.Player.CountEnemiesInRange(800) >= Heroes.Player.CountAlliesInRange(800))
             {
                 minRandBy *= Wizard.GetDefensiveMultiplier();
-                maxRandBy *= Wizard.GetDefensiveMultiplier();
             }
             else
             {
@@ -126,7 +126,6 @@ namespace AutoSharp.Utils
             if (Program.Config.Item("autosharp.randomizer.playdefensive").GetValue<bool>() && Heroes.Player.CountEnemiesInRange(800) >= Heroes.Player.CountAlliesInRange(800))
             {
                 minRandBy *= Wizard.GetDefensiveMultiplier();
-                maxRandBy *= Wizard.GetDefensiveMultiplier();
             }
             else
             {
@@ -143,7 +142,6 @@ namespace AutoSharp.Utils
             if (Program.Config.Item("autosharp.randomizer.playdefensive").GetValue<bool>() && Heroes.Player.CountEnemiesInRange(800) >= Heroes.Player.CountAlliesInRange(800))
             {
                 minRandBy *= Wizard.GetDefensiveMultiplier();
-                maxRandBy *= Wizard.GetDefensiveMultiplier();
             }
             else
             {

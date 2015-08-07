@@ -43,22 +43,22 @@ namespace AutoSharp.Plugins
             //0KTW
             if (Q.IsReady())
             {
-                Q.CastIfHitchanceEquals(target, HitChance.VeryHigh);
+                Q.Cast(target);
             }
 
             if (W.IsReady())
             {
-                W.CastIfHitchanceEquals(target, HitChance.VeryHigh);
+                W.Cast(target);
             }
 
             if (E.IsReady())
             {
-                E.CastIfHitchanceEquals(target, HitChance.VeryHigh);
+                E.Cast(target);
             }
 
             if (R.IsReady())
             {
-                R.CastIfHitchanceEquals(target, HitChance.VeryHigh);
+                R.Cast(target);
             }
         }
 

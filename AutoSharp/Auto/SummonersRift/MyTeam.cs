@@ -33,23 +33,27 @@ namespace AutoSharp.Auto.SummonersRift
         {
             if (Jungler == null)
             {
-                Jungler = Heroes.AllyHeroes.FirstOrDefault(h => !h.IsMe && h.GetSpellSlot("summonersmite") != SpellSlot.Unknown || h.HasItem(ItemId.Hunters_Machete));
-            }
-            if (Support == null)
-            {
-                Support = Heroes.AllyHeroes.FirstOrDefault(h => !h.IsMe && h != Jungler && h != ADC && (h.Distance(Player.Team == GameObjectTeam.Order ? Map.BottomLane.Blue_Outer_Turret.To3D() : Map.BottomLane.Red_Outer_Turret.To3D()) < 4500));
-            }
-            if (Toplaner == null)
-            {
-                Toplaner = Heroes.AllyHeroes.FirstOrDefault(h => !h.IsMe && h != Jungler && h.Distance(Player.Team == GameObjectTeam.Order ? Map.TopLane.Blue_Outer_Turret.To3D() : Map.TopLane.Red_Outer_Turret.To3D()) < 4500) ?? Heroes.AllyHeroes.FirstOrDefault(h => h != Jungler && h.Distance(Player.Team == GameObjectTeam.Order ? Map.TopLane.Blue_Inner_Turret.To3D() : Map.TopLane.Red_Inner_Turret.To3D()) < 1500);
+                Jungler = Heroes.AllyHeroes.FirstOrDefault(h => h.GetSpellSlot("summonersmite") != SpellSlot.Unknown || h.HasItem(ItemId.Hunters_Machete));
             }
             if (Midlaner == null)
             {
-                Midlaner = Heroes.AllyHeroes.FirstOrDefault(h => !h.IsMe && h != Jungler && h.Distance(Player.Team == GameObjectTeam.Order ? Map.MidLane.Blue_Outer_Turret.To3D() : Map.MidLane.Red_Outer_Turret.To3D()) < 4500) ?? Heroes.AllyHeroes.FirstOrDefault(h => h != Jungler && h.Distance(Player.Team == GameObjectTeam.Order ? Map.MidLane.Blue_Inner_Turret.To3D() : Map.MidLane.Red_Inner_Turret.To3D()) < 1500);
+                var playerPos = ObjectManager.Player.ServerPosition.To2D();
+                Midlaner = Heroes.AllyHeroes.FirstOrDefault(h => h != Jungler && (Map.MidLane.Red_Zone.Points.Any(p => p.Distance(playerPos) < 200) || Map.MidLane.Blue_Zone.Points.Any(p => p.Distance(playerPos) < 200)));
             }
-            if (ADC == null)
+            if (Support == null)
             {
-                ADC = Heroes.AllyHeroes.FirstOrDefault(h => !h.IsMe && h != Jungler && h != Support && h.Distance(Player.Team == GameObjectTeam.Order ? Map.BottomLane.Blue_Outer_Turret.To3D() : Map.BottomLane.Red_Outer_Turret.To3D()) < 4500);
+                var playerPos = ObjectManager.Player.ServerPosition.To2D();
+                Support = Heroes.AllyHeroes.FirstOrDefault(h => h != Jungler && (Map.BottomLane.Red_Zone.Points.Any(p => p.Distance(playerPos) < 200) || Map.BottomLane.Blue_Zone.Points.Any(p => p.Distance(playerPos) < 200)));
+            }
+            if (Toplaner == null)
+            {
+                var playerPos = ObjectManager.Player.ServerPosition.To2D();
+                Toplaner = Heroes.AllyHeroes.FirstOrDefault(h => h != Jungler && (Map.BottomLane.Red_Zone.Points.Any(p => p.Distance(playerPos) < 200) || Map.BottomLane.Blue_Zone.Points.Any(p => p.Distance(playerPos) < 200)));
+            }
+            if (Support != null && ADC == null)
+            {
+                var playerPos = ObjectManager.Player.ServerPosition.To2D();
+                ADC = Heroes.AllyHeroes.FirstOrDefault(h => h != Jungler && h != Support && (Map.BottomLane.Red_Zone.Points.Any(p => p.Distance(playerPos) < 200) || Map.BottomLane.Blue_Zone.Points.Any(p => p.Distance(playerPos) < 200)));
             }
         }
     }

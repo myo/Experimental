@@ -10,7 +10,6 @@ namespace AutoSharp.Auto.HowlingAbyss
         public static void Load()
         {
             Game.OnUpdate += DecisionMaker.OnUpdate;
-            AttackableUnit.OnDamage += OnDamage;
             Obj_AI_Base.OnIssueOrder += OnIssueOrder;
             ARAMShopAI.Main.Init(); 
         }
@@ -18,7 +17,6 @@ namespace AutoSharp.Auto.HowlingAbyss
         public static void Unload()
         {
             Game.OnUpdate -= DecisionMaker.OnUpdate;
-            AttackableUnit.OnDamage -= OnDamage;
         }
 
         public static void FastHalt()
@@ -34,21 +32,6 @@ namespace AutoSharp.Auto.HowlingAbyss
                 if (nearbyEnemyTurret != null && nearbyEnemyTurret.Position.CountNearbyAllyMinions(700) <= 2 && nearbyEnemyTurret.Distance(args.TargetPosition) < 800)
                 {
                     args.Process = false;
-                }
-            }
-        }
-
-        public static void OnDamage(AttackableUnit sender, AttackableUnitDamageEventArgs args)
-        {
-            if ((sender is Obj_AI_Minion || sender is Obj_AI_Turret) && args.TargetNetworkId == Heroes.Player.NetworkId)
-            {
-                if (Heroes.Player.Position.CountNearbyAllies(1000) <
-                    Heroes.Player.Position.CountNearbyEnemies(1000) ||
-                    Heroes.Player.Position.CountNearbyAllies(1000) <= 1)
-                {
-                    Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.None;
-                    Wizard.MoveBehindClosestAllyMinion();
-                    Utility.DelayAction.Add(2500, () => Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.Mixed);
                 }
             }
         }

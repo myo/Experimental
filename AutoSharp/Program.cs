@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using AutoSharp.Auto;
 using AutoSharp.Utils;
 using LeagueSharp;
@@ -16,9 +17,11 @@ namespace AutoSharp
         public static Menu Config;
         public static MyOrbwalker.Orbwalker Orbwalker;
         private static int _lastMovementTick = 0;
+        private static bool _loaded = false;
 
         public static void Init()
         {
+            Map = Utility.Map.GetMap().Type; 
             Config = new Menu("AutoSharp: " + ObjectManager.Player.ChampionName, "autosharp." + ObjectManager.Player.ChampionName, true);
             Config.AddItem(new MenuItem("autosharp.mode", "Mode").SetValue(new StringList(new[] {"AUTO", "SBTW"}))).ValueChanged +=
                 (sender, args) =>
@@ -38,24 +41,28 @@ namespace AutoSharp
             Config.AddItem(new MenuItem("autosharp.quit", "Quit after Game End").SetValue(true));
             var options = Config.AddSubMenu(new Menu("Options: ", "autosharp.options"));
             options.AddItem(new MenuItem("autosharp.options.healup", "Take Heals?").SetValue(true));
-            var orbwalker = Config.AddSubMenu(new Menu("Orbwalker", "autosharp.orbwalker"));
+            options.AddItem(new MenuItem("onlyfarm", "Only Farm").SetValue(false));
+            if (Map == Utility.Map.MapType.SummonersRift)
+            {
+                options.AddItem(new MenuItem("recallhp", "Recall if Health% <").SetValue(new Slider(30, 0, 100)));
+            }
             var randomizer = Config.AddSubMenu(new Menu("Randomizer", "autosharp.randomizer"));
-            randomizer.AddItem(new MenuItem("autosharp.randomizer.minrand", "Min Rand By").SetValue(new Slider(0, 0, 250)));
-            randomizer.AddItem(new MenuItem("autosharp.randomizer.maxrand", "Max Rand By").SetValue(new Slider(300, 0, 250)));
+            var orbwalker = Config.AddSubMenu(new Menu("Orbwalker", "autosharp.orbwalker"));
+            randomizer.AddItem(new MenuItem("autosharp.randomizer.minrand", "Min Rand By").SetValue(new Slider(0, 0, 90)));
+            randomizer.AddItem(new MenuItem("autosharp.randomizer.maxrand", "Max Rand By").SetValue(new Slider(100, 100, 300)));
             randomizer.AddItem(new MenuItem("autosharp.randomizer.playdefensive", "Play Defensive?").SetValue(true));
             randomizer.AddItem(new MenuItem("autosharp.randomizer.auto", "Auto-Adjust? (ALPHA)").SetValue(true));
 
             new PluginLoader();
-            CustomEvents.Game.OnGameLoad += args =>
-            {
-                Map = Utility.Map.GetMap().Type; 
+
                 Cache.Load(); 
                 Game.OnUpdate += Positioning.OnUpdate;
                 Autoplay.Load();
                 Game.OnEnd += OnEnd;
                 Obj_AI_Base.OnIssueOrder += AntiShrooms;
+                Game.OnUpdate += AntiShrooms2;
                 Spellbook.OnCastSpell += OnCastSpell;
-            };
+                Obj_AI_Base.OnDamage += OnDamage;
 
 
             Orbwalker = new MyOrbwalker.Orbwalker(orbwalker);
@@ -69,11 +76,69 @@ namespace AutoSharp
                     });
         }
 
+        public static void OnDamage(AttackableUnit sender, AttackableUnitDamageEventArgs args)
+        {
+            if ((sender is Obj_AI_Minion || sender is Obj_AI_Turret) && args.TargetNetworkId == Heroes.Player.NetworkId)
+            {
+                    Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.None; 
+                    Heroes.Player.IssueOrder(GameObjectOrder.MoveTo,
+                         Heroes.Player.Position.Extend(Wizard.GetFarthestMinion().Position, 500).RandomizePosition());
+            }
+        }
+
+        private static void AntiShrooms2(EventArgs args)
+        {
+            if (Map == Utility.Map.MapType.SummonersRift && !Heroes.Player.InFountain() &&
+                (Heroes.Player.HealthPercent < Config.Item("recallhp").GetValue<Slider>().Value || Heroes.Player.Gold > 2000))
+            {
+                if (Heroes.Player.HealthPercent > 0 && Heroes.Player.CountEnemiesInRange(1300) == 0 &&
+                    !Turrets.EnemyTurrets.Any(t => t.Distance(Heroes.Player) < 950) &&
+                    !Minions.EnemyMinions.Any(m => m.Distance(Heroes.Player) < 950))
+                {
+                    Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.None;
+                    if (!Heroes.Player.HasBuff("Recall"))
+                    {
+                        Heroes.Player.Spellbook.CastSpell(SpellSlot.Recall);
+                    }
+                }
+            }
+
+            if (Environment.TickCount - _lastMovementTick <
+                       Config.Item("autosharp.humanizer").GetValue<Slider>().Value)
+            {
+                return;
+            }
+
+            var turretNearTargetPosition =
+                    Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Heroes.Player.ServerPosition) < 950);
+            if (turretNearTargetPosition != null && turretNearTargetPosition.CountNearbyAllyMinions(950) < 3)
+            {
+                Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.None;;
+                Heroes.Player.IssueOrder(GameObjectOrder.MoveTo,
+                    Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 950));
+            }
+        }
+
         private static void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
         {
-            if (sender.Owner.IsMe && sender.Owner.UnderTurret(true) && args.Target.IsValid<Obj_AI_Hero>())
+            if (sender.Owner.IsMe)
             {
-                args.Process = false; 
+                if (Config.Item("onlyfarm").GetValue<bool>() && args.Target.IsValid<Obj_AI_Hero>() && args.Target.IsEnemy)
+                {
+                    args.Process = false;
+                }
+                if (Heroes.Player.InFountain() && args.Slot == SpellSlot.Recall)
+                {
+                    args.Process = false;
+                }
+                if (Heroes.Player.HasBuff("Recall"))
+                {
+                    args.Process = false;
+                }
+                if (Heroes.Player.UnderTurret(true) && args.Target.IsValid<Obj_AI_Hero>())
+                {
+                    args.Process = false;
+                }
             }
         }
 
@@ -81,34 +146,88 @@ namespace AutoSharp
         {
             if (Config.Item("autosharp.quit").GetValue<bool>())
             {
+                Thread.Sleep(7500);
                 Game.Quit();
             }
         }
 
         private static void AntiShrooms(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
+            if (args.Target.IsMe)
+            {
+                if (sender.IsValid<Obj_AI_Turret>())
+                {
+                    Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.None;
+                    Heroes.Player.IssueOrder(GameObjectOrder.MoveTo,
+                        Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 950).RandomizePosition());
+                }
+                if (sender.IsValid<Obj_AI_Minion>())
+                {
+                    Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.None;
+                    Heroes.Player.IssueOrder(GameObjectOrder.MoveTo,
+                        Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 500).RandomizePosition());
+                }
+            }
             if (sender.IsMe && args.Order == GameObjectOrder.MoveTo)
             {
+                if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() && Heroes.Player.HealthPercent < 100) {args.Process = false;}
+                if (args.TargetPosition.IsZero) {args.Process = false;}
+                if (JungleCamps.Mobs.Any(m => m.Distance(args.TargetPosition) < 900)) {args.Process = false;}
                 //Humanizer
                 if (Environment.TickCount - _lastMovementTick <
                     Config.Item("autosharp.humanizer").GetValue<Slider>().Value)
                 {
                     args.Process = false;
                 }
-                //AntiShrooms
-                if (Traps.EnemyTraps.Any(t => t.Position.Distance(args.TargetPosition) < 125)) { args.Process = false; }
                 //AntiJihadIntoTurret
                 var turretNearTargetPosition =
-                    Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(args.TargetPosition) < 800);
-                if (turretNearTargetPosition != null && turretNearTargetPosition.CountNearbyAllyMinions(800) < 3) { args.Process = false; }
+                    Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(args.TargetPosition) < 950);
+                if (turretNearTargetPosition != null && turretNearTargetPosition.CountNearbyAllyMinions(850) < 3) { args.Process = false; }
+                //AntiShrooms
+                if (Traps.EnemyTraps.Any(t => t.Position.Distance(args.TargetPosition) < 150)) { args.Process = false; }
                 //The movement will occur
                 _lastMovementTick = Environment.TickCount;
+            }
+            if (sender.IsMe && (args.Order == GameObjectOrder.AttackUnit || args.Order == GameObjectOrder.AttackTo))
+            {
+                if (Config.Item("onlyfarm").GetValue<bool>() && args.Target.IsValid<Obj_AI_Hero>())
+                {
+                    args.Process = false;
+                }
+                if (args.Target.IsValid<Obj_AI_Hero>() &&
+                    Minions.AllyMinions.Count(m => m.Distance(sender) < 900) <
+                    Minions.EnemyMinions.Count(m => m.Distance(sender) < 900)) {args.Process = false;}
+                if (Heroes.Player.UnderTurret() && args.Target.IsValid<Obj_AI_Hero>())
+                {
+                    args.Process = false;
+                }
+
+                var turretNearTargetPosition =
+                       Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Heroes.Player) < 850);
+                if (turretNearTargetPosition != null && turretNearTargetPosition.CountNearbyAllyMinions(850) < 3) { args.Process = false; }
+            }
+            if (sender.IsMe && Heroes.Player.HasBuff("Recall") && Heroes.Player.CountEnemiesInRange(1300) == 0 &&
+                !Turrets.EnemyTurrets.Any(t => t.Distance(Heroes.Player) < 950))
+            {
+                args.Process = false;
             }
         }
 
         public static void Main(string[] args)
         {
-            CustomEvents.Game.OnGameLoad += init => Init();
+            Game.OnUpdate += AdvancedLoading;
+        }
+
+        private static void AdvancedLoading(EventArgs args)
+        {
+            if (!_loaded)
+            {
+                if (ObjectManager.Player.Gold > 0)
+                {
+                    _loaded = true;
+                    Utility.DelayAction.Add(3000, Init);
+                }
+            }
         }
     }
 }

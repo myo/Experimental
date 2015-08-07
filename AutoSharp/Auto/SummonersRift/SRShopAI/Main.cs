@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using AutoSharp.Utils;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -245,24 +246,32 @@ namespace AutoSharp.Auto.SummonersRift.SRShopAI
             }
             return shoppingItems;
         }
+
         public static void BuyItems()
         {
-            while ((Queue.Peek() != null && InventoryFull()) && (Queue.Peek().From == null ||(Queue.Peek().From != null && !Queue.Peek().From.Contains(_lastItem.Id))))
+            while ((Queue.Peek() != null && InventoryFull()) &&
+                   (Queue.Peek().From == null ||
+                    (Queue.Peek().From != null && !Queue.Peek().From.Contains(_lastItem.Id))))
             {
                 var y = Queue.Dequeue();
                 _priceAddup += y.Goldbase;
             }
             var x = 0;
-                while ( Queue.Peek().Goldbase <= ObjectManager.Player.Gold - x - _priceAddup && Queue.Count > 0 &&
-                       ObjectManager.Player.InShop())
-                {
-                    var y = Queue.Dequeue();
-                    ObjectManager.Player.BuyItem((ItemId) y.Id);
-                    _lastItem = y;
-                    _priceAddup = 0;
-                    x += y.Goldbase;
-                }
+            while (Queue.Peek().Goldbase <= ObjectManager.Player.Gold - x - _priceAddup && Queue.Count > 0 &&
+                   ObjectManager.Player.InShop())
+            {
+                var y = Queue.Dequeue();
+                ObjectManager.Player.BuyItem((ItemId) y.Id);
+                _lastItem = y;
+                _priceAddup = 0;
+                x += y.Goldbase;
+            }
+            if (!ObjectManager.Player.HasItem(ItemId.Warding_Totem_Trinket))
+            {
+                ObjectManager.Player.BuyItem(ItemId.Warding_Totem_Trinket);
+            }
         }
+
         public static int FreeSlots()
         {
             return -1 + ObjectManager.Player.InventoryItems.Count();

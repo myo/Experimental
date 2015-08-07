@@ -28,7 +28,7 @@ namespace AutoSharp.Auto.SummonersRift
         {
             if (_paused) return;
 
-            if (Environment.TickCount - _lastSwitchedRoleTick > 600000)
+            if (Environment.TickCount - _lastSwitchedRoleTick > 180000)
             {
                 MyTeam.MyRole = MyTeam.Roles.Unknown;
                 _lastSwitchedRoleTick = Environment.TickCount;
@@ -36,9 +36,9 @@ namespace AutoSharp.Auto.SummonersRift
 
             if (MyTeam.MyRole == MyTeam.Roles.Unknown)
             {
+                if (MyTeam.Midlaner == null) MyTeam.MyRole = MyTeam.Roles.Midlaner;
                 if (MyTeam.Support == null) MyTeam.MyRole = MyTeam.Roles.Support;
                 if (MyTeam.ADC == null) MyTeam.MyRole = MyTeam.Roles.ADC;
-                if (MyTeam.Midlaner == null) MyTeam.MyRole = MyTeam.Roles.Midlaner;
                 if (MyTeam.Toplaner == null) MyTeam.MyRole = MyTeam.Roles.Toplaner;
                 if (MyTeam.Jungler == null) MyTeam.MyRole = MyTeam.Roles.Toplaner;
             }
@@ -86,12 +86,18 @@ namespace AutoSharp.Auto.SummonersRift
                 if (followMinion != null)
                 {
                     Program.Orbwalker.SetOrbwalkingPoint(followMinion.RandomizePosition());
-                    Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                    if (!Heroes.Player.IsMoving)
+                    {
+                        Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                    }
                 }
                 else
                 {
                     Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.RandomizePosition());
-                    Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                    if (!Heroes.Player.IsMoving)
+                    {
+                        Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                    }
                 }
             }
             else MyTeam.MyRole = MyTeam.Roles.Midlaner;
@@ -124,11 +130,17 @@ namespace AutoSharp.Auto.SummonersRift
                 if (followMinion != null)
                 {
                     Program.Orbwalker.SetOrbwalkingPoint(followMinion.RandomizePosition());
-                    Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                    if (!Heroes.Player.IsMoving)
+                    {
+                        Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                    }
                 }
                 else
                 {
-                    Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.RandomizePosition());
+                    if (!Heroes.Player.IsMoving)
+                    {
+                        Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.RandomizePosition());
+                    }
                     Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
                 }
             }
@@ -141,7 +153,10 @@ namespace AutoSharp.Auto.SummonersRift
                         .FirstOrDefault();
 
                 Program.Orbwalker.SetOrbwalkingPoint(followMinion.RandomizePosition());
-                Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                if (!Heroes.Player.IsMoving)
+                {
+                    Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                }
             }
         }
 
@@ -177,12 +192,18 @@ namespace AutoSharp.Auto.SummonersRift
                     if (followMinion != null)
                     {
                         Program.Orbwalker.SetOrbwalkingPoint(followMinion.RandomizePosition());
-                        Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                        if (!Heroes.Player.IsMoving)
+                        {
+                            Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                        }
                     }
                     else
                     {
                         Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.RandomizePosition());
-                        Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                        if (!Heroes.Player.IsMoving)
+                        {
+                            Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+                        }
                     }
                 }
                 else MyTeam.MyRole = MyTeam.Roles.Midlaner;
