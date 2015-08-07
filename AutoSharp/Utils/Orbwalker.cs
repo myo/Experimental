@@ -102,6 +102,7 @@ namespace AutoSharp.Utils
         public static Obj_AI_Hero DesiredTarget;
 
         private static Vector3 _forcedPosition = Vector3.Zero;
+        private static int _forcedPositionTick = 0;
 
         static MyOrbwalker()
         {
@@ -612,8 +613,10 @@ namespace AutoSharp.Utils
 
             public void ForceOrbwalkingPoint(Vector3 point)
             {
+                if (Environment.TickCount - _forcedPositionTick < 1000) return;
                 _forcedPosition = point;
                 _orbwalkingPoint = point;
+                _forcedPositionTick = Environment.TickCount;
             }
 
             /// <summary>
@@ -623,6 +626,7 @@ namespace AutoSharp.Utils
             {
                 if (!_forcedPosition.IsZero)
                 {
+                    if (Environment.TickCount - _forcedPositionTick > 1500) _forcedPosition = Vector3.Zero;
                     if (ObjectManager.Player.Distance(_forcedPosition) < 150)
                     {
                         _forcedPosition = Vector3.Zero;
