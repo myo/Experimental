@@ -101,6 +101,8 @@ namespace AutoSharp.Utils
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
         public static Obj_AI_Hero DesiredTarget;
 
+        private static Vector3 _forcedPosition = Vector3.Zero;
+
         static MyOrbwalker()
         {
             Player = ObjectManager.Player;
@@ -608,11 +610,28 @@ namespace AutoSharp.Utils
                 return _orbwalkingPoint;
             }
 
+            public void ForceOrbwalkingPoint(Vector3 point)
+            {
+                _forcedPosition = point;
+                _orbwalkingPoint = point;
+            }
+
             /// <summary>
             ///     Forces the orbwalker to move to that point while orbwalking (Game.CursorPos by default).
             /// </summary>
             public void SetOrbwalkingPoint(Vector3 point)
             {
+                if (!_forcedPosition.IsZero)
+                {
+                    if (ObjectManager.Player.Distance(_forcedPosition) < 150)
+                    {
+                        _forcedPosition = Vector3.Zero;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
                 if (Program.Map == Utility.Map.MapType.SummonersRift &&
                     ObjectManager.Player.HealthPercent < Program.Config.Item("recallhp").GetValue<Slider>().Value || Heroes.Player.Gold > 2000)
                 {

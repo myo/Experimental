@@ -78,11 +78,9 @@ namespace AutoSharp
 
         public static void OnDamage(AttackableUnit sender, AttackableUnitDamageEventArgs args)
         {
-            if ((sender is Obj_AI_Minion || sender is Obj_AI_Turret) && args.TargetNetworkId == Heroes.Player.NetworkId)
+            if ((Minions.EnemyMinions.Any(m => m.NetworkId == args.SourceNetworkId) || Turrets.EnemyTurrets.Any(t=>t.NetworkId == args.SourceNetworkId)) && args.TargetNetworkId == ObjectManager.Player.NetworkId)
             {
-                    Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.None; 
-                    Heroes.Player.IssueOrder(GameObjectOrder.MoveTo,
-                         Heroes.Player.Position.Extend(Wizard.GetFarthestMinion().Position, 500).RandomizePosition());
+                    Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(Wizard.GetFarthestMinion().Position, 500).RandomizePosition());
             }
         }
 
@@ -91,7 +89,7 @@ namespace AutoSharp
             if (Map == Utility.Map.MapType.SummonersRift && !Heroes.Player.InFountain() &&
                 (Heroes.Player.HealthPercent < Config.Item("recallhp").GetValue<Slider>().Value || Heroes.Player.Gold > 2000))
             {
-                if (Heroes.Player.HealthPercent > 0 && Heroes.Player.CountEnemiesInRange(1300) == 0 &&
+                if (Heroes.Player.HealthPercent > 0 && Heroes.Player.CountEnemiesInRange(1800) == 0 &&
                     !Turrets.EnemyTurrets.Any(t => t.Distance(Heroes.Player) < 950) &&
                     !Minions.EnemyMinions.Any(m => m.Distance(Heroes.Player) < 950))
                 {
@@ -113,9 +111,7 @@ namespace AutoSharp
                     Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Heroes.Player.ServerPosition) < 950);
             if (turretNearTargetPosition != null && turretNearTargetPosition.CountNearbyAllyMinions(950) < 3)
             {
-                Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.None;;
-                Heroes.Player.IssueOrder(GameObjectOrder.MoveTo,
-                    Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 950));
+                Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 950));
             }
         }
 
@@ -157,15 +153,11 @@ namespace AutoSharp
             {
                 if (sender.IsValid<Obj_AI_Turret>())
                 {
-                    Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.None;
-                    Heroes.Player.IssueOrder(GameObjectOrder.MoveTo,
-                        Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 950).RandomizePosition());
+                    Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 950).RandomizePosition());
                 }
                 if (sender.IsValid<Obj_AI_Minion>())
                 {
-                    Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.None;
-                    Heroes.Player.IssueOrder(GameObjectOrder.MoveTo,
-                        Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 500).RandomizePosition());
+                    Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 500).RandomizePosition());
                 }
             }
             if (sender.IsMe && args.Order == GameObjectOrder.MoveTo)
@@ -206,7 +198,7 @@ namespace AutoSharp
                        Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Heroes.Player) < 850);
                 if (turretNearTargetPosition != null && turretNearTargetPosition.CountNearbyAllyMinions(850) < 3) { args.Process = false; }
             }
-            if (sender.IsMe && Heroes.Player.HasBuff("Recall") && Heroes.Player.CountEnemiesInRange(1300) == 0 &&
+            if (sender.IsMe && Heroes.Player.HasBuff("Recall") && Heroes.Player.CountEnemiesInRange(1800) == 0 &&
                 !Turrets.EnemyTurrets.Any(t => t.Distance(Heroes.Player) < 950))
             {
                 args.Process = false;

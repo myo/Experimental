@@ -69,8 +69,8 @@ namespace AutoSharp.Auto.SummonersRift.SRShopAI
         };
         public static string[] Marksmen =
         {
-            "Blade of the Ruined King","The Bloodthirster",
-            "Berserker's Greaves", "Infinity Edge", "Last Whisper", "Banshee's Veil"
+            "Blade of the Ruined King",
+            "Berserker's Greaves", "The Bloodthirster", "Infinity Edge", "Last Whisper", "Banshee's Veil"
         };
 
         public static string[] UtilitySupportsNames = { "Bard", "Janna", "Nami", "Nunu", "Sona", "Soraka", "TahmKench" };
@@ -249,6 +249,9 @@ namespace AutoSharp.Auto.SummonersRift.SRShopAI
 
         public static void BuyItems()
         {
+            if (FreeSlots() < 6 && !ObjectManager.Player.HasItem(ItemId.Health_Potion))
+                ObjectManager.Player.BuyItem(ItemId.Health_Potion);
+
             while ((Queue.Peek() != null && InventoryFull()) &&
                    (Queue.Peek().From == null ||
                     (Queue.Peek().From != null && !Queue.Peek().From.Contains(_lastItem.Id))))
