@@ -188,19 +188,7 @@ namespace AutoSharp
                 //The movement will occur
                 _lastMovementTick = Environment.TickCount;
             }
-            if (sender.IsMe && (args.Order == GameObjectOrder.AttackUnit || args.Order == GameObjectOrder.AttackTo))
-            {
-                if (Config.Item("onlyfarm").GetValue<bool>() && args.Target.IsValid<Obj_AI_Hero>())
-                {
-                    args.Process = false;
-                }
-                if (args.Target.IsValid<Obj_AI_Hero>() &&
-                    Minions.AllyMinions.Count(m => m.Distance(sender) < 900) <
-                    Minions.EnemyMinions.Count(m => m.Distance(sender) < 900)) {args.Process = false;}
-                if (Heroes.Player.UnderTurret() && args.Target.IsValid<Obj_AI_Hero>())
-                {
-                    args.Process = false;
-                }
+        }
 
 
         public static bool ShouldBlockMovement(Vector3 pos)
