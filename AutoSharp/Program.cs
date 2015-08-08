@@ -6,6 +6,7 @@ using AutoSharp.Auto;
 using AutoSharp.Utils;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 
 // ReSharper disable ObjectCreationAsStatement
 
@@ -147,36 +148,43 @@ namespace AutoSharp
             }
         }
 
-        private static void AntiShrooms(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
+        public static void AntiShrooms(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
-            if (args.Target.IsMe)
+            if (sender != null && args.Target != null && sender.IsMe)
             {
-                if (sender.IsValid<Obj_AI_Turret>())
-                {
-                    Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 950).RandomizePosition());
-                }
-                if (sender.IsValid<Obj_AI_Minion>())
-                {
-                    Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 500).RandomizePosition());
-                }
-            }
-            if (sender.IsMe && args.Order == GameObjectOrder.MoveTo)
-            {
-                if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() && Heroes.Player.HealthPercent < 100) {args.Process = false;}
-                if (args.TargetPosition.IsZero) {args.Process = false;}
-                if (JungleCamps.Mobs.Any(m => m.Distance(args.TargetPosition) < 900)) {args.Process = false;}
-                //Humanizer
-                if (Environment.TickCount - _lastMovementTick <
-                    Config.Item("autosharp.humanizer").GetValue<Slider>().Value)
+                if (Heroes.Player.HasBuff("Recall") && Heroes.Player.CountEnemiesInRange(1800) == 0 &&
+                    !Turrets.EnemyTurrets.Any(t => t.Distance(Heroes.Player) < 950) && !Minions.EnemyMinions.Any(m => m.Distance(Heroes.Player) < 950))
                 {
                     args.Process = false;
                 }
-                //AntiJihadIntoTurret
-                var turretNearTargetPosition =
-                    Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(args.TargetPosition) < 950);
-                if (turretNearTargetPosition != null && turretNearTargetPosition.CountNearbyAllyMinions(850) < 3) { args.Process = false; }
-                //AntiShrooms
-                if (Traps.EnemyTraps.Any(t => t.Position.Distance(args.TargetPosition) < 150)) { args.Process = false; }
+
+                if (ShouldBlockMovement(args.TargetPosition))
+                {
+                    args.Process = false;
+                }
+
+                #region BlockAttack
+
+                if (sender.IsMe && (args.Order == GameObjectOrder.AttackUnit || args.Order == GameObjectOrder.AttackTo))
+                {
+                    if (Config.Item("onlyfarm").GetValue<bool>() && args.Target.IsValid<Obj_AI_Hero>())
+                    {
+                        args.Process = false;
+                    }
+                    if (args.Target.IsValid<Obj_AI_Hero>() &&
+                        Minions.AllyMinions.Count(m => m.Distance(Heroes.Player) < 900) <
+                        Minions.EnemyMinions.Count(m => m.Distance(Heroes.Player) < 900))
+                    {
+                        args.Process = false;
+                    }
+                    if (Heroes.Player.UnderTurret() && args.Target.IsValid<Obj_AI_Hero>())
+                    {
+                        args.Process = false;
+                    }
+                }
+
+                #endregion
+
                 //The movement will occur
                 _lastMovementTick = Environment.TickCount;
             }
@@ -194,15 +202,33 @@ namespace AutoSharp
                     args.Process = false;
                 }
 
-                var turretNearTargetPosition =
-                       Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Heroes.Player) < 850);
-                if (turretNearTargetPosition != null && turretNearTargetPosition.CountNearbyAllyMinions(850) < 3) { args.Process = false; }
-            }
-            if (sender.IsMe && Heroes.Player.HasBuff("Recall") && Heroes.Player.CountEnemiesInRange(1800) == 0 &&
-                !Turrets.EnemyTurrets.Any(t => t.Distance(Heroes.Player) < 950))
+
+        public static bool ShouldBlockMovement(Vector3 pos)
+        {
+            if (pos == null || pos.IsZero) return true;
+            if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() &&
+                Heroes.Player.HealthPercent < 100)
             {
-                args.Process = false;
+                return true;
             }
+            //Humanizer
+            if (Environment.TickCount - _lastMovementTick <
+                Config.Item("autosharp.humanizer").GetValue<Slider>().Value)
+            {
+                return true;
+            }
+            //AntiJihadIntoTurret
+            var turret = Turrets.ClosestEnemyTurret;
+            if (turret != null && turret.Distance(Heroes.Player) < 950)
+            {
+                return true;
+            }
+            //AntiShrooms
+            if (Heroes.EnemyHeroes.Any(h => h.Name == "Teemo" || h.Name == "Jinx" || h.Name == "Caitlyn"))
+            {
+                return Traps.EnemyTraps.FirstOrDefault(t => t.Position.Distance(pos) < 200) != null;
+            }
+            return false;
         }
 
         public static void Main(string[] args)

@@ -811,6 +811,12 @@ namespace AutoSharp.Utils
             {
                 try
                 {
+                    if (Program.Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() &&
+                        Heroes.Player.HealthPercent < 100)
+                    {
+                        return;
+                    }
+                
                     if (ActiveMode == OrbwalkingMode.None)
                     {
                         return;

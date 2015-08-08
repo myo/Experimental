@@ -9,42 +9,17 @@ namespace AutoSharp.Utils
 {
     public static class Traps
     {
-        private static List<GameObject> _traps;
-
-        private static List<string> _trapNames = new List<string> { "teemo", "shroom", "trap", "mine", "ziggse_red" };
-
         public static List<GameObject> EnemyTraps
         {
-            get { return _traps.FindAll(t => t != null && t.IsEnemy); }
-        }
-
-        public static void OnCreate(GameObject sender, EventArgs args)
-        {
-            var senderName = sender.Name.ToLower();
-            foreach (var trapName in _trapNames)
+            get
             {
-                if (senderName.Contains(trapName)) _traps.Add(sender);
+                return ObjectManager.Get<GameObject>().Where(o =>
+                {
+                    var name = o.Name.ToLower();
+                    return name.Contains("teemo") || name.Contains("shroom") || name.Contains("trap") ||
+                           name.Contains("mine");
+                }).ToList();
             }
-        }
-
-        public static void OnDelete(GameObject sender, EventArgs args)
-        {
-            var iList = new List<GameObject>();
-            foreach (var trap in _traps)
-            {
-                if (trap.NetworkId == sender.NetworkId) iList.Add(trap);
-            }
-            foreach (var i in iList)
-            {
-                _traps.Remove(i);
-            }
-        }
-
-        public static void Load()
-        {
-            _traps = new List<GameObject>();
-            GameObject.OnCreate += OnCreate;
-            GameObject.OnDelete += OnDelete;
         }
     }
 
@@ -93,11 +68,7 @@ namespace AutoSharp.Utils
 
         private static void OnDelete(GameObject sender, EventArgs args)
         {
-            var iList = new List<GameObject>();
-            foreach (var buff in _healingBuffs)
-            {
-                if (buff.NetworkId == sender.NetworkId) iList.Add(buff);
-            }
+            var iList = _healingBuffs.Where(buff => buff.NetworkId == sender.NetworkId);
             foreach (var i in iList)
             {
                 _healingBuffs.Remove(i);
@@ -113,9 +84,15 @@ namespace AutoSharp.Utils
         {
             get { return _turrets.FindAll(t => t.IsValid<Obj_AI_Turret>() && !t.IsDead && t.IsAlly); }
         }
+
         public static List<Obj_AI_Turret> EnemyTurrets
         {
             get { return _turrets.FindAll(t => t.IsValid<Obj_AI_Turret>() && !t.IsDead && t.IsEnemy); }
+        }
+
+        public static Obj_AI_Turret ClosestEnemyTurret
+        {
+            get { return EnemyTurrets.OrderBy(t => t.Distance(Heroes.Player)).FirstOrDefault(); }
         }
 
         public static void Load()
@@ -132,11 +109,7 @@ namespace AutoSharp.Utils
 
         private static void OnDelete(GameObject sender, EventArgs args)
         {
-            var iList = new List<Obj_AI_Turret>();
-            foreach (var turret in _turrets)
-            {
-                if (turret.NetworkId == sender.NetworkId) iList.Add(turret);
-            }
+            var iList = _turrets.Where(turret => turret.NetworkId == sender.NetworkId);
             foreach (var i in iList)
             {
                 _turrets.Remove(i);
@@ -146,20 +119,13 @@ namespace AutoSharp.Utils
 
     public static class HeadQuarters
     {
-        private static List<Obj_HQ> _headQuarters;
-
         public static Obj_HQ AllyHQ
         {
-            get { return _headQuarters.FirstOrDefault(t => t.IsValid<Obj_HQ>() && t.IsAlly); }
+            get { return ObjectManager.Get<Obj_HQ>().FirstOrDefault(hq => hq.IsAlly); }
         }
         public static Obj_HQ EnemyHQ
         {
-            get { return _headQuarters.FirstOrDefault(t => t.IsValid<Obj_HQ>() && t.IsEnemy); }
-        }
-
-        public static void Load()
-        {
-            _headQuarters = ObjectManager.Get<Obj_HQ>().ToList();
+            get { return ObjectManager.Get<Obj_HQ>().FirstOrDefault(hq => hq.IsEnemy); }
         }
     }
 
@@ -196,11 +162,11 @@ namespace AutoSharp.Utils
 
         public static List<Obj_AI_Minion> AllyMinions
         {
-            get { return _minions.FindAll(t => t != null && t.IsValid<Obj_AI_Minion>() && !t.IsDead && t.IsAlly); }
+            get { return _minions.FindAll(t => t.IsValid<Obj_AI_Minion>() && !t.IsDead && t.IsAlly); }
         }
         public static List<Obj_AI_Minion> EnemyMinions
         {
-            get { return _minions.FindAll(t => t != null && t.IsValid<Obj_AI_Minion>() && !t.IsDead && t.IsValidTarget()); }
+            get { return _minions.FindAll(t => t.IsValid<Obj_AI_Minion>() && !t.IsDead && t.IsValidTarget()); }
         }
 
         public static void Load()
@@ -237,7 +203,7 @@ namespace AutoSharp.Utils
 
         public static List<Obj_AI_Minion> Mobs
         {
-            get { return _minions.FindAll(t => t != null && t.IsValid<Obj_AI_Minion>() && !t.IsDead && t.IsAlly); }
+            get { return _minions.FindAll(t => t.IsValid<Obj_AI_Minion>() && !t.IsDead && t.IsAlly); }
         }
 
         public static void Load()
@@ -272,9 +238,7 @@ namespace AutoSharp.Utils
     {
         public static void Load()
         {
-            Traps.Load();
             Turrets.Load();
-            HeadQuarters.Load();
             Heroes.Load();
             Minions.Load();
             HealingBuffs.Load();
