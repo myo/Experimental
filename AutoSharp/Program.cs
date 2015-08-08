@@ -156,12 +156,21 @@ namespace AutoSharp
                 if (args.Order == GameObjectOrder.MoveTo)
                 {
                     if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() &&
-                Heroes.Player.HealthPercent < 100)
+                        Heroes.Player.HealthPercent < 100)
                     {
                         args.Process = false;
                         return;
                     }
-                    if (turret != null && turret.Distance(args.TargetPosition) < 950 && turret.CountNearbyAllyMinions(950) < 3)
+                    if (turret != null && turret.Distance(args.TargetPosition) < 950 &&
+                        turret.CountNearbyAllyMinions(950) < 3)
+                    {
+                        args.Process = false;
+                        return;
+                    }
+                    var line =
+                        new Utils.Geometry.Rectangle(Heroes.Player.Position.To2D(), args.TargetPosition.To2D(), 1)
+                            .ToPolygon();
+                    if (line.Points.Any(p => p.IsWall()))
                     {
                         args.Process = false;
                         return;
