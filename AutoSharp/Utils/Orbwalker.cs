@@ -645,10 +645,16 @@ namespace AutoSharp.Utils
                 }
                 if (Program.Map == Utility.Map.MapType.SummonersRift && ObjectManager.Player.HealthPercent < 100)
                 {
-                    _orbwalkingPoint = ObjectManager.Player.Position.Randomize(-75, 75);
+                    _orbwalkingPoint = ObjectManager.Player.Position.Randomize(-30, 30);
                     return;
                 }
-                _orbwalkingPoint = point;
+                if (!point.IsWall() && !point.IsZero)
+                {
+                    _orbwalkingPoint = point;
+                    ActiveMode = Heroes.Player.CountEnemiesInRange(600) <= Heroes.Player.CountAlliesInRange(600) + 1
+                        ? OrbwalkingMode.LaneClear
+                        : OrbwalkingMode.Combo;
+                }
             }
 
             public bool ShouldWait()

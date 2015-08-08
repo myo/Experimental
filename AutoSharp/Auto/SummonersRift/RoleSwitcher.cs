@@ -16,7 +16,7 @@ namespace AutoSharp.Auto.SummonersRift
 
         public static void Load()
         {
-            Utility.DelayAction.Add(new Random().Next(35000, 45000), () => Game.OnUpdate += ChooseBest);
+            Utility.DelayAction.Add(new Random().Next(5000, 17000), () => Game.OnUpdate += ChooseBest);
         }
 
         public static void Unload()
@@ -61,155 +61,118 @@ namespace AutoSharp.Auto.SummonersRift
 
         public static void BotLaneLogic()
         {
-            var enemyOuterTurret = Heroes.Player.Team == GameObjectTeam.Order
-                ? Turrets.EnemyTurrets.FirstOrDefault(
-                    t => t.IsValidTarget() && t.Distance(Map.BottomLane.Red_Outer_Turret) < 800)
-                : Turrets.EnemyTurrets.FirstOrDefault(
-                    t => t.IsValidTarget() && t.Distance(Map.BottomLane.Blue_Outer_Turret) < 800);
-            var enemyInnerTurret = Heroes.Player.Team == GameObjectTeam.Order
-                ? Turrets.EnemyTurrets.FirstOrDefault(
-                    t => t.IsValidTarget() && t.Distance(Map.BottomLane.Red_Inner_Turret) < 800)
-                : Turrets.EnemyTurrets.FirstOrDefault(
-                    t => t.IsValidTarget() && t.Distance(Map.BottomLane.Blue_Inner_Turret) < 800);
+            var redZone = Map.BottomLane.Red_Zone;
+            var blueZone = Map.BottomLane.Blue_Zone;
             var myOuterTurret = Heroes.Player.Team == GameObjectTeam.Order
-                ? Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.BottomLane.Blue_Outer_Turret) < 800)
-                : Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.BottomLane.Red_Outer_Turret) < 800);
+                ? Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.BottomLane.Blue_Outer_Turret) < 950)
+                : Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.BottomLane.Red_Outer_Turret) < 950);
 
-            if (enemyInnerTurret != null)
+            var minionsOnMyLane =
+                Minions.AllyMinions.FindAll(
+                    m =>
+                        redZone.Points.Any(p => p.Distance(m.Position) < 300) ||
+                        blueZone.Points.Any(p => p.Distance(m.Position) < 300)).OrderByDescending(minion => minion.Distance(HeadQuarters.AllyHQ));
+
+            var farthestMinionInLane = minionsOnMyLane.FirstOrDefault();
+            var farthestMinionInGame =
+                Minions.AllyMinions.OrderByDescending(m => m.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
+            var farthestAlly =
+                Heroes.AllyHeroes.OrderByDescending(h => h.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
+
+            if (farthestMinionInLane != null)
             {
-                var followMinion =
-                    Minions.AllyMinions.OrderBy(
-                        m =>
-                            m.Distance(enemyOuterTurret ?? enemyInnerTurret))
-                        .FirstOrDefault();
-
-                if (followMinion != null)
-                {
-                    Program.Orbwalker.SetOrbwalkingPoint(followMinion.RandomizePosition());
-                    if (!Heroes.Player.IsMoving)
-                    {
-                        Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
-                    }
-                }
-                else
-                {
-                    Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.RandomizePosition());
-                    if (!Heroes.Player.IsMoving)
-                    {
-                        Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
-                    }
-                }
+                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInLane.Position.RandomizePosition());
             }
-            else MyTeam.MyRole = MyTeam.Roles.Midlaner;
+            else if (farthestMinionInGame != null)
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInGame.Position.RandomizePosition());
+            }
+            else if (farthestAlly != null)
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(farthestAlly.Position.RandomizePosition());
+            }
+            else if (myOuterTurret != null)
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.Position.RandomizePosition());
+            }
         }
 
         public static void MidLaneLogic()
         {
-            var enemyOuterTurret = Heroes.Player.Team == GameObjectTeam.Order
-                ? Turrets.EnemyTurrets.FirstOrDefault(
-                    t => t.IsValidTarget() && t.Distance(Map.MidLane.Red_Outer_Turret) < 800)
-                : Turrets.EnemyTurrets.FirstOrDefault(
-                    t => t.IsValidTarget() && t.Distance(Map.MidLane.Blue_Outer_Turret) < 800);
-            var enemyInnerTurret = Heroes.Player.Team == GameObjectTeam.Order
-                ? Turrets.EnemyTurrets.FirstOrDefault(
-                    t => t.IsValidTarget() && t.Distance(Map.MidLane.Red_Inner_Turret) < 800)
-                : Turrets.EnemyTurrets.FirstOrDefault(
-                    t => t.IsValidTarget() && t.Distance(Map.MidLane.Blue_Inner_Turret) < 800);
+
+            var redZone = Map.MidLane.Red_Zone;
+            var blueZone = Map.MidLane.Blue_Zone;
             var myOuterTurret = Heroes.Player.Team == GameObjectTeam.Order
-                ? Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.MidLane.Blue_Outer_Turret) < 800)
-                : Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.MidLane.Red_Outer_Turret) < 800);
+                ? Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.MidLane.Blue_Outer_Turret) < 950)
+                : Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.MidLane.Red_Outer_Turret) < 950);
 
-            if (enemyInnerTurret != null)
+            var minionsOnMyLane =
+                Minions.AllyMinions.FindAll(
+                    m =>
+                        redZone.Points.Any(p => p.Distance(m.Position) < 300) ||
+                        blueZone.Points.Any(p => p.Distance(m.Position) < 300)).OrderByDescending(minion => minion.Distance(HeadQuarters.AllyHQ));
+
+            var farthestMinionInLane = minionsOnMyLane.FirstOrDefault();
+            var farthestMinionInGame =
+                Minions.AllyMinions.OrderByDescending(m => m.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
+            var farthestAlly =
+                Heroes.AllyHeroes.OrderByDescending(h => h.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
+
+            if (farthestMinionInLane != null)
             {
-                var followMinion =
-                    Minions.AllyMinions.OrderBy(
-                        m =>
-                            m.Distance(enemyOuterTurret ?? enemyInnerTurret))
-                        .FirstOrDefault();
-
-                if (followMinion != null)
-                {
-                    Program.Orbwalker.SetOrbwalkingPoint(followMinion.RandomizePosition());
-                    if (!Heroes.Player.IsMoving)
-                    {
-                        Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
-                    }
-                }
-                else
-                {
-                    if (!Heroes.Player.IsMoving)
-                    {
-                        Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.RandomizePosition());
-                    }
-                    Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
-                }
+                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInLane.Position.RandomizePosition());
             }
-            else
+            else if (farthestMinionInGame != null)
             {
-                var followMinion =
-                    Minions.AllyMinions.OrderBy(
-                        m =>
-                            m.Distance(HeadQuarters.EnemyHQ))
-                        .FirstOrDefault();
-
-                Program.Orbwalker.SetOrbwalkingPoint(followMinion.RandomizePosition());
-                if (!Heroes.Player.IsMoving)
-                {
-                    Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
-                }
+                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInGame.Position.RandomizePosition());
+            }
+            else if (farthestAlly != null)
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(farthestAlly.Position.RandomizePosition());
+            }
+            else if (myOuterTurret != null)
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.Position.RandomizePosition());
             }
         }
 
         public static void TopLaneLogic()
         {
 
-            #region TOPLANE
+            var redZone = Map.TopLane.Red_Zone;
+            var blueZone = Map.TopLane.Blue_Zone;
+            var myOuterTurret = Heroes.Player.Team == GameObjectTeam.Order
+                ? Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.TopLane.Blue_Outer_Turret) < 950)
+                : Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.TopLane.Red_Outer_Turret) < 950);
 
-            if (MyTeam.MyRole == MyTeam.Roles.Toplaner)
+            var minionsOnMyLane =
+                Minions.AllyMinions.FindAll(
+                    m =>
+                        redZone.Points.Any(p => p.Distance(m.Position) < 300) ||
+                        blueZone.Points.Any(p => p.Distance(m.Position) < 300)).OrderByDescending(minion => minion.Distance(HeadQuarters.AllyHQ));
+
+            var farthestMinionInLane = minionsOnMyLane.FirstOrDefault();
+            var farthestMinionInGame =
+                Minions.AllyMinions.OrderByDescending(m => m.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
+            var farthestAlly =
+                Heroes.AllyHeroes.OrderByDescending(h => h.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
+
+            if (farthestMinionInLane != null)
             {
-                var enemyOuterTurret = Heroes.Player.Team == GameObjectTeam.Order
-                    ? Turrets.EnemyTurrets.FirstOrDefault(
-                        t => t.IsValidTarget() && t.Distance(Map.TopLane.Red_Outer_Turret) < 800)
-                    : Turrets.EnemyTurrets.FirstOrDefault(
-                        t => t.IsValidTarget() && t.Distance(Map.TopLane.Blue_Outer_Turret) < 800);
-                var enemyInnerTurret = Heroes.Player.Team == GameObjectTeam.Order
-                    ? Turrets.EnemyTurrets.FirstOrDefault(
-                        t => t.IsValidTarget() && t.Distance(Map.TopLane.Red_Inner_Turret) < 800)
-                    : Turrets.EnemyTurrets.FirstOrDefault(
-                        t => t.IsValidTarget() && t.Distance(Map.TopLane.Blue_Inner_Turret) < 800);
-                var myOuterTurret = Heroes.Player.Team == GameObjectTeam.Order
-                    ? Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.TopLane.Blue_Outer_Turret) < 800)
-                    : Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Map.TopLane.Red_Outer_Turret) < 800);
-
-                if (enemyInnerTurret != null)
-                {
-                    var followMinion =
-                        Minions.AllyMinions.OrderBy(
-                            m =>
-                                m.Distance(enemyOuterTurret ?? enemyInnerTurret))
-                            .FirstOrDefault();
-
-                    if (followMinion != null)
-                    {
-                        Program.Orbwalker.SetOrbwalkingPoint(followMinion.RandomizePosition());
-                        if (!Heroes.Player.IsMoving)
-                        {
-                            Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
-                        }
-                    }
-                    else
-                    {
-                        Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.RandomizePosition());
-                        if (!Heroes.Player.IsMoving)
-                        {
-                            Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
-                        }
-                    }
-                }
-                else MyTeam.MyRole = MyTeam.Roles.Midlaner;
+                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInLane.Position.RandomizePosition());
             }
-
-            #endregion TOPLANE
+            else if (farthestMinionInGame != null)
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInGame.Position.RandomizePosition());
+            }
+            else if (farthestAlly != null)
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(farthestAlly.Position.RandomizePosition());
+            }
+            else if (myOuterTurret != null)
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.Position.RandomizePosition());
+            }
         }
 
         public static void Pause()

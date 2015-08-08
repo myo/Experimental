@@ -17,6 +17,7 @@ namespace AutoSharp.Utils
     {
         public static Vector3 GetPRADAPos(this Obj_AI_Hero target)
         {
+            if (target == null) return Vector3.Zero;
             var aRC = new Geometry.Circle(Heroes.Player.ServerPosition.To2D(), 300).ToPolygon().ToClipperPath();
             var tP = target.ServerPosition;
             var pList = new List<Vector3>();
@@ -43,6 +44,7 @@ namespace AutoSharp.Utils
 
         public static int CountNearbyAllyMinions(this Obj_AI_Base x, int distance)
         {
+            if (x == null) return 0;
             return Minions.AllyMinions.Count(minion => minion.Distance(x.Position) < distance);
         }
 
@@ -53,6 +55,7 @@ namespace AutoSharp.Utils
 
         public static int CountNearbyAllies(this Obj_AI_Base x, int distance)
         {
+            if (x == null) return 0;
             return Heroes.AllyHeroes.Count(hero => !hero.IsDead && !hero.IsMe && hero.Distance(x.Position) < distance);
         }
 
@@ -66,32 +69,9 @@ namespace AutoSharp.Utils
             return Heroes.EnemyHeroes.Count(hero => !hero.IsDead && !hero.IsMe && hero.Distance(x) < distance);
         }
 
-        public static bool IsHeroPet(this Obj_AI_Base minion)
-        {
-            var mn = minion.BaseSkinName;
-            if (mn.Contains("teemo") || mn.Contains("shroom") || mn.Contains("turret") || mn.Contains("clone") || mn.Contains("blanc") || mn.Contains("trap") || mn.Contains("mine"))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public static bool IsAvoidable(this GameObject obj)
-        {
-            if (obj.IsAlly)
-            {
-                return false;
-            }
-            var on = obj.Name;
-            if (on.Contains("teemo") || on.Contains("shroom") || on.Contains("turret") || on.Contains("clone") || on.Contains("blanc") || on.Contains("trap") || on.Contains("mine") || on.Contains("nida") || on.Contains("morg") || on.Contains("ziggs"))
-            {
-                return true;
-            }
-            return false;
-        }
-
         public static bool IsLowHealth(this Obj_AI_Base x)
         {
+            if (x == null) return false;
             return x.HealthPercent < 30f;
         }
 
@@ -152,28 +132,33 @@ namespace AutoSharp.Utils
 
         public static bool HasItem(this Obj_AI_Hero hero, ItemId item)
         {
+            if (hero == null) return false;
             return hero.InventoryItems.Any(slot => slot.Id == item);
         }
 
         public static bool HasSupportItems(this Obj_AI_Hero hero)
         {
+            if (hero == null) return false;
             return hero.HasItem(ItemId.Ancient_Coin) || hero.HasItem(ItemId.Relic_Shield) ||
                    hero.HasItem(ItemId.Spellthiefs_Edge);
         }
 
         public static bool IsValidAlly(this Obj_AI_Base unit, float range = float.MaxValue)
         {
+            if (unit == null) return false;
             return unit.Distance(ObjectManager.Player) < range && unit.IsValid<Obj_AI_Hero>() && unit.IsAlly &&
                    !unit.IsDead && unit.IsTargetable;
         }
 
         public static double HealthBuffer(this Obj_AI_Base hero, int buffer)
         {
+            if (hero == null) return 0;
             return hero.Health - (hero.MaxHealth * buffer / 100);
         }
 
         public static bool CastCheck(this Items.Item item, Obj_AI_Base target)
         {
+            if (target == null) return false;
             return item.IsReady() && target.IsValidTarget(item.Range);
         }
 
@@ -203,11 +188,13 @@ namespace AutoSharp.Utils
 
         public static bool WillKill(this Obj_AI_Base caster, Obj_AI_Base target, string spell, int buffer = 10)
         {
+            if (target == null) return false;
             return caster.GetSpellDamage(target, spell) >= target.HealthBuffer(buffer);
         }
 
         public static bool WillKill(this Obj_AI_Base caster, Obj_AI_Base target, SpellData spell, int buffer = 10)
         {
+            if (target == null) return false;
             return caster.GetSpellDamage(target, spell.Name) >= target.HealthBuffer(buffer);
         }
 

@@ -17,7 +17,6 @@ namespace AutoSharp
         public static Utility.Map.MapType Map;
         public static Menu Config;
         public static MyOrbwalker.Orbwalker Orbwalker;
-        private static int _lastMovementTick = 0;
         private static bool _loaded = false;
 
         public static void Init()
@@ -102,12 +101,6 @@ namespace AutoSharp
                 }
             }
 
-            if (Environment.TickCount - _lastMovementTick <
-                       Config.Item("autosharp.humanizer").GetValue<Slider>().Value)
-            {
-                return;
-            }
-
             var turretNearTargetPosition =
                     Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Heroes.Player.ServerPosition) < 950);
             if (turretNearTargetPosition != null && turretNearTargetPosition.CountNearbyAllyMinions(950) < 3)
@@ -158,7 +151,7 @@ namespace AutoSharp
                     args.Process = false;
                 }
 
-                if (ShouldBlockMovement(args.TargetPosition))
+                if (args.Order == GameObjectOrder.MoveTo && (ShouldBlockMovement(args.TargetPosition) || Heroes.Player.GetWaypoints().Count > 2))
                 {
                     args.Process = false;
                 }
@@ -184,9 +177,6 @@ namespace AutoSharp
                 }
 
                 #endregion
-
-                //The movement will occur
-                _lastMovementTick = Environment.TickCount;
             }
         }
 
@@ -196,12 +186,6 @@ namespace AutoSharp
             if (pos == null || pos.IsZero) return true;
             if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() &&
                 Heroes.Player.HealthPercent < 100)
-            {
-                return true;
-            }
-            //Humanizer
-            if (Environment.TickCount - _lastMovementTick <
-                Config.Item("autosharp.humanizer").GetValue<Slider>().Value)
             {
                 return true;
             }
