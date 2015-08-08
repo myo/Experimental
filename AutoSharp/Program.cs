@@ -78,7 +78,8 @@ namespace AutoSharp
 
         public static void OnDamage(AttackableUnit sender, AttackableUnitDamageEventArgs args)
         {
-            if ((Minions.EnemyMinions.Any(m => m.NetworkId == args.SourceNetworkId) || Turrets.EnemyTurrets.Any(t=>t.NetworkId == args.SourceNetworkId)) && args.TargetNetworkId == ObjectManager.Player.NetworkId)
+            if (sender == null) return;
+            if (args.TargetNetworkId == ObjectManager.Player.NetworkId && (sender is Obj_AI_Turret || sender is Obj_AI_Minion))
             {
                     Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(Wizard.GetFarthestMinion().Position, 500).RandomizePosition());
             }
@@ -218,6 +219,18 @@ namespace AutoSharp
                 }
 
                 #endregion
+            }
+            if (sender != null && args.Target != null && args.Target.IsMe)
+            {
+                if (sender is Obj_AI_Turret || sender is Obj_AI_Minion)
+                {
+                    var minion = Wizard.GetClosestAllyMinion();
+                    if (minion != null)
+                    {
+                        Orbwalker.ForceOrbwalkingPoint(
+                            Heroes.Player.Position.Extend(Wizard.GetClosestAllyMinion().Position, Heroes.Player.Distance(minion) + 100));
+                    }
+                }
             }
         }
 
