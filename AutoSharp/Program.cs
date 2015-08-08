@@ -172,16 +172,6 @@ namespace AutoSharp
                         args.Process = false;
                         return;
                     }
-                    var line =
-                        new Utils.Geometry.Rectangle(Heroes.Player.Position.To2D(), args.TargetPosition.To2D(), 1)
-                            .ToPolygon();
-                    if (line.Points.Any(p => p.IsWall()))
-                    {
-                        args.Process = false;
-                        var wall = line.Points.FirstOrDefault(p => p.IsWall());
-                        Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(wall.To3D().RandomizePosition(), -350));
-                        return;
-                    }
                 }
 
                 #region BlockAttack
