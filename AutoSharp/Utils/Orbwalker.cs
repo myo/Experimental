@@ -643,11 +643,6 @@ namespace AutoSharp.Utils
                     _orbwalkingPoint = HeadQuarters.AllyHQ.Position.RandomizePosition();
                     return;
                 }
-                if (Program.Map == Utility.Map.MapType.SummonersRift && ObjectManager.Player.HealthPercent < 100)
-                {
-                    _orbwalkingPoint = ObjectManager.Player.Position.Randomize(-30, 30);
-                    return;
-                }
                 _orbwalkingPoint = point;
                 ActiveMode = OrbwalkingMode.LaneClear;
             }
