@@ -174,6 +174,8 @@ namespace AutoSharp
                     if (line.Points.Any(p => p.IsWall()))
                     {
                         args.Process = false;
+                        var wall = line.Points.FirstOrDefault(p => p.IsWall());
+                        Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(wall.To3D(), -350));
                         return;
                     }
                 }
