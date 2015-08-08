@@ -52,7 +52,7 @@ namespace AutoSharp.Auto.HowlingAbyss
             var minion = Wizard.GetFarthestMinion();
             var minionPos = minion != null ? minion.Position.Extend(HeadQuarters.AllyHQ.Position, 250).RandomizePosition() : Wizard.GetFarthestAllyTurret().RandomizePosition();
             //IF THERE ARE ALLIES AROUND US STOP ORBWALKING AROUND THE TURRET LIKE A RETARD
-            if (Heroes.Player.Distance(Wizard.GetFarthestAllyTurret()) < 500 && Heroes.Player.CountAlliesInRange(1000) != 0 && Minions.AllyMinions.Count < 3) return false;
+            if (Heroes.Player.Distance(Wizard.GetFarthestAllyTurret().Position) < 500 && Heroes.Player.CountAlliesInRange(1000) != 0 && Minions.AllyMinions.Count < 3) return false;
             //IF THERE ARE ENEMIES AROUND US OR THE MINION WE WONT FOLLOW HIM, WE WILL FIGHT!
             if ((minionPos.CountEnemiesInRange(1000) != 0 || Heroes.Player.CountEnemiesInRange(1000) != 0) && minionPos.CountAlliesInRange(1000) != 0) return false;
             //IF THE FARTHEST ALLY IS IN DANGER, WE SHALL FIGHT WITH HIM
@@ -77,7 +77,7 @@ namespace AutoSharp.Auto.HowlingAbyss
             if (Heroes.AllyHeroes.All(h => h.IsDead) || Heroes.AllyHeroes.All(h=>h.InFountain()) || (Heroes.AllyHeroes.All(h => h.Distance(HeadQuarters.AllyHQ) < Heroes.Player.Distance(h))))
             {
                 Program.Orbwalker.SetOrbwalkingPoint(Wizard.GetFarthestAllyTurret().Position.RandomizePosition());
-                Program.Orbwalker.ActiveMode = Heroes.Player.Distance(Wizard.GetFarthestAllyTurret()) < 500 ? MyOrbwalker.OrbwalkingMode.LaneClear : MyOrbwalker.OrbwalkingMode.LaneClear;
+                Program.Orbwalker.ActiveMode = Heroes.Player.Distance(Wizard.GetFarthestAllyTurret().Position) < 500 ? MyOrbwalker.OrbwalkingMode.LaneClear : MyOrbwalker.OrbwalkingMode.LaneClear;
                 return true;
             }
             return false;

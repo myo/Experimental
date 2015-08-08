@@ -243,14 +243,25 @@ namespace AutoSharp.Utils
             return new Vector2(t.X + i, t.Y + i).To3D();
         }
 
-        public static Obj_AI_Turret GetFarthestAllyTurret()
+        public static GameObject GetFarthestAllyTurret()
         {
-            return Turrets.AllyTurrets.OrderByDescending(t => t.Distance(HeadQuarters.AllyHQ.Position)).FirstOrDefault();
+            var turret =
+                Turrets.AllyTurrets.OrderByDescending(t => t.Distance(HeadQuarters.AllyHQ.Position)).FirstOrDefault();
+            if (turret != null)
+            {
+                return turret;
+            }
+            return ObjectManager.Get<Obj_BarracksDampener>().FirstOrDefault(b => b.IsAlly);
         }
 
-        public static Obj_AI_Turret GetClosestAllyTurret()
+        public static GameObject GetClosestAllyTurret()
         {
-            return Turrets.AllyTurrets.OrderBy(t => t.Distance(Heroes.Player)).FirstOrDefault();
+            var turret = Turrets.AllyTurrets.OrderBy(t => t.Distance(Heroes.Player)).FirstOrDefault();
+            if (turret != null)
+            {
+                return turret;
+            }
+            return ObjectManager.Get<Obj_BarracksDampener>().FirstOrDefault(b => b.IsAlly);
         }
 
         public static Obj_AI_Turret GetClosestEnemyTurret()

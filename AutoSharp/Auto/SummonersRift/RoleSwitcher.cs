@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoSharp.Utils;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 
 namespace AutoSharp.Auto.SummonersRift
 {
@@ -16,7 +17,14 @@ namespace AutoSharp.Auto.SummonersRift
 
         public static void Load()
         {
-            Utility.DelayAction.Add(new Random().Next(5000, 17000), () => Game.OnUpdate += ChooseBest);
+            if (Minions.AllyMinions.Any())
+            {
+                Game.OnUpdate += ChooseBest;
+            }
+            else
+            {
+                Utility.DelayAction.Add(new Random().Next(17500, 25000), () => Game.OnUpdate += ChooseBest);
+            }
         }
 
         public static void Unload()
@@ -28,7 +36,7 @@ namespace AutoSharp.Auto.SummonersRift
         {
             if (_paused) return;
 
-            if (Environment.TickCount - _lastSwitchedRoleTick > 180000)
+            if (Environment.TickCount - _lastSwitchedRoleTick > 220000)
             {
                 MyTeam.MyRole = MyTeam.Roles.Unknown;
                 _lastSwitchedRoleTick = Environment.TickCount;
@@ -48,19 +56,24 @@ namespace AutoSharp.Auto.SummonersRift
                 BotLaneLogic();
             }
 
-            if (MyTeam.MyRole == MyTeam.Roles.Midlaner)
+            else if (MyTeam.MyRole == MyTeam.Roles.Midlaner)
             {
                 MidLaneLogic();
             }
 
-            if (MyTeam.MyRole == MyTeam.Roles.Toplaner)
+            else if (MyTeam.MyRole == MyTeam.Roles.Toplaner)
             {
                 TopLaneLogic();
+            }
+            else
+            {
+                MidLaneLogic();
             }
         }
 
         public static void BotLaneLogic()
         {
+            Vector3 followObjectPos = Vector3.Zero;
             var redZone = Map.BottomLane.Red_Zone;
             var blueZone = Map.BottomLane.Blue_Zone;
             var myOuterTurret = Heroes.Player.Team == GameObjectTeam.Order
@@ -81,25 +94,33 @@ namespace AutoSharp.Auto.SummonersRift
 
             if (farthestMinionInLane != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInLane.Position.RandomizePosition());
+                followObjectPos = farthestMinionInLane.Position;
             }
             else if (farthestMinionInGame != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInGame.Position.RandomizePosition());
+                followObjectPos = farthestMinionInGame.Position;
             }
             else if (farthestAlly != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(farthestAlly.Position.RandomizePosition());
+                followObjectPos = farthestAlly.Position;
             }
             else if (myOuterTurret != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.Position.RandomizePosition());
+                followObjectPos = myOuterTurret.Position;
+            }
+            else
+            {
+                followObjectPos = Game.CursorPos;
+            }
+            if (followObjectPos != Vector3.Zero)
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(followObjectPos.Randomize(-50,50));
             }
         }
 
         public static void MidLaneLogic()
         {
-
+            Vector3 followObjectPos = Vector3.Zero;
             var redZone = Map.MidLane.Red_Zone;
             var blueZone = Map.MidLane.Blue_Zone;
             var myOuterTurret = Heroes.Player.Team == GameObjectTeam.Order
@@ -120,25 +141,33 @@ namespace AutoSharp.Auto.SummonersRift
 
             if (farthestMinionInLane != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInLane.Position.RandomizePosition());
+                followObjectPos = farthestMinionInLane.Position;
             }
             else if (farthestMinionInGame != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInGame.Position.RandomizePosition());
+                followObjectPos = farthestMinionInGame.Position;
             }
             else if (farthestAlly != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(farthestAlly.Position.RandomizePosition());
+                followObjectPos = farthestAlly.Position;
             }
             else if (myOuterTurret != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.Position.RandomizePosition());
+                followObjectPos = myOuterTurret.Position;
+            }
+            else
+            {
+                followObjectPos = Game.CursorPos;
+            }
+            if (followObjectPos != Vector3.Zero)
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(followObjectPos.Randomize(-50, 50));
             }
         }
 
         public static void TopLaneLogic()
         {
-
+            Vector3 followObjectPos = Vector3.Zero;
             var redZone = Map.TopLane.Red_Zone;
             var blueZone = Map.TopLane.Blue_Zone;
             var myOuterTurret = Heroes.Player.Team == GameObjectTeam.Order
@@ -159,19 +188,27 @@ namespace AutoSharp.Auto.SummonersRift
 
             if (farthestMinionInLane != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInLane.Position.RandomizePosition());
+                followObjectPos = farthestMinionInLane.Position;
             }
             else if (farthestMinionInGame != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(farthestMinionInGame.Position.RandomizePosition());
+                followObjectPos = farthestMinionInGame.Position;
             }
             else if (farthestAlly != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(farthestAlly.Position.RandomizePosition());
+                followObjectPos = farthestAlly.Position;
             }
             else if (myOuterTurret != null)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(myOuterTurret.Position.RandomizePosition());
+                followObjectPos = myOuterTurret.Position;
+            }
+            else
+            {
+                followObjectPos = Game.CursorPos;
+            }
+            if (followObjectPos != Vector3.Zero)
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(followObjectPos.Randomize(-50, 50));
             }
         }
 

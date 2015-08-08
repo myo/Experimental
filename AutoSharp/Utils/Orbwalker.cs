@@ -96,7 +96,7 @@ namespace AutoSharp.Utils
         private static AttackableUnit _lastTarget;
         private static readonly Obj_AI_Hero Player;
         private static int _delay;
-        private static float _minDistance = 800;
+        private static float _minDistance = 700;
         private static bool _missileLaunched;
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
         public static Obj_AI_Hero DesiredTarget;
@@ -648,17 +648,8 @@ namespace AutoSharp.Utils
                     _orbwalkingPoint = ObjectManager.Player.Position.Randomize(-30, 30);
                     return;
                 }
-                if (!point.IsZero)
-                {
-                    if (point.IsWall())
-                    {
-                        _orbwalkingPoint = new Geometry.Circle(point.To2D(), 900).ToPolygon().Points.FirstOrDefault(p=>!p.IsWall()).To3D();
-                    }
-                    _orbwalkingPoint = point;
-                    ActiveMode = Heroes.Player.CountEnemiesInRange(600) <= Heroes.Player.CountAlliesInRange(600) + 1
-                        ? OrbwalkingMode.LaneClear
-                        : OrbwalkingMode.Combo;
-                }
+                _orbwalkingPoint = point;
+                ActiveMode = OrbwalkingMode.LaneClear;
             }
 
             public bool ShouldWait()

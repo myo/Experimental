@@ -136,7 +136,7 @@ namespace AutoSharp
         {
             if (Config.Item("autosharp.quit").GetValue<bool>())
             {
-                Thread.Sleep(15000);
+                Thread.Sleep(20000);
                 Game.Quit();
             }
         }
@@ -194,6 +194,10 @@ namespace AutoSharp
             {
                 return true;
             }
+            var line = new Utils.Geometry.Rectangle(Heroes.Player.Position.To2D(), pos.To2D(),1).ToPolygon();
+            {
+                if (line.Points.Any(p => p.IsWall())) return true;
+            }
             //AntiJihadIntoTurret
             var turret = Turrets.ClosestEnemyTurret;
             if (turret != null && turret.Distance(pos) < 950 && turret.CountNearbyAllyMinions(950) < 4)
@@ -201,7 +205,7 @@ namespace AutoSharp
                 return true;
             }
             //AntiShrooms
-            if (Heroes.EnemyHeroes.Any(h => h.Name == "Teemo" || h.Name == "Jinx" || h.Name == "Caitlyn"))
+            if (Heroes.EnemyHeroes.Any(h => h.IsEnemy && (h.Name == "Teemo" || h.Name == "Jinx" || h.Name == "Caitlyn")))
             {
                 return Traps.EnemyTraps.FirstOrDefault(t => t.Position.Distance(pos) < 200) != null;
             }
