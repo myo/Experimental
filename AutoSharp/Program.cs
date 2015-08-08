@@ -143,11 +143,11 @@ namespace AutoSharp
 
         public static void AntiShrooms(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
-            if (sender != null && args.Target != null && sender.IsMe)
+            if (sender != null && sender.IsMe)
             {
                 var turret = Turrets.ClosestEnemyTurret;
                 if (Heroes.Player.HasBuff("Recall") && Heroes.Player.CountEnemiesInRange(1800) == 0 &&
-                    !Turrets.EnemyTurrets.Any(t => t.Distance(Heroes.Player) < 950) && !Minions.EnemyMinions.Any(m => m.Distance(Heroes.Player) < 950))
+                    turret.Distance(Heroes.Player) > 950 && !Minions.EnemyMinions.Any(m => m.Distance(Heroes.Player) < 950))
                 {
                     args.Process = false;
                     return;
@@ -155,11 +155,6 @@ namespace AutoSharp
 
                 if (args.Order == GameObjectOrder.MoveTo)
                 {
-                    if (ObjectManager.Player.GetWaypoints().Count > 3)
-                    {
-                        args.Process = false;
-                        return;
-                    }
                     if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() &&
                 Heroes.Player.HealthPercent < 100)
                     {
@@ -184,19 +179,26 @@ namespace AutoSharp
 
                 #region BlockAttack
 
-                if (args.Order == GameObjectOrder.AttackUnit || args.Order == GameObjectOrder.AttackTo)
+                if (args.Target != null && args.Order == GameObjectOrder.AttackUnit || args.Order == GameObjectOrder.AttackTo)
                 {
                     if (Config.Item("onlyfarm").GetValue<bool>() && args.Target.IsValid<Obj_AI_Hero>())
                     {
                         args.Process = false;
                         return;
                     }
-                    if (args.Target.IsValid<Obj_AI_Hero>() &&
-                        Minions.AllyMinions.Count(m => m.Distance(Heroes.Player) < 900) <
-                        Minions.EnemyMinions.Count(m => m.Distance(Heroes.Player) < 900))
+                    if (args.Target.IsValid<Obj_AI_Hero>())
                     {
-                        args.Process = false;
-                        return;
+                        if (Minions.AllyMinions.Count(m => m.Distance(Heroes.Player) < 900) <
+                            Minions.EnemyMinions.Count(m => m.Distance(Heroes.Player) < 900))
+                        {
+                            args.Process = false;
+                            return;
+                        }
+                        if (((Obj_AI_Hero) args.Target).UnderTurret(true))
+                        {
+                            args.Process = false;
+                            return;
+                        }
                     }
                     if (Heroes.Player.UnderTurret(true) && args.Target.IsValid<Obj_AI_Hero>())
                     {
