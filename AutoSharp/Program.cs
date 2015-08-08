@@ -87,6 +87,10 @@ namespace AutoSharp
 
         private static void AntiShrooms2(EventArgs args)
         {
+            if (Map != Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain())
+            {
+                Orbwalker.ForceOrbwalkingPoint(Wizard.GetFarthestAllyTurret().Position);
+            }
             if (Map == Utility.Map.MapType.SummonersRift && !Heroes.Player.InFountain() &&
                 Heroes.Player.HealthPercent < Config.Item("recallhp").GetValue<Slider>().Value)
             {
@@ -175,7 +179,7 @@ namespace AutoSharp
                     {
                         args.Process = false;
                         var wall = line.Points.FirstOrDefault(p => p.IsWall());
-                        Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(wall.To3D(), -350));
+                        Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(wall.To3D().RandomizePosition(), -350));
                         return;
                     }
                 }
