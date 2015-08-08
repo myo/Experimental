@@ -145,71 +145,78 @@ namespace AutoSharp
         {
             if (sender != null && args.Target != null && sender.IsMe)
             {
+                var turret = Turrets.ClosestEnemyTurret;
                 if (Heroes.Player.HasBuff("Recall") && Heroes.Player.CountEnemiesInRange(1800) == 0 &&
                     !Turrets.EnemyTurrets.Any(t => t.Distance(Heroes.Player) < 950) && !Minions.EnemyMinions.Any(m => m.Distance(Heroes.Player) < 950))
                 {
                     args.Process = false;
+                    return;
                 }
 
-                if (args.Order == GameObjectOrder.MoveTo && (ShouldBlockMovement(args.TargetPosition) || Heroes.Player.GetWaypoints().Count > 2))
+                if (args.Order == GameObjectOrder.MoveTo)
                 {
-                    args.Process = false;
+                    if (ObjectManager.Player.GetWaypoints().Count > 3)
+                    {
+                        args.Process = false;
+                        return;
+                    }
+                    if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() &&
+                Heroes.Player.HealthPercent < 100)
+                    {
+                        args.Process = false;
+                        return;
+                    }
+                    var line = new Utils.Geometry.Rectangle(Heroes.Player.Position.To2D(), args.TargetPosition.To2D(), 1).ToPolygon();
+                    {
+                        if (line.Points.Any(p => p.IsWall()))
+                        {
+                            args.Process = false;
+                            return;
+                        }
+                    }
+
+                    if (turret != null && turret.Distance(args.TargetPosition) < 950 && turret.CountNearbyAllyMinions(950) < 3)
+                    {
+                        args.Process = false;
+                        return;
+                    }
                 }
 
                 #region BlockAttack
 
-                if (sender.IsMe && (args.Order == GameObjectOrder.AttackUnit || args.Order == GameObjectOrder.AttackTo))
+                if (args.Order == GameObjectOrder.AttackUnit || args.Order == GameObjectOrder.AttackTo)
                 {
                     if (Config.Item("onlyfarm").GetValue<bool>() && args.Target.IsValid<Obj_AI_Hero>())
                     {
                         args.Process = false;
+                        return;
                     }
                     if (args.Target.IsValid<Obj_AI_Hero>() &&
                         Minions.AllyMinions.Count(m => m.Distance(Heroes.Player) < 900) <
                         Minions.EnemyMinions.Count(m => m.Distance(Heroes.Player) < 900))
                     {
                         args.Process = false;
+                        return;
                     }
-                    if (Heroes.Player.UnderTurret() && args.Target.IsValid<Obj_AI_Hero>())
+                    if (Heroes.Player.UnderTurret(true) && args.Target.IsValid<Obj_AI_Hero>())
                     {
                         args.Process = false;
-                    } 
-                    var turret = Turrets.ClosestEnemyTurret;
-                    if (turret != null && turret.Distance(ObjectManager.Player) < 950 && turret.CountNearbyAllyMinions(950) < 4)
+                        return;
+                    }
+                    if (turret != null && turret.Distance(ObjectManager.Player) < 950 && turret.CountNearbyAllyMinions(950) < 3)
                     {
                         args.Process = false;
+                        return;
+                    }
+                    if (Heroes.Player.HealthPercent < Config.Item("recallhp").GetValue<Slider>().Value)
+                    {
+                        args.Process = false;
+                        return;
                     }
                 }
 
                 #endregion
             }
-        }
-
-
-        public static bool ShouldBlockMovement(Vector3 pos)
-        {
-            if (pos == null || pos.IsZero) return true;
-            if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() &&
-                Heroes.Player.HealthPercent < 100)
-            {
-                return true;
-            }
-            var line = new Utils.Geometry.Rectangle(Heroes.Player.Position.To2D(), pos.To2D(),1).ToPolygon();
-            {
-                if (line.Points.Any(p => p.IsWall())) return true;
-            }
-            //AntiJihadIntoTurret
-            var turret = Turrets.ClosestEnemyTurret;
-            if (turret != null && turret.Distance(pos) < 950 && turret.CountNearbyAllyMinions(950) < 4)
-            {
-                return true;
-            }
-            //AntiShrooms
-            if (Heroes.EnemyHeroes.Any(h => h.IsEnemy && (h.Name == "Teemo" || h.Name == "Jinx" || h.Name == "Caitlyn")))
-            {
-                return Traps.EnemyTraps.FirstOrDefault(t => t.Position.Distance(pos) < 200) != null;
-            }
-            return false;
         }
 
         public static void Main(string[] args)
