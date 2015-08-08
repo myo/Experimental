@@ -648,8 +648,12 @@ namespace AutoSharp.Utils
                     _orbwalkingPoint = ObjectManager.Player.Position.Randomize(-30, 30);
                     return;
                 }
-                if (!point.IsWall() && !point.IsZero)
+                if (!point.IsZero)
                 {
+                    if (point.IsWall())
+                    {
+                        _orbwalkingPoint = new Geometry.Circle(point.To2D(), 900).ToPolygon().Points.FirstOrDefault(p=>!p.IsWall()).To3D();
+                    }
                     _orbwalkingPoint = point;
                     ActiveMode = Heroes.Player.CountEnemiesInRange(600) <= Heroes.Player.CountAlliesInRange(600) + 1
                         ? OrbwalkingMode.LaneClear

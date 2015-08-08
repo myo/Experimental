@@ -173,6 +173,11 @@ namespace AutoSharp
                     if (Heroes.Player.UnderTurret() && args.Target.IsValid<Obj_AI_Hero>())
                     {
                         args.Process = false;
+                    } 
+                    var turret = Turrets.ClosestEnemyTurret;
+                    if (turret != null && turret.Distance(ObjectManager.Player) < 950 && turret.CountNearbyAllyMinions(950) < 4)
+                    {
+                        args.Process = false;
                     }
                 }
 
@@ -191,7 +196,7 @@ namespace AutoSharp
             }
             //AntiJihadIntoTurret
             var turret = Turrets.ClosestEnemyTurret;
-            if (turret != null && turret.Distance(Heroes.Player) < 950)
+            if (turret != null && turret.Distance(pos) < 950 && turret.CountNearbyAllyMinions(950) < 4)
             {
                 return true;
             }
