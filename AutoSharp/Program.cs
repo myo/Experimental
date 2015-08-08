@@ -161,15 +161,6 @@ namespace AutoSharp
                         args.Process = false;
                         return;
                     }
-                    var line = new Utils.Geometry.Rectangle(Heroes.Player.Position.To2D(), args.TargetPosition.To2D(), 1).ToPolygon();
-                    {
-                        if (line.Points.Any(p => p.IsWall()))
-                        {
-                            args.Process = false;
-                            return;
-                        }
-                    }
-
                     if (turret != null && turret.Distance(args.TargetPosition) < 950 && turret.CountNearbyAllyMinions(950) < 3)
                     {
                         args.Process = false;
