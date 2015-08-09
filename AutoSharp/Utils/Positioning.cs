@@ -36,17 +36,13 @@ namespace AutoSharp.Utils
 
             ValidPossibleMoves = new List<Vector3>();
 
-            switch (Program.Config.Item("autosharp.playmode").GetValue<StringList>().SelectedValue)
+            if (Heroes.Player.IsMelee || Heroes.Player.AttackRange < 450)
             {
-                case "AUTOSHARP":
-                    UseAutoSharpARAMPositioning();
-                    break;
-                case "AIM":
-                    UseAIMARAMPositioning();
-                    break;
-                default:
-                    UseAutoSharpARAMPositioning();
-                    break;
+                UseAutoSharpARAMPositioning();
+            }
+            else
+            {
+                UseAIMARAMPositioning();
             }
         }
 
@@ -65,12 +61,11 @@ namespace AutoSharp.Utils
                 }
                 else
                 {
-                    // ReSharper disable once PossibleNullReferenceException
-                    //if its null, its over anyways lol since only nexus is left and I'm lazy #TODO
-                    RandomlyChosenMove =
-                        Turrets.AllyTurrets.OrderByDescending(t => t.Distance(HeadQuarters.AllyHQ))
-                            .FirstOrDefault()
-                            .Position.RandomizePosition();
+                    var turret = Wizard.GetFarthestAllyTurret();
+                    if (turret != null)
+                    {
+                        RandomlyChosenMove = turret.Position;
+                    }
                 }
                 return;
             }

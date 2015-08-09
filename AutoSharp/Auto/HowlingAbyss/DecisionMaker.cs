@@ -19,12 +19,8 @@ namespace AutoSharp.Auto.HowlingAbyss
 
             if (player.InFountain())
             {
-                var eM = Minions.EnemyMinions.FirstOrDefault(m => m != null && m.IsVisible && m.IsValid);
-                if (eM != null)
-                {
-                    Program.Orbwalker.SetOrbwalkingPoint(eM.Position);
-                    return;
-                }
+                Program.Orbwalker.ForceOrbwalkingPoint(HeadQuarters.EnemyHQ.Position);
+                return;
             }
 
             if (Decisions.ImSoLonely())

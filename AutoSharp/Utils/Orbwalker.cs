@@ -96,7 +96,7 @@ namespace AutoSharp.Utils
         private static AttackableUnit _lastTarget;
         private static readonly Obj_AI_Hero Player;
         private static int _delay;
-        private static float _minDistance = 900;
+        private static float _minDistance = 950;
         private static bool _missileLaunched;
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
         public static Obj_AI_Hero DesiredTarget;
@@ -625,6 +625,7 @@ namespace AutoSharp.Utils
             /// </summary>
             public void SetOrbwalkingPoint(Vector3 point)
             {
+                if (point.IsZero) return;
                 if (!_forcedPosition.IsZero)
                 {
                     if (Environment.TickCount - _forcedPositionTick > 1500) _forcedPosition = Vector3.Zero;

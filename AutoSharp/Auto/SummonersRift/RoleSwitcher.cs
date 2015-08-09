@@ -36,6 +36,16 @@ namespace AutoSharp.Auto.SummonersRift
         {
             if (_paused) return;
 
+            if (Heroes.Player.CountNearbyAllyMinions(800) >
+                Minions.EnemyMinions.Count(m => m.Distance(Heroes.Player) < 800))
+            {
+                Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.Combo;
+            }
+            else
+            {
+                Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
+            }
+
             if (Environment.TickCount - _lastSwitchedRoleTick > 220000)
             {
                 MyTeam.MyRole = MyTeam.Roles.Unknown;

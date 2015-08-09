@@ -36,7 +36,6 @@ namespace AutoSharp
                         Orbwalker.SetOrbwalkingPoint(Game.CursorPos);
                     }
                 };
-            Config.AddItem(new MenuItem("autosharp.playmode", "Play Mode").SetValue(new StringList(new[] {"AUTOSHARP", "AIM"})));
             Config.AddItem(new MenuItem("autosharp.humanizer", "Humanize Movement by ").SetValue(new Slider(175, 125, 350)));
             Config.AddItem(new MenuItem("autosharp.quit", "Quit after Game End").SetValue(true));
             var options = Config.AddSubMenu(new Menu("Options: ", "autosharp.options"));
@@ -87,10 +86,6 @@ namespace AutoSharp
 
         private static void AntiShrooms2(EventArgs args)
         {
-            if (Map != Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain())
-            {
-                Orbwalker.ForceOrbwalkingPoint(Wizard.GetFarthestAllyTurret().Position);
-            }
             if (Map == Utility.Map.MapType.SummonersRift && !Heroes.Player.InFountain() &&
                 Heroes.Player.HealthPercent < Config.Item("recallhp").GetValue<Slider>().Value)
             {
@@ -118,17 +113,21 @@ namespace AutoSharp
         {
             if (sender.Owner.IsMe)
             {
-                if (Config.Item("onlyfarm").GetValue<bool>() && args.Target.IsValid<Obj_AI_Hero>() && args.Target.IsEnemy)
+                if (Map == Utility.Map.MapType.SummonersRift)
                 {
-                    args.Process = false;
-                }
-                if (Heroes.Player.InFountain() && args.Slot == SpellSlot.Recall)
-                {
-                    args.Process = false;
-                }
-                if (Heroes.Player.HasBuff("Recall"))
-                {
-                    args.Process = false;
+                    if (Config.Item("onlyfarm").GetValue<bool>() && args.Target.IsValid<Obj_AI_Hero>() &&
+                        args.Target.IsEnemy)
+                    {
+                        args.Process = false;
+                    }
+                    if (Heroes.Player.InFountain() && args.Slot == SpellSlot.Recall)
+                    {
+                        args.Process = false;
+                    }
+                    if (Heroes.Player.HasBuff("Recall"))
+                    {
+                        args.Process = false;
+                    }
                 }
                 if (Heroes.Player.UnderTurret(true) && args.Target.IsValid<Obj_AI_Hero>())
                 {
@@ -151,7 +150,7 @@ namespace AutoSharp
             if (sender != null && sender.IsMe)
             {
                 var turret = Turrets.ClosestEnemyTurret;
-                if (Heroes.Player.HasBuff("Recall") && Heroes.Player.CountEnemiesInRange(1800) == 0 &&
+                if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.HasBuff("Recall") && Heroes.Player.CountEnemiesInRange(1800) == 0 &&
                     turret.Distance(Heroes.Player) > 950 && !Minions.EnemyMinions.Any(m => m.Distance(Heroes.Player) < 950))
                 {
                     args.Process = false;
@@ -160,6 +159,11 @@ namespace AutoSharp
 
                 if (args.Order == GameObjectOrder.MoveTo)
                 {
+                    if (args.TargetPosition.IsZero)
+                    {
+                        args.Process = false;
+                        return;
+                    }
                     if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() &&
                         Heroes.Player.HealthPercent < 100)
                     {
