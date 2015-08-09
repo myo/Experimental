@@ -96,7 +96,7 @@ namespace AutoSharp.Utils
         private static AttackableUnit _lastTarget;
         private static readonly Obj_AI_Hero Player;
         private static int _delay;
-        private static float _minDistance = 700;
+        private static float _minDistance = 900;
         private static bool _missileLaunched;
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
         public static Obj_AI_Hero DesiredTarget;
@@ -294,13 +294,14 @@ namespace AutoSharp.Utils
 
             LastMoveCommandT = LeagueSharp.Common.Utils.GameTimeTickCount;
 
-            if (Player.ServerPosition.Distance(position, true) < holdAreaRadius * holdAreaRadius)
+            var playerPosition = Player.ServerPosition;
+
+            if (playerPosition.Distance(position, true) < holdAreaRadius * holdAreaRadius)
             {
-                if (Player.Path.Count() > 1)
+                if (Player.Path.Length > 0)
                 {
-                    Player.IssueOrder((GameObjectOrder)10, Player.ServerPosition);
-                    Player.IssueOrder(GameObjectOrder.HoldPosition, Player.ServerPosition);
-                    LastMoveCommandPosition = Player.ServerPosition;
+                    Player.IssueOrder(GameObjectOrder.Stop, playerPosition);
+                    LastMoveCommandPosition = playerPosition;
                 }
                 return;
             }
@@ -499,7 +500,7 @@ namespace AutoSharp.Utils
                 /* Misc options */
                 var misc = new Menu("Misc", "Misc");
                 misc.AddItem(
-                    new MenuItem("HoldPosRadius", "Hold Position Radius").SetValue(new Slider(45, 0, 250)));
+                    new MenuItem("HoldPosRadius", "Hold Position Radius").SetValue(new Slider(75, 0, 250)));
                 misc.AddItem(new MenuItem("PriorizeFarm", "Prioritize farm").SetShared().SetValue(true));
                 _config.AddSubMenu(misc);
 
@@ -731,9 +732,10 @@ namespace AutoSharp.Utils
                     }
 
                     /* nexus */
-                    if (HeadQuarters.EnemyHQ.IsValidTarget(-1))
+                    foreach (var nexus in
+                        ObjectManager.Get<Obj_HQ>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
                     {
-                        return HeadQuarters.EnemyHQ;
+                        return nexus;
                     }
                 }
 

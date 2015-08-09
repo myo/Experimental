@@ -92,6 +92,8 @@ namespace AutoSharp.Auto.SummonersRift
             var farthestAlly =
                 Heroes.AllyHeroes.OrderByDescending(h => h.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
 
+            var closestAllyTurret = Wizard.GetClosestAllyTurret();
+
             if (farthestMinionInLane != null)
             {
                 followObjectPos = farthestMinionInLane.Position;
@@ -114,7 +116,7 @@ namespace AutoSharp.Auto.SummonersRift
             }
             if (followObjectPos != Vector3.Zero)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(followObjectPos.Randomize(-50,50));
+                Program.Orbwalker.SetOrbwalkingPoint(followObjectPos.Extend(closestAllyTurret.Position, Heroes.Player.AttackRange/2));
             }
         }
 
@@ -139,6 +141,8 @@ namespace AutoSharp.Auto.SummonersRift
             var farthestAlly =
                 Heroes.AllyHeroes.OrderByDescending(h => h.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
 
+            var closestAllyTurret = Wizard.GetClosestAllyTurret();
+
             if (farthestMinionInLane != null)
             {
                 followObjectPos = farthestMinionInLane.Position;
@@ -161,7 +165,7 @@ namespace AutoSharp.Auto.SummonersRift
             }
             if (followObjectPos != Vector3.Zero)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(followObjectPos.Randomize(-50, 50));
+                Program.Orbwalker.SetOrbwalkingPoint(followObjectPos.Extend(closestAllyTurret.Position, Heroes.Player.AttackRange / 2));
             }
         }
 
@@ -186,6 +190,8 @@ namespace AutoSharp.Auto.SummonersRift
             var farthestAlly =
                 Heroes.AllyHeroes.OrderByDescending(h => h.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
 
+            var closestAllyTurret = Wizard.GetClosestAllyTurret();
+
             if (farthestMinionInLane != null)
             {
                 followObjectPos = farthestMinionInLane.Position;
@@ -208,7 +214,7 @@ namespace AutoSharp.Auto.SummonersRift
             }
             if (followObjectPos != Vector3.Zero)
             {
-                Program.Orbwalker.SetOrbwalkingPoint(followObjectPos.Randomize(-50, 50));
+                Program.Orbwalker.SetOrbwalkingPoint(followObjectPos.Extend(closestAllyTurret.Position, Heroes.Player.AttackRange / 2));
             }
         }
 
