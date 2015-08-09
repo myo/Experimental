@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using AutoSharp.Auto.SummonersRift;
 using AutoSharp.Utils;
 using LeagueSharp;
@@ -15,6 +16,16 @@ namespace AutoSharp.Auto.HowlingAbyss
             _lastUpdate = Environment.TickCount;
 
             var player = Heroes.Player;
+
+            if (player.InFountain())
+            {
+                var eM = Minions.EnemyMinions.FirstOrDefault(m => m != null && m.IsVisible && m.IsValid);
+                if (eM != null)
+                {
+                    Program.Orbwalker.SetOrbwalkingPoint(eM.Position);
+                    return;
+                }
+            }
 
             if (Decisions.ImSoLonely())
             {
