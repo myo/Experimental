@@ -17,12 +17,6 @@ namespace AutoSharp.Auto.HowlingAbyss
 
             var player = Heroes.Player;
 
-            if (player.InFountain())
-            {
-                Program.Orbwalker.ForceOrbwalkingPoint(HeadQuarters.EnemyHQ.Position);
-                return;
-            }
-
             if (Decisions.ImSoLonely())
             {
                 return;
