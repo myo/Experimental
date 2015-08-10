@@ -164,6 +164,11 @@ namespace AutoSharp
                         args.Process = false;
                         return;
                     }
+                    if (!args.TargetPosition.IsValid())
+                    {
+                        args.Process = false;
+                        return;
+                    }
                     if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() &&
                         Heroes.Player.HealthPercent < 100)
                     {
