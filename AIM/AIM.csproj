@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B13213B2-F9B1-492E-B930-A433218E0C86}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoSharp</RootNamespace>
+    <AssemblyName>AutoSharp</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <OutputPath>bin\Release</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="clipper_library">
+      <HintPath>C:\LeagueSharp\System\clipper_library.dll</HintPath>
+    </Reference>
+    <Reference Include="LeagueSharp">
+      <HintPath>C:\LeagueSharp\System\LeagueSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="LeagueSharp.Common">
+      <HintPath>C:\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>C:\LeagueSharp\System\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Auto\Autoplay.cs" />
+    <Compile Include="Auto\HowlingAbyss\ARAMShopAI\BuyItemEvent.cs" />
+    <Compile Include="Auto\HowlingAbyss\ARAMShopAI\CustomEvents.cs" />
+    <Compile Include="Auto\HowlingAbyss\ARAMShopAI\Item.cs" />
+    <Compile Include="Auto\HowlingAbyss\ARAMShopAI\Main.cs" />
+    <Compile Include="Auto\HowlingAbyss\DecisionMaker.cs" />
+    <Compile Include="Auto\HowlingAbyss\Decisions.cs" />
+    <Compile Include="Auto\HowlingAbyss\HAManager.cs" />
+    <Compile Include="Auto\SummonersRift\SRShopAI\BuyItemEvent.cs" />
+    <Compile Include="Auto\SummonersRift\SRShopAI\CustomEvents.cs" />
+    <Compile Include="Auto\SummonersRift\SRShopAI\Item.cs" />
+    <Compile Include="Auto\SummonersRift\SRShopAI\Main.cs" />
+    <Compile Include="Auto\SummonersRift\MyTeam.cs" />
+    <Compile Include="Auto\SummonersRift\RoleSwitcher.cs" />
+    <Compile Include="Auto\SummonersRift\Map.cs" />
+    <Compile Include="Auto\SummonersRift\Shopping.cs" />
+    <Compile Include="Auto\SummonersRift\SRManager.cs" />
+    <Compile Include="PluginBase.cs" />
+    <Compile Include="PluginLoader.cs" />
+    <Compile Include="Plugins\Aatrox.cs" />
+    <Compile Include="Plugins\Ahri.cs" />
+    <Compile Include="Plugins\Akali.cs" />
+    <Compile Include="Plugins\Alistar.cs" />
+    <Compile Include="Plugins\Amumu.cs" />
+    <Compile Include="Plugins\Anivia.cs" />
+    <Compile Include="Plugins\Annie.cs" />
+    <Compile Include="Plugins\Ashe.cs" />
+    <Compile Include="Plugins\Azir.cs" />
+    <Compile Include="Plugins\Bard.cs" />
+    <Compile Include="Plugins\Blitzcrank.cs" />
+    <Compile Include="Plugins\Brand.cs" />
+    <Compile Include="Plugins\Braum.cs" />
+    <Compile Include="Plugins\Caitlyn.cs" />
+    <Compile Include="Plugins\Cassiopeia.cs" />
+    <Compile Include="Plugins\Chogath.cs" />
+    <Compile Include="Plugins\Corki.cs" />
+    <Compile Include="Plugins\Darius.cs" />
+    <Compile Include="Plugins\Default.cs" />
+    <Compile Include="Plugins\Diana.cs" />
+    <Compile Include="Plugins\Draven.cs" />
+    <Compile Include="Plugins\Drmundo.cs" />
+    <Compile Include="Plugins\Evelynn.cs" />
+    <Compile Include="Plugins\Ezreal.cs" />
+    <Compile Include="Plugins\FiddleSticks.cs" />
+    <Compile Include="Plugins\Fiora.cs" />
+    <Compile Include="Plugins\Fizz.cs" />
+    <Compile Include="Plugins\Galio.cs" />
+    <Compile Include="Plugins\Gangplank.cs" />
+    <Compile Include="Plugins\Garen.cs" />
+    <Compile Include="Plugins\Gragas.cs" />
+    <Compile Include="Plugins\Graves.cs" />
+    <Compile Include="Plugins\Hecarim.cs" />
+    <Compile Include="Plugins\Heimerdinger.cs" />
+    <Compile Include="Plugins\Irelia.cs" />
+    <Compile Include="Plugins\Janna.cs" />
+    <Compile Include="Plugins\Jax.cs" />
+    <Compile Include="Plugins\Jinx.cs" />
+    <Compile Include="Plugins\Karma.cs" />
+    <Compile Include="Plugins\Karthus.cs" />
+    <Compile Include="Plugins\Katarina.cs" />
+    <Compile Include="Plugins\Kayle.cs" />
+    <Compile Include="Plugins\Kogmaw.cs" />
+    <Compile Include="Plugins\Leblanc.cs" />
+    <Compile Include="Plugins\Leona.cs" />
+    <Compile Include="Plugins\Lucian.cs" />
+    <Compile Include="Plugins\Lulu.cs" />
+    <Compile Include="Plugins\Lux.cs" />
+    <Compile Include="Plugins\Malzahar.cs" />
+    <Compile Include="Plugins\Masteryi.cs" />
+    <Compile Include="Plugins\Morgana.cs" />
+    <Compile Include="Plugins\Nami.cs" />
+    <Compile Include="Plugins\Nunu.cs" />
+    <Compile Include="Plugins\Poppy.cs" />
+    <Compile Include="Plugins\Riven.cs" />
+    <Compile Include="Plugins\Ryze.cs" />
+    <Compile Include="Plugins\Shaco.cs" />
+    <Compile Include="Plugins\Sivir.cs" />
+    <Compile Include="Plugins\Skarner.cs" />
+    <Compile Include="Plugins\Sona.cs" />
+    <Compile Include="Plugins\Soraka.cs" />
+    <Compile Include="Plugins\Taric.cs" />
+    <Compile Include="Plugins\Teemo.cs" />
+    <Compile Include="Plugins\Thresh.cs" />
+    <Compile Include="Plugins\Tristana.cs" />
+    <Compile Include="Plugins\Varus.cs" />
+    <Compile Include="Plugins\Vayne.cs" />
+    <Compile Include="Plugins\Veigar.cs" />
+    <Compile Include="Plugins\Vladimir.cs" />
+    <Compile Include="Plugins\Warwick.cs" />
+    <Compile Include="Plugins\Zilean.cs" />
+    <Compile Include="Plugins\Zyra.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\AutoLevel.cs" />
+    <Compile Include="Utils\Cache.cs" />
+    <Compile Include="Utils\Enums.cs" />
+    <Compile Include="Utils\Helpers.cs" />
+    <Compile Include="Utils\Orbwalker.cs" />
+    <Compile Include="Utils\Positioning.cs" />
+    <Compile Include="Utils\Wizard.cs" />
+    <Compile Include="Utils\Geometry.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
