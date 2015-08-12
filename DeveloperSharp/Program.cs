@@ -30,7 +30,7 @@ namespace DeveloperSharp
             {
                 _lstGameObjects = ObjectManager.Get<GameObject>().ToList();
                 _lstObjCloseToMouse =
-                    _lstGameObjects.Where(o => o.Position.Distance(Game.CursorPos) < 500 && !(o is Obj_Turret) && o.Name != "missile" && !(o is Obj_LampBulb) && !(o is Obj_SpellMissile) && !(o is GrassObject) && !(o is DrawFX) && !(o is LevelPropSpawnerPoint) && !(o is Obj_GeneralParticleEmitter) && !o.Name.Contains("MoveTo")).ToList();
+                    _lstGameObjects.Where(o => o.Position.Distance(Game.CursorPos) < 400 && !(o is Obj_Turret) && o.Name != "missile" && !(o is Obj_LampBulb) && !(o is Obj_SpellMissile) && !(o is GrassObject) && !(o is DrawFX) && !(o is LevelPropSpawnerPoint) && !(o is Obj_GeneralParticleEmitter) && !o.Name.Contains("MoveTo")).ToList();
                 _lastUpdateTick = Environment.TickCount;
             }
             if (Environment.TickCount - _lastMovementTick > 140000)
@@ -48,7 +48,7 @@ namespace DeveloperSharp
                 if (!obj.IsValid) return;
                 var X = Drawing.WorldToScreen(obj.Position).X;
                 var Y = Drawing.WorldToScreen(obj.Position).Y;
-                Drawing.DrawText(X, Y, Color.DarkTurquoise, obj.Name);
+                Drawing.DrawText(X, Y, Color.DarkTurquoise, (obj is Obj_AI_Hero) ? ((Obj_AI_Hero)obj).CharData.BaseSkinName : obj.Name);
                 Drawing.DrawText(X, Y + 10, Color.DarkTurquoise, obj.Type.ToString());
                 Drawing.DrawText(X, Y + 20, Color.DarkTurquoise, "NetworkID: " + obj.NetworkId);
                 Drawing.DrawText(X, Y + 30, Color.DarkTurquoise, obj.Position.ToString());
@@ -60,10 +60,21 @@ namespace DeveloperSharp
                 if (obj is Obj_AI_Hero)
                 {
                     var hero = obj as Obj_AI_Hero;
+                    Drawing.DrawText(X, Y + 50, Color.DarkTurquoise, "Spells:");
+                    Drawing.DrawText(X, Y + 60, Color.DarkTurquoise, "(Q): " + hero.Spellbook.Spells[0].Name);
+                    Drawing.DrawText(X, Y + 70, Color.DarkTurquoise, "(W): " + hero.Spellbook.Spells[1].Name);
+                    Drawing.DrawText(X, Y + 80, Color.DarkTurquoise, "(E): " + hero.Spellbook.Spells[2].Name);
+                    Drawing.DrawText(X, Y + 90, Color.DarkTurquoise, "(R): " + hero.Spellbook.Spells[3].Name);
+                    Drawing.DrawText(X, Y + 100, Color.DarkTurquoise, "(D): " + hero.Spellbook.Spells[4].Name);
+                    Drawing.DrawText(X, Y + 110, Color.DarkTurquoise, "(F): " + hero.Spellbook.Spells[5].Name);
                     var buffs = hero.Buffs;
+                    if (buffs.Any())
+                    {
+                        Drawing.DrawText(X, Y + 120, Color.DarkTurquoise, "Buffs:");
+                    }
                     for (var i = 0; i < buffs.Count()*10; i += 10)
                     {
-                        Drawing.DrawText(X, (Y + 50 + i), Color.DarkTurquoise, buffs[i/10].Name);
+                        Drawing.DrawText(X, (Y + 130 + i), Color.DarkTurquoise, buffs[i/10].Count + "x " + buffs[i/10].Name);
                     }
 
                 }
