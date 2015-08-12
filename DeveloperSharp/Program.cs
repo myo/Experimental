@@ -65,8 +65,8 @@ namespace DeveloperSharp
                 if (obj is Obj_SpellMissile)
                 {
                     var missile = obj as Obj_SpellMissile;
-                    Drawing.DrawText(X, Y + 30, Color.DarkTurquoise, "Missile Speed: " + missile.SData.MissileSpeed);
-                    Drawing.DrawText(X, Y + 30, Color.DarkTurquoise, "Cast Range: " + missile.SData.CastRange);
+                    Drawing.DrawText(X, Y + 40, Color.DarkTurquoise, "Missile Speed: " + missile.SData.MissileSpeed);
+                    Drawing.DrawText(X, Y + 50, Color.DarkTurquoise, "Cast Range: " + missile.SData.CastRange);
                 }
             }
         }
