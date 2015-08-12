@@ -30,7 +30,7 @@ namespace DeveloperSharp
             {
                 _lstGameObjects = ObjectManager.Get<GameObject>().ToList();
                 _lstObjCloseToMouse =
-                    _lstGameObjects.Where(o => o.Position.Distance(Game.CursorPos) < 500 && !(o is Obj_Turret) && o.Name != "missile" && !(o is Obj_SpellMissile) && !(o is GrassObject) && !(o is DrawFX) && !(o is LevelPropSpawnerPoint) && !(o is Obj_GeneralParticleEmitter) && !o.Name.Contains("MoveTo")).ToList();
+                    _lstGameObjects.Where(o => o.Position.Distance(Game.CursorPos) < 500 && !(o is Obj_Turret) && o.Name != "missile" && !(o is Obj_LampBulb) && !(o is Obj_SpellMissile) && !(o is GrassObject) && !(o is DrawFX) && !(o is LevelPropSpawnerPoint) && !(o is Obj_GeneralParticleEmitter) && !o.Name.Contains("MoveTo")).ToList();
                 _lastUpdateTick = Environment.TickCount;
             }
             if (Environment.TickCount - _lastMovementTick > 140000)
@@ -52,19 +52,31 @@ namespace DeveloperSharp
                 Drawing.DrawText(X, Y + 10, Color.DarkTurquoise, obj.Type.ToString());
                 Drawing.DrawText(X, Y + 20, Color.DarkTurquoise, "NetworkID: " + obj.NetworkId);
                 Drawing.DrawText(X, Y + 30, Color.DarkTurquoise, obj.Position.ToString());
+                if (obj is Obj_AI_Base)
+                {
+                    var aiobj = obj as Obj_AI_Base;
+                    Drawing.DrawText(X, Y + 40, Color.DarkTurquoise, "Health: " + aiobj.Health + "/" + aiobj.MaxHealth + "(" + aiobj.HealthPercent + ")");
+                }
                 if (obj is Obj_AI_Hero)
                 {
                     var hero = obj as Obj_AI_Hero;
                     var buffs = hero.Buffs;
                     for (var i = 0; i < buffs.Count()*10; i += 10)
                     {
-                        Drawing.DrawText(X, (Y + 40 + i), Color.DarkTurquoise, buffs[i/10].Name);
+                        Drawing.DrawText(X, (Y + 50 + i), Color.DarkTurquoise, buffs[i/10].Name);
                     }
 
                 }
                 if (obj is Obj_SpellMissile)
                 {
                     var missile = obj as Obj_SpellMissile;
+                    Drawing.DrawText(X, Y + 40, Color.DarkTurquoise, "Missile Speed: " + missile.SData.MissileSpeed);
+                    Drawing.DrawText(X, Y + 50, Color.DarkTurquoise, "Cast Range: " + missile.SData.CastRange);
+                }
+
+                if (obj is MissileClient && obj.Name != "missile")
+                {
+                    var missile = obj as MissileClient;
                     Drawing.DrawText(X, Y + 40, Color.DarkTurquoise, "Missile Speed: " + missile.SData.MissileSpeed);
                     Drawing.DrawText(X, Y + 50, Color.DarkTurquoise, "Cast Range: " + missile.SData.CastRange);
                 }
