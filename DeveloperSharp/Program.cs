@@ -22,27 +22,8 @@ namespace DeveloperSharp
             {
                 Game.OnUpdate += OnUpdate;
                 Drawing.OnDraw += OnDraw;
-                Obj_SpellMissile.OnCreate += ObjSpellMissileOnOnCreate;
             };
         }
-
-        private static void ObjSpellMissileOnOnCreate(GameObject sender, EventArgs args)
-        {
-            Drawing.OnDraw += drawMissile =>
-            {
-                if (sender.IsValid && sender is Obj_SpellMissile)
-                {
-                    var obj = sender as Obj_SpellMissile;
-                    var X = Drawing.WorldToScreen(obj.Position).X;
-                    var Y = Drawing.WorldToScreen(obj.Position).Y;
-                    Drawing.DrawText(X, Y, Color.DarkTurquoise, obj.Name);
-                    Drawing.DrawText(X, Y + 10, Color.DarkTurquoise, obj.Type.ToString());
-                    Drawing.DrawText(X, Y + 20, Color.DarkTurquoise, obj.NetworkId.ToString());
-                    Drawing.DrawText(X, Y + 30, Color.DarkTurquoise, obj.SData.MissileSpeed.ToString("N"));
-                }
-            };
-        }
-
         private static void OnUpdate(EventArgs args)
         {
             if (Environment.TickCount - _lastUpdateTick > 150)
@@ -69,7 +50,7 @@ namespace DeveloperSharp
                 var Y = Drawing.WorldToScreen(obj.Position).Y;
                 Drawing.DrawText(X, Y, Color.DarkTurquoise, obj.Name);
                 Drawing.DrawText(X, Y + 10, Color.DarkTurquoise, obj.Type.ToString());
-                Drawing.DrawText(X, Y + 20, Color.DarkTurquoise, obj.NetworkId.ToString());
+                Drawing.DrawText(X, Y + 20, Color.DarkTurquoise, "NetworkID: " + obj.NetworkId);
                 Drawing.DrawText(X, Y + 30, Color.DarkTurquoise, obj.Position.ToString());
                 if (obj is Obj_AI_Hero)
                 {
@@ -80,6 +61,12 @@ namespace DeveloperSharp
                         Drawing.DrawText(X, (Y + 40 + i), Color.DarkTurquoise, buffs[i/10].Name);
                     }
 
+                }
+                if (obj is Obj_SpellMissile)
+                {
+                    var missile = obj as Obj_SpellMissile;
+                    Drawing.DrawText(X, Y + 30, Color.DarkTurquoise, "Missile Speed: " + missile.SData.MissileSpeed);
+                    Drawing.DrawText(X, Y + 30, Color.DarkTurquoise, "Cast Range: " + missile.SData.CastRange);
                 }
             }
         }
