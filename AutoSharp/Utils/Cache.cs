@@ -82,12 +82,12 @@ namespace AutoSharp.Utils
 
         public static List<Obj_AI_Turret> AllyTurrets
         {
-            get { return _turrets.FindAll(t => t.IsValid<Obj_AI_Turret>() && !t.IsDead && t.IsAlly); }
+            get { return _turrets.FindAll(t => t.IsValid<Obj_AI_Turret>() && !t.IsDead && t.IsAlly && !t.Name.ToLower().Contains("shrine")); }
         }
 
         public static List<Obj_AI_Turret> EnemyTurrets
         {
-            get { return _turrets.FindAll(t => t.IsValid<Obj_AI_Turret>() && !t.IsDead && t.IsEnemy); }
+            get { return _turrets.FindAll(t => t.IsValid<Obj_AI_Turret>() && !t.IsDead && t.IsEnemy && !t.Name.ToLower().Contains("shrine")); }
         }
 
         public static Obj_AI_Turret ClosestEnemyTurret
