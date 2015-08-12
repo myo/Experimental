@@ -14,23 +14,33 @@ namespace DeveloperSharp
     {
         private static List<GameObject> _lstGameObjects = new List<GameObject>(); 
         private static List<GameObject> _lstObjCloseToMouse = new List<GameObject>();
+        private static Menu Config;
         private static int _lastUpdateTick = 0;
         private static int _lastMovementTick = 0;
         static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += sD =>
             {
+                InitMenu();
                 Game.OnUpdate += OnUpdate;
                 Drawing.OnDraw += OnDraw;
             };
         }
+
+        private static void InitMenu()
+        {
+            Config = new Menu("Developer#", "developersharp", true);
+            Config.AddItem(new MenuItem("range", "Max object dist from cursor").SetValue(new Slider(400, 100, 1000)));
+            Config.AddToMainMenu();
+        }
+
         private static void OnUpdate(EventArgs args)
         {
             if (Environment.TickCount - _lastUpdateTick > 150)
             {
                 _lstGameObjects = ObjectManager.Get<GameObject>().ToList();
                 _lstObjCloseToMouse =
-                    _lstGameObjects.Where(o => o.Position.Distance(Game.CursorPos) < 400 && !(o is Obj_Turret) && o.Name != "missile" && !(o is Obj_LampBulb) && !(o is Obj_SpellMissile) && !(o is GrassObject) && !(o is DrawFX) && !(o is LevelPropSpawnerPoint) && !(o is Obj_GeneralParticleEmitter) && !o.Name.Contains("MoveTo")).ToList();
+                    _lstGameObjects.Where(o => o.Position.Distance(Game.CursorPos) < Config.Item("range").GetValue<Slider>().Value && !(o is Obj_Turret) && o.Name != "missile" && !(o is Obj_LampBulb) && !(o is Obj_SpellMissile) && !(o is GrassObject) && !(o is DrawFX) && !(o is LevelPropSpawnerPoint) && !(o is Obj_GeneralParticleEmitter) && !o.Name.Contains("MoveTo")).ToList();
                 _lastUpdateTick = Environment.TickCount;
             }
             if (Environment.TickCount - _lastMovementTick > 140000)
@@ -55,7 +65,7 @@ namespace DeveloperSharp
                 if (obj is Obj_AI_Base)
                 {
                     var aiobj = obj as Obj_AI_Base;
-                    Drawing.DrawText(X, Y + 40, Color.DarkTurquoise, "Health: " + aiobj.Health + "/" + aiobj.MaxHealth + "(" + aiobj.HealthPercent + ")");
+                    Drawing.DrawText(X, Y + 40, Color.DarkTurquoise, "Health: " + aiobj.Health + "/" + aiobj.MaxHealth + "(" + aiobj.HealthPercent + "%)");
                 }
                 if (obj is Obj_AI_Hero)
                 {
