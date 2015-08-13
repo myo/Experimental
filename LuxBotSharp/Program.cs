@@ -36,49 +36,49 @@ namespace LuxBotSharp
 
         private static void Main(string[] args)
         {
-            /*try
-            {*/
-            Console.Title = "[LeagueSharp] LUX-BOT#";
-            Utils.Print("LUX-BOT v" + Assembly.GetExecutingAssembly().GetName().Version, ConsoleColor.Green);
-            Console.WriteLine("\n\n\n");
-            if (args != null && args.Any(a => a.ToLower().Contains("c")))
+            try
             {
-                ImageConverter.Try(args);
-                return;
-            }
-            else
-            {
-                Utils.Print("Attempting normal bot errection\n\n", ConsoleColor.Cyan);
-            }
-
-            PROCESS = Process.GetProcessesByName(ProcessName).FirstOrDefault();
-            if (PROCESS != null)
-            {
-                HWND = PROCESS.MainWindowHandle;
-                WindowTitle = PROCESS.MainWindowTitle;
-            }
-            else
-            {
-                Utils.Print("Please start up lol and login", ConsoleColor.Red);
-                Console.ReadLine();
-                return;
-            }
-            LoadImages();
-            Utils.Print("Everything went well! You can go afk", ConsoleColor.Cyan);
-            while (1 == 1)
-            {
-                while (!Process.GetProcessesByName("League of Legends").Any() &&
-                       Process.GetProcessesByName(ProcessName).Any())
+                Console.Title = "[LeagueSharp] LUX-BOT#";
+                Utils.Print("LUX-BOT v" + Assembly.GetExecutingAssembly().GetName().Version, ConsoleColor.Green);
+                Console.WriteLine("\n\n\n");
+                if (args != null && args.Any(a => a.ToLower().Contains("c")))
                 {
-                    MainLoop();
+                    ImageConverter.Try(args);
+                    return;
                 }
-            } /*
+                else
+                {
+                    Utils.Print("Attempting normal bot errection\n\n", ConsoleColor.Cyan);
+                }
+
+                PROCESS = Process.GetProcessesByName(ProcessName).FirstOrDefault();
+                if (PROCESS != null)
+                {
+                    HWND = PROCESS.MainWindowHandle;
+                    WindowTitle = PROCESS.MainWindowTitle;
+                }
+                else
+                {
+                    Utils.Print("Please start up lol and login", ConsoleColor.Red);
+                    Console.ReadLine();
+                    return;
+                }
+                LoadImages();
+                Utils.Print("Everything went well! You can go afk", ConsoleColor.Cyan);
+                while (1 == 1)
+                {
+                    while (!Process.GetProcessesByName("League of Legends").Any() &&
+                           Process.GetProcessesByName(ProcessName).Any())
+                    {
+                        MainLoop();
+                    }
+                }
             }
             catch (Exception e)
             {
                 Utils.Print(e.ToString(), ConsoleColor.Red);
                 Console.ReadLine();
-            }*/
+            }
         }
 
 
