@@ -90,10 +90,6 @@ namespace LuxBotSharp
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetWindowRect(IntPtr hWnd, out Utils.RECT lpRect);
-
         [DllImport("User32.dll")]
         public static extern int ShowWindow(IntPtr hwnd, int nCmdShow);
 
@@ -101,21 +97,18 @@ namespace LuxBotSharp
         private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, int dwExtraInfo);
 
         [DllImport("user32.dll")]
-        private static extern short GetAsyncKeyState(Keys vKey);
-
-        [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy,
-            Utils.SetWindowPosFlags uFlags);
+            SetWindowPosFlags uFlags);
 
         [DllImport("user32.dll")]
         public static extern bool RedrawWindow(IntPtr hWnd, IntPtr lpRectUpdate, IntPtr hrgnUpdate, uint flags);
 
-        public static System.Drawing.Bitmap TakeScreenshot()
+        public static Bitmap TakeScreenshot()
         {
-            System.Drawing.Bitmap screenshot = new System.Drawing.Bitmap(Screen.PrimaryScreen.Bounds.Width,
+            Bitmap screenshot = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
                 Screen.PrimaryScreen.Bounds.Height);
-            System.Drawing.Graphics graphic = System.Drawing.Graphics.FromImage(screenshot);
+            Graphics graphic = Graphics.FromImage(screenshot);
             graphic.CopyFromScreen(0, 0, 0, 0, Screen.PrimaryScreen.Bounds.Size);
             graphic.Dispose();
             return screenshot;

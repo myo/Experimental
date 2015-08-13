@@ -91,20 +91,28 @@ namespace AutoSharp
         {
             if (sender.Owner.IsMe)
             {
+                if (sender.Owner.IsDead)
+                {
+                    args.Process = false;
+                    return;
+                }
                 if (Map == Utility.Map.MapType.SummonersRift)
                 {
                     if (Heroes.Player.InFountain() && args.Slot == SpellSlot.Recall)
                     {
                         args.Process = false;
+                        return;
                     }
                     if (Heroes.Player.HasBuff("Recall"))
                     {
                         args.Process = false;
+                        return;
                     }
                 }
                 if (Heroes.Player.UnderTurret(true) && args.Target.IsValid<Obj_AI_Hero>())
                 {
                     args.Process = false;
+                    return;
                 }
             }
         }
@@ -122,6 +130,11 @@ namespace AutoSharp
         {
             if (sender != null && sender.IsMe)
             {
+                if (sender.IsDead)
+                {
+                    args.Process = false;
+                    return;
+                }
                 var turret = Turrets.ClosestEnemyTurret;
                 if (Map == Utility.Map.MapType.SummonersRift && Heroes.Player.HasBuff("Recall") && Heroes.Player.CountEnemiesInRange(1800) == 0 &&
                     turret.Distance(Heroes.Player) > 950 && !Minions.EnemyMinions.Any(m => m.Distance(Heroes.Player) < 950))
