@@ -49,7 +49,7 @@ namespace AutoSharp.Utils
         internal static void UseAutoSharpARAMPositioning()
         {
             var farthestAlly =
-                Heroes.AllyHeroes.OrderByDescending(h => h.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
+                Heroes.AllyHeroes.Where(a => !a.IsMe && !a.IsDead && !a.InFountain()).OrderByDescending(h => h.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
 
             if (farthestAlly == null || farthestAlly.InFountain())
             {
@@ -70,13 +70,13 @@ namespace AutoSharp.Utils
                 return;
             }
 
-            if (Heroes.Player.IsMelee) RandomlyChosenMove = farthestAlly.ServerPosition.Randomize(0, 130);
+            if (Heroes.Player.IsMelee) RandomlyChosenMove = farthestAlly.ServerPosition.Randomize(-150, 150);
 
             ValidPossibleMoves.Add(farthestAlly.Position.RandomizePosition());
             //initialize the vectorlist with a position known to exist,
             //so it doesn't follow the mouse anymore
 
-            var team = Heroes.AllyHeroes.Where(h => !h.IsDead && h.Distance(farthestAlly) < 300).ToList();
+            var team = Heroes.AllyHeroes.Where(h => !h.IsMe && !h.IsDead && h.Distance(farthestAlly) < 500 && h.Position.CountEnemiesInRange(550) <= h.Position.CountAlliesInRange(550)).ToList();
 
             var teamPoly = team.Select(hero => new Geometry.Circle(hero.Position.To2D(), 200).ToPolygon()).ToList();
 
