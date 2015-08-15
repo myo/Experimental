@@ -1,49 +1,25 @@
-﻿#region LICENSE
-
-// Copyright 2014 - 2014 AutoSharpporting
-// AssemblyInfo.cs is part of AutoSharpporting.
-// AutoSharpporting is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// AutoSharpporting is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with AutoSharpporting. If not, see <http://www.gnu.org/licenses/>.
-
-#endregion
-
-#region
-
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
-
-#endregion
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-
-[assembly: AssemblyTitle("AutoSharpporting")]
+[assembly: AssemblyTitle("AutoSharp")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AutoSharpporting")]
-[assembly: AssemblyCopyright("Copyright © LeagueSharp 2014-2015")]
+[assembly: AssemblyCompany("LeagueSharp")]
+[assembly: AssemblyProduct("AutoSharp")]
+[assembly: AssemblyCopyright("Copyright © LeagueSharp 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-
-[assembly: Guid("a6c9c48c-bc30-4586-8da3-d4e87b6ee043")]
+[assembly: Guid("26e1fc0b-a9e3-42c2-a411-0384c87ffebe")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -55,6 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-
-[assembly: AssemblyVersion("5.1.27.276")]
-[assembly: AssemblyFileVersion("5.1.27.276")]
+[assembly: AssemblyVersion("0.1.4.3000")]
+[assembly: AssemblyFileVersion("0.1.4.3000")]

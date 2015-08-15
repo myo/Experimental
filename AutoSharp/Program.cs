@@ -149,7 +149,7 @@ namespace AutoSharp
         {
             if (Config.Item("autosharp.quit").GetValue<bool>())
             {
-                Thread.Sleep(20000);
+                Thread.Sleep(30000);
                 Game.Quit();
             }
         }
@@ -265,7 +265,7 @@ namespace AutoSharp
                 if (ObjectManager.Player.Gold > 0)
                 {
                     _loaded = true;
-                    Utility.DelayAction.Add(3000, Init);
+                    Utility.DelayAction.Add(new Random().Next(3000, 25000), Init);
                 }
             }
         }

@@ -126,8 +126,8 @@ namespace AutoSharp.Utils
             }
             var pointClosestToEnemyHQ =
                 allyZoneVectorList.OrderBy(p => p.Distance(HeadQuarters.EnemyHQ.Position)).FirstOrDefault();
-            int minNum = 250;
-            int maxNum = 600;
+            var minNum = 150;
+            var maxNum = (int)Heroes.Player.AttackRange;
             if (Heroes.Player.Team == GameObjectTeam.Order)
             {
                 pointClosestToEnemyHQ = GetAllyPosList().OrderByDescending(b => b.Distance(HeadQuarters.AllyHQ.Position)).FirstOrDefault();
