@@ -136,8 +136,20 @@ namespace AutoSharp
                         new Irelia();
                         _loaded = true;
                         break;
+                    case "kalista":
+                        new Kalista();
+                        _loaded = true;
+                        break;
+                    case "karma":
+                        new Karma();
+                        _loaded = true;
+                        break;
                     case "karthus":
                         new Karthus();
+                        _loaded = true;
+                        break;
+                    case "katarina":
+                        new Katarina();
                         _loaded = true;
                         break;
                     case "kayle":
@@ -152,12 +164,28 @@ namespace AutoSharp
                         new Leblanc();
                         _loaded = true;
                         break;
+                    case "leona":
+                        new Leona();
+                        _loaded = true;
+                        break;
+                    case "lucian":
+                        new Lucian();
+                        _loaded = true;
+                        break;
                     case "lulu":
                         new Lulu();
                         _loaded = true;
                         break;
+                    case "lux":
+                        new Lux();
+                        _loaded = true;
+                        break;
                     case "malzahar":
                         new Malzahar();
+                        _loaded = true;
+                        break;
+                    case "masteryi":
+                        new Masteryi();
                         _loaded = true;
                         break;
                     case "morgana":

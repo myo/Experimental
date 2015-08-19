@@ -130,6 +130,7 @@
     <Compile Include="Plugins\Janna.cs" />
     <Compile Include="Plugins\Jax.cs" />
     <Compile Include="Plugins\Jinx.cs" />
+    <Compile Include="Plugins\Kalista.cs" />
     <Compile Include="Plugins\Karma.cs" />
     <Compile Include="Plugins\Karthus.cs" />
     <Compile Include="Plugins\Katarina.cs" />

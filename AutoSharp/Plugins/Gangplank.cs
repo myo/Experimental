@@ -28,7 +28,7 @@ namespace AutoSharp.Plugins
                     Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Fear) ||
                     Player.HasBuffOfType(BuffType.Silence) || Player.HealthPercent < 30)
 				{
-					if (W.IsReady() && Player.HealthPercent < 50)
+					if (W.IsReady() && Player.HealthPercent < 80)
 					{
 						W.Cast();
 					}
@@ -47,10 +47,6 @@ namespace AutoSharp.Plugins
 			}
 
 			if (target == null) return;
-			if (E.IsReady())
-			{
-				E.Cast();
-			}
 
 			if (Q.IsReady() && target.IsValidTarget(Q.Range))
 			{
