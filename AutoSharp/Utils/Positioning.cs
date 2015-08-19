@@ -49,7 +49,7 @@ namespace AutoSharp.Utils
         internal static void UseAutoSharpARAMPositioning()
         {
             var farthestAlly =
-                Heroes.AllyHeroes.Where(a => !a.IsMe && !a.IsDead && !a.InFountain()).OrderByDescending(h => h.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
+                Heroes.AllyHeroes.Where(a => !a.IsMe && !a.IsDead && a.HealthPercent > 10 && !a.InFountain()).OrderByDescending(h => h.Distance(HeadQuarters.AllyHQ)).FirstOrDefault();
 
             if (farthestAlly == null || farthestAlly.InFountain())
             {
@@ -151,7 +151,7 @@ namespace AutoSharp.Utils
         internal static Paths AllyZone()
         {
             var teamPolygons = new List<Geometry.Polygon>();
-            foreach (var hero in Heroes.AllyHeroes.Where(h => !h.IsDead && !h.IsMe && !(h.InFountain() || h.InShop())))
+            foreach (var hero in Heroes.AllyHeroes.Where(h => !h.IsMe && !h.IsDead && h.HealthPercent > 10 && !(h.InFountain() || h.InShop())))
             {
                 teamPolygons.Add(GetChampionRangeCircle(hero).ToPolygon());
             }
