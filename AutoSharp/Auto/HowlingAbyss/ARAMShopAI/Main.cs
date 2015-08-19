@@ -13,7 +13,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
     internal class Main
     {
         private static Item _lastItem;
-        private static int _priceAddup;
+        private static int _priceAddup, _lastShop;
         private static readonly List<Item> ItemList = new List<Item>();
 
         public static void ItemSequence(Item item, Queue<Item> shopListQueue)
@@ -823,13 +823,6 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
                 ItemList.Add(item);
             Console.WriteLine("Auto Buy Activated");
             LeagueSharp.Common.CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
-            CustomEvents.OnSpawn += CustomEvents_OnSpawn;
-        }
-
-        private static void CustomEvents_OnSpawn(Obj_AI_Hero sender, EventArgs args)
-        {
-            if (sender.NetworkId == ObjectManager.Player.NetworkId)
-                BuyItems();
         }
 
         private static void Game_OnGameLoad(EventArgs args)
@@ -1091,7 +1084,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
             AlterInventory();
 
             Game.PrintChat("[{0}] Autobuy Loaded", ObjectManager.Player.ChampionName);
-            BuyItems();
+            Game.OnUpdate += BuyItems;
         }
 
         public static Queue<Item> ShoppingQueue()
@@ -1107,25 +1100,25 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
             return shoppingItems;
         }
 
-        public static void BuyItems()
+        public static void BuyItems(EventArgs args)
         {
-            while ((Queue.Peek() != null && InventoryFull()) &&
+            if (ObjectManager.Player.InFountain() && Environment.TickCount - _lastShop < 350) return;
+            if ((Queue.Peek() != null && InventoryFull()) &&
                    (Queue.Peek().From == null ||
                     (Queue.Peek().From != null && !Queue.Peek().From.Contains(_lastItem.Id))))
             {
                 var y = Queue.Dequeue();
                 _priceAddup += y.Goldbase;
             }
-            var x = 0;
-            while (Queue.Peek().Goldbase <= ObjectManager.Player.Gold - x - _priceAddup && Queue.Count > 0 &&
+            if (Queue.Peek().Goldbase <= ObjectManager.Player.Gold - _priceAddup && Queue.Count > 0 &&
                    ObjectManager.Player.InShop())
             {
                 var y = Queue.Dequeue();
                 ObjectManager.Player.BuyItem((ItemId) y.Id);
                 _lastItem = y;
                 _priceAddup = 0;
-                x += y.Goldbase;
             }
+            _lastShop = Environment.TickCount;
         }
 
         public static int FreeSlots()
