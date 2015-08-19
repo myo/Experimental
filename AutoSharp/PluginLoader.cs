@@ -224,6 +224,18 @@ namespace AutoSharp
                         new Veigar();
                         _loaded = true;
                         break;
+                    case "vladimir":
+                        new Vladimir();
+                        _loaded = true;
+                        break;
+                    case "warwick":
+                        new Warwick();
+                        _loaded = true;
+                        break;
+                    case "xerath":
+                        new Xerath();
+                        _loaded = true;
+                        break;
                     case "zilean":
                         new Zilean();
                         _loaded = true;

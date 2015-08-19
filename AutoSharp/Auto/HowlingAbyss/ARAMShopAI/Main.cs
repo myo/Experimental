@@ -1121,7 +1121,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
                    ObjectManager.Player.InShop())
             {
                 var y = Queue.Dequeue();
-                Utility.DelayAction.Add(new Random().Next(300, 1000), () => ObjectManager.Player.BuyItem((ItemId) y.Id));
+                ObjectManager.Player.BuyItem((ItemId) y.Id);
                 _lastItem = y;
                 _priceAddup = 0;
                 x += y.Goldbase;

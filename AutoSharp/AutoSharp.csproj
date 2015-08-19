@@ -162,6 +162,7 @@
     <Compile Include="Plugins\Veigar.cs" />
     <Compile Include="Plugins\Vladimir.cs" />
     <Compile Include="Plugins\Warwick.cs" />
+    <Compile Include="Plugins\Xerath.cs" />
     <Compile Include="Plugins\Zilean.cs" />
     <Compile Include="Plugins\Zyra.cs" />
     <Compile Include="Program.cs" />
