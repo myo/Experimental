@@ -57,7 +57,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] Aatrox =
         {
             "The Bloodthirster", "Last Whisper",
-            "Berserker's Greaves", "Spirit Visage", "Guardian Angel", "Randuin's Omen"
+            "Berserker's Greaves", "Spirit Visage", "Frozen Mallet", "Randuin's Omen"
         };
 
         public static string[] Ahri =
@@ -243,7 +243,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] Gnar =
         {
             "The Black Cleaver", "Last Whisper",
-            "Mercury's Treads", "Sunfire Cape", "Blade of the Ruined King", "Guardian Angel"
+            "Mercury's Treads", "Sunfire Cape", "Blade of the Ruined King", "Frozen Mallet"
         };
 
         public static string[] Gragas =
@@ -261,7 +261,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] Hecarim =
         {
             "Ravenous Hydra (Melee Only)", "Trinity Force",
-            "Ninja Tabi", "Guardian Angel", "Blade of the Ruined King", "Zephyr"
+            "Ninja Tabi", "Frozen Mallet", "Blade of the Ruined King", "Zephyr"
         };
 
         public static string[] Heimerdinger =
@@ -273,7 +273,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] Irelia =
         {
             "Randuin's Omen", "Spirit Visage",
-            "Mercury's Treads", "Guardian Angel", "Trinity Force", "Frozen Heart"
+            "Mercury's Treads", "Frozen Mallet", "Trinity Force", "Frozen Heart"
         };
 
         public static string[] Janna =
@@ -423,13 +423,13 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] MasterYi =
         {
             "Infinity Edge", "Phantom Dancer",
-            "The Bloodthirster", "Statikk Shiv", "Zephyr", "Guardian Angel"
+            "The Bloodthirster", "Statikk Shiv", "Zephyr", "Frozen Mallet"
         };
 
         public static string[] MissFortune =
         {
             "Infinity Edge", "Statikk Shiv", "The Bloodthirster",
-            "Berserker's Greaves", "Infinity Edge", "Last Whisper", "Guardian Angel"
+            "Berserker's Greaves", "Infinity Edge", "Last Whisper", "Frozen Mallet"
         };
 
         public static string[] Mordekaiser =
@@ -471,7 +471,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] Nocturne =
         {
             "Ravenous Hydra (Melee Only)", "Blade of the Ruined King",
-            "Berserker's Greaves", "Youmuu's Ghostblade", "Last Whisper", "Guardian Angel"
+            "Berserker's Greaves", "Youmuu's Ghostblade", "Last Whisper", "Frozen Mallet"
         };
 
         public static string[] Nunu =
@@ -531,13 +531,13 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] Rengar =
         {
             "Youmuu's Ghostblade", "Ravenous Hydra (Melee Only)",
-            "Ninja Tabi", "Last Whisper", "The Black Cleaver", "Guardian Angel"
+            "Ninja Tabi", "Last Whisper", "The Black Cleaver", "Frozen Mallet"
         };
 
         public static string[] Riven =
         {
             "Youmuu's Ghostblade", "Ravenous Hydra (Melee Only)",
-            "Ionian Boots of Lucidity", "The Black Cleaver", "Last Whisper", "Guardian Angel"
+            "Ionian Boots of Lucidity", "The Black Cleaver", "Last Whisper", "Frozen Mallet"
         };
 
         public static string[] Rumble =
@@ -573,7 +573,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] Shyvana =
         {
             "Blade of the Ruined King", "Randuin's Omen",
-            "Mercury's Treads", "Spirit Visage", "Ravenous Hydra (Melee Only)", "Guardian Angel"
+            "Mercury's Treads", "Spirit Visage", "Ravenous Hydra (Melee Only)", "Frozen Mallet"
         };
 
         public static string[] Singed =
@@ -633,7 +633,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] Talon =
         {
             "Ravenous Hydra (Melee Only)", "Youmuu's Ghostblade",
-            "Ninja Tabi", "Last Whisper", "Maw of Malmortius", "Guardian Angel"
+            "Ninja Tabi", "Last Whisper", "Maw of Malmortius", "Frozen Mallet"
         };
 
         public static string[] Taric =
@@ -687,7 +687,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] Udyr =
         {
             "Trinity Force", "Spirit Visage",
-            "Mercury's Treads", "Frozen Heart", "Blade of the Ruined King", "Guardian Angel"
+            "Mercury's Treads", "Frozen Heart", "Blade of the Ruined King", "Frozen Mallet"
         };
 
         public static string[] Urgot =
@@ -747,7 +747,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] Warwick =
         {
             "Spirit Visage", "Sunfire Cape",
-            "Mercury's Treads", "Frozen Heart", "Guardian Angel", "Blade of the Ruined King"
+            "Mercury's Treads", "Frozen Heart", "Frozen Mallet", "Blade of the Ruined King"
         };
 
         public static string[] MonkeyKing =
@@ -783,13 +783,13 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         public static string[] Zac =
         {
             "Spirit Visage", "Randuin's Omen",
-            "Mercury's Treads", "Warmog's Armor", "Thornmail", "Guardian Angel"
+            "Mercury's Treads", "Warmog's Armor", "Thornmail", "Frozen Mallet"
         };
 
         public static string[] Zed =
         {
             "Youmuu's Ghostblade", "Blade of the Ruined King",
-            "Ionian Boots of Lucidity", "The Black Cleaver", "Last Whisper", "Guardian Angel"
+            "Ionian Boots of Lucidity", "The Black Cleaver", "Last Whisper", "Frozen Mallet"
         };
 
         public static string[] Ziggs =
