@@ -1083,7 +1083,14 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
             Queue = ShoppingQueue();
             AlterInventory();
 
-            Game.PrintChat("[{0}] Autobuy Loaded", ObjectManager.Player.ChampionName);
+            if (Program.Config.Item("autosharp.shop").GetValue<bool>())
+            {
+                Game.PrintChat("[{0}] Autobuy Loaded", ObjectManager.Player.ChampionName);
+            }
+            else
+            {
+                Game.PrintChat("Autobuy has been disabled in the menu.");
+            }
             Game.OnUpdate += BuyItems;
         }
 
@@ -1102,6 +1109,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
 
         public static void BuyItems(EventArgs args)
         {
+            if (!Program.Config.Item("autosharp.shop").GetValue<bool>()) return;
             if ((ObjectManager.Player.InFountain() || ObjectManager.Player.IsDead) && Environment.TickCount - _lastShop < 350) return;
             if ((Queue.Peek() != null && InventoryFull()) &&
                    (Queue.Peek().From == null ||
