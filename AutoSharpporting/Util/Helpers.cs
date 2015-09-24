@@ -58,7 +58,7 @@ namespace Support.Util
                     {
                         var rawVersion =
                             c.DownloadString(
-                                "https://raw.githubusercontent.com/imsosharp/LeagueSharp/master/AutoSharpporting/Properties/AssemblyInfo.cs");
+                                "https://raw.githubusercontent.com/myo/Experimental/master/AutoSharpporting/Properties/AssemblyInfo.cs");
                         var match =
                             new Regex(@"\[assembly\: AssemblyVersion\(""(\d{1,})\.(\d{1,})\.(\d{1,})\.(\d{1,})""\)\]")
                                 .Match
