@@ -23,6 +23,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -33,6 +34,7 @@ using Color = System.Drawing.Color;
 
 namespace AutoSharp.Utils
 {
+
     /// <summary>
     ///     This class offers everything related to auto-attacks and orbwalking.
     /// </summary>
@@ -96,13 +98,9 @@ namespace AutoSharp.Utils
         private static AttackableUnit _lastTarget;
         private static readonly Obj_AI_Hero Player;
         private static int _delay;
-        private static float _minDistance = 950;
+        private static float _minDistance = 400;
         private static bool _missileLaunched;
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
-        public static Obj_AI_Hero DesiredTarget;
-
-        private static Vector3 _forcedPosition = Vector3.Zero;
-        private static int _forcedPositionTick = 0;
 
         static MyOrbwalker()
         {
@@ -110,6 +108,15 @@ namespace AutoSharp.Utils
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             MissileClient.OnCreate += MissileClient_OnCreate;
             Spellbook.OnStopCast += SpellbookOnStopCast;
+            //Obj_AI_Base.OnDoCast += OnDoCast;
+        }
+
+        private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (sender.IsMe && args.SData.IsAutoAttack())
+            {
+                ResetAutoAttackTimer();
+            }
         }
 
         /// <summary>
@@ -190,6 +197,14 @@ namespace AutoSharp.Utils
         }
 
         /// <summary>
+        ///     Returns true if the unit is melee
+        /// </summary>
+        public static bool IsMelee(this Obj_AI_Base unit)
+        {
+            return unit.CombatType == GameObjectCombatType.Melee;
+        }
+
+        /// <summary>
         ///     Returns true if the spellname is an auto-attack.
         /// </summary>
         public static bool IsAutoAttack(string name)
@@ -203,7 +218,7 @@ namespace AutoSharp.Utils
         /// </summary>
         public static float GetRealAutoAttackRange(AttackableUnit target)
         {
-            var result = Player.AttackRange + Player.BoundingRadius;
+            var result = Player.AttackRange + Player.BoundingRadius - 15;
             if (target.IsValidTarget())
             {
                 return result + target.BoundingRadius;
@@ -232,7 +247,7 @@ namespace AutoSharp.Utils
         /// </summary>
         public static float GetMyProjectileSpeed()
         {
-            return Player.IsMelee || Player.ChampionName == "Azir" ? float.MaxValue : Player.BasicAttack.MissileSpeed;
+            return IsMelee(Player) || Player.ChampionName == "Azir" ? float.MaxValue : Player.BasicAttack.MissileSpeed;
         }
 
         /// <summary>
@@ -240,7 +255,7 @@ namespace AutoSharp.Utils
         /// </summary>
         public static bool CanAttack()
         {
-            return LeagueSharp.Common.Utils.GameTimeTickCount + Game.Ping / 2 + 25 >= LastAATick + Player.AttackDelay * 1000 && Attack;
+            return LeagueSharp.Common.Utils.GameTimeTickCount + Game.Ping / 2 + 25 >= LastAATick + Player.AttackDelay * 1000 + _random.Next(-10, 10) && Attack;
         }
 
         /// <summary>
@@ -287,7 +302,7 @@ namespace AutoSharp.Utils
             bool useFixedDistance = true,
             bool randomizeMinDistance = true)
         {
-            if (LeagueSharp.Common.Utils.GameTimeTickCount - LastMoveCommandT < _delay && !overrideTimer)
+            if (LeagueSharp.Common.Utils.GameTimeTickCount - LastMoveCommandT < _delay + _random.Next(-10, 10) && !overrideTimer)
             {
                 return;
             }
@@ -309,22 +324,18 @@ namespace AutoSharp.Utils
             var point = position;
             if (useFixedDistance)
             {
-                point = Player.ServerPosition +
-                        (randomizeMinDistance ? (_random.NextFloat(0.6f, 1) + 0.2f) * _minDistance : _minDistance) *
-                        (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
+                point = playerPosition.Extend(
+                    position, (randomizeMinDistance ? (_random.NextFloat(0.6f, 1) + 0.2f) * _minDistance : _minDistance));
             }
             else
             {
                 if (randomizeMinDistance)
                 {
-                    point = Player.ServerPosition +
-                            (_random.NextFloat(0.6f, 1) + 0.2f) * _minDistance *
-                            (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
+                    point = playerPosition.Extend(position, (_random.NextFloat(0.6f, 1) + 0.2f) * _minDistance);
                 }
-                else if (Player.ServerPosition.Distance(position) > _minDistance)
+                else if (playerPosition.Distance(position) > _minDistance)
                 {
-                    point = Player.ServerPosition +
-                            _minDistance * (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
+                    point = playerPosition.Extend(position, _minDistance);
                 }
             }
 
@@ -353,20 +364,28 @@ namespace AutoSharp.Utils
                     {
                         if (!NoCancelChamps.Contains(Player.ChampionName))
                         {
-                            LastAATick = LeagueSharp.Common.Utils.GameTimeTickCount + Game.Ping + 100 - (int)(Heroes.Player.AttackCastDelay * 1000f);
+                            LastAATick = LeagueSharp.Common.Utils.GameTimeTickCount + Game.Ping + 100 - (int)(ObjectManager.Player.AttackCastDelay * 1000f);
                             _missileLaunched = false;
+
+                            var d = GetRealAutoAttackRange(target) - 65;
+                            if (Player.Distance(target, true) > d * d && !Player.IsMelee)
+                            {
+                                LastAATick = LeagueSharp.Common.Utils.GameTimeTickCount + Game.Ping + 400 - (int)(ObjectManager.Player.AttackCastDelay * 1000f);
+                            }
                         }
-                        Player.IssueOrder(GameObjectOrder.AttackUnit, target);
+
+                        if (!Player.IssueOrder(GameObjectOrder.AttackUnit, target))
+                        {
+                            //ResetAutoAttackTimer();
+                        }
+
                         _lastTarget = target;
                         return;
                     }
                 }
-                if (CanMove(extraWindup))
+
+                if ((!CanAttack() || !target.IsValidTarget()) && CanMove(extraWindup))
                 {
-                    if (ObjectManager.Player.HasBuff("Recall") && !ObjectManager.Player.InFountain())
-                    {
-                        return;
-                    }
                     MoveTo(position, holdAreaRadius, false, useFixedDistance, randomizeMinDistance);
                 }
             }
@@ -398,6 +417,7 @@ namespace AutoSharp.Utils
             if (missile != null && missile.SpellCaster.IsMe && IsAutoAttack(missile.SData.Name))
             {
                 _missileLaunched = true;
+                FireAfterAttack(missile.SpellCaster, missile.Target as AttackableUnit);
             }
         }
 
@@ -407,9 +427,13 @@ namespace AutoSharp.Utils
             {
                 var spellName = Spell.SData.Name;
 
-                if (IsAutoAttackReset(spellName) && unit.IsMe)
+                if (spellName == "vaynetumble" && unit.IsMe)
                 {
-                    Utility.DelayAction.Add(250, ResetAutoAttackTimer);
+                    Utility.DelayAction.Add(100, () =>
+                    {
+                        ObjectManager.Player.IssueOrder(GameObjectOrder.AttackUnit, _lastTarget);
+                        LastAATick = LeagueSharp.Common.Utils.GameTimeTickCount;
+                    });
                 }
 
                 if (!IsAutoAttack(spellName))
@@ -432,9 +456,11 @@ namespace AutoSharp.Utils
                             _lastTarget = target;
                         }
 
-                        //Trigger it for ranged until the missiles catch normal attacks again!
-                        Utility.DelayAction.Add(
-                            (int)(unit.AttackCastDelay * 1000 + 40), () => FireAfterAttack(unit, _lastTarget));
+                        if (unit.IsMelee)
+                        {
+                            Utility.DelayAction.Add(
+                                (int)(unit.AttackCastDelay * 1000 + 40), () => FireAfterAttack(unit, _lastTarget));
+                        }
                     }
                 }
 
@@ -450,7 +476,7 @@ namespace AutoSharp.Utils
         {
             private bool _process = true;
             public AttackableUnit Target;
-            public Obj_AI_Base Unit = Heroes.Player;
+            public Obj_AI_Base Unit = ObjectManager.Player;
 
             public bool Process
             {
@@ -476,6 +502,7 @@ namespace AutoSharp.Utils
             private OrbwalkingMode _mode = OrbwalkingMode.None;
             private Vector3 _orbwalkingPoint;
             private Obj_AI_Minion _prevMinion;
+            public static List<Orbwalker> Instances = new List<Orbwalker>();
 
             public Orbwalker(Menu attachToMenu)
             {
@@ -487,21 +514,24 @@ namespace AutoSharp.Utils
                 /* Drawings submenu */
                 var drawings = new Menu("Drawings", "drawings");
                 drawings.AddItem(
-                    new MenuItem("AACircle", "AACircle").SetShared()
+                    new MenuItem("AACircle", "AACircle")
                         .SetValue(new Circle(true, Color.Gold)));
                 drawings.AddItem(
-                    new MenuItem("AACircle2", "Enemy AA circle").SetShared()
-                        .SetValue(new Circle(false, Color.White)));
+                    new MenuItem("AACircle2", "Enemy AA circle")
+                        .SetValue(new Circle(false, Color.Red)));
                 drawings.AddItem(
-                    new MenuItem("HoldZone", "HoldZone").SetShared()
+                    new MenuItem("AACircle3", "Target AA circle")
+                        .SetValue(new Circle(true, Color.Gold)));
+                drawings.AddItem(
+                    new MenuItem("HoldZone", "HoldZone")
                         .SetValue(new Circle(false, Color.DarkRed)));
                 _config.AddSubMenu(drawings);
 
                 /* Misc options */
                 var misc = new Menu("Misc", "Misc");
                 misc.AddItem(
-                    new MenuItem("HoldPosRadius", "Hold Position Radius").SetValue(new Slider(75, 0, 250)));
-                misc.AddItem(new MenuItem("PriorizeFarm", "Prioritize farm").SetShared().SetValue(true));
+                    new MenuItem("HoldPosRadius", "Hold Position Radius").SetValue(new Slider(50, 0, 250)));
+                misc.AddItem(new MenuItem("PriorizeFarm", "Priorize farm over harass").SetShared().SetValue(true));
                 _config.AddSubMenu(misc);
 
                 /* Missile check */
@@ -510,9 +540,9 @@ namespace AutoSharp.Utils
                 /* Delay sliders */
                 _config.AddItem(
                     new MenuItem("ExtraWindup", "Extra windup time").SetValue(new Slider(123, 0, 200)));
-                _config.AddItem(new MenuItem("FarmDelay", "Farm delay").SetShared().SetValue(new Slider(0, 0, 200)));
+                _config.AddItem(new MenuItem("FarmDelay", "Farm delay").SetShared().SetValue(new Slider(25, 0, 200)));
                 _config.AddItem(
-                    new MenuItem("MovementDelay", "Movement delay").SetValue(new Slider(250, 100, 250)))
+                    new MenuItem("MovementDelay", "Movement delay").SetValue(new Slider(110, 0, 250)))
                     .ValueChanged += (sender, args) => SetMovementDelay(args.GetNewValue<Slider>().Value);
 
 
@@ -529,9 +559,12 @@ namespace AutoSharp.Utils
                     new MenuItem("Orbwalk", "Combo").SetShared().SetValue(new KeyBind(32, KeyBindType.Press)));
 
                 _delay = _config.Item("MovementDelay").GetValue<Slider>().Value;
-                Player = Heroes.Player;
-                Game.OnUpdate += GameOnOnGameUpdate;
+
+
+                Player = ObjectManager.Player;
+                Game.OnUpdate += OnUpdate;
                 Drawing.OnDraw += DrawingOnOnDraw;
+                Instances.Add(this);
             }
 
             public virtual bool InAutoAttackRange(AttackableUnit target)
@@ -607,52 +640,18 @@ namespace AutoSharp.Utils
                 _forcedTarget = target;
             }
 
-            public Vector3 GetOrbwalkingPoint()
-            {
-                return _orbwalkingPoint;
-            }
-
-            public void ForceOrbwalkingPoint(Vector3 point)
-            {
-                if (Environment.TickCount - _forcedPositionTick < 1000) return;
-                _forcedPosition = point;
-                _orbwalkingPoint = point;
-                _forcedPositionTick = Environment.TickCount;
-            }
-
             /// <summary>
             ///     Forces the orbwalker to move to that point while orbwalking (Game.CursorPos by default).
             /// </summary>
             public void SetOrbwalkingPoint(Vector3 point)
             {
-                if (point.IsZero) return;
-                if (!_forcedPosition.IsZero)
-                {
-                    if (Environment.TickCount - _forcedPositionTick > 1500) _forcedPosition = Vector3.Zero;
-                    if (ObjectManager.Player.Distance(_forcedPosition) < 150)
-                    {
-                        _forcedPosition = Vector3.Zero;
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                if (Program.Map == Utility.Map.MapType.SummonersRift &&
-                    ObjectManager.Player.HealthPercent < Program.Config.Item("recallhp").GetValue<Slider>().Value)
-                {
-                    ActiveMode = OrbwalkingMode.Combo;
-                    _orbwalkingPoint = HeadQuarters.AllyHQ.Position.RandomizePosition();
-                    return;
-                }
                 _orbwalkingPoint = point;
-                ActiveMode = OrbwalkingMode.LaneClear;
             }
 
             public bool ShouldWait()
             {
                 return
-                    Minions.EnemyMinions
+                    ObjectManager.Get<Obj_AI_Minion>()
                         .Any(
                             minion =>
                                 minion.IsValidTarget() && minion.Team != GameObjectTeam.Neutral &&
@@ -669,7 +668,7 @@ namespace AutoSharp.Utils
                 if ((ActiveMode == OrbwalkingMode.Mixed || ActiveMode == OrbwalkingMode.LaneClear) &&
                     !_config.Item("PriorizeFarm").GetValue<bool>())
                 {
-                    var target = TargetSelector.GetTarget(-1, LeagueSharp.Common.TargetSelector.DamageType.Physical);
+                    var target = TargetSelector.GetTarget(-1, TargetSelector.DamageType.Physical);
                     if (target != null)
                     {
                         return target;
@@ -680,18 +679,19 @@ namespace AutoSharp.Utils
                 if (ActiveMode == OrbwalkingMode.LaneClear || ActiveMode == OrbwalkingMode.Mixed ||
                     ActiveMode == OrbwalkingMode.LastHit)
                 {
-                    foreach (var minion in
-                        Minions.EnemyMinions
+                    var MinionList =
+                        ObjectManager.Get<Obj_AI_Minion>()
                             .Where(
                                 minion =>
                                     minion.IsValidTarget() && InAutoAttackRange(minion) &&
                                     minion.Health <
                                     2 *
-                                    (Heroes.Player.BaseAttackDamage + Heroes.Player.FlatPhysicalDamageMod))
-                        )
+                                    (ObjectManager.Player.BaseAttackDamage + ObjectManager.Player.FlatPhysicalDamageMod));
+
+                    foreach (var minion in MinionList)
                     {
                         var t = (int)(Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
-                                1000 * (int)Player.Distance(minion) / (int)GetMyProjectileSpeed();
+                                   1000 * (int)Player.Distance(minion) / (int)GetMyProjectileSpeed();
                         var predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay);
 
                         if (minion.Team != GameObjectTeam.Neutral && MinionManager.IsMinion(minion, true))
@@ -701,7 +701,7 @@ namespace AutoSharp.Utils
                                 FireOnNonKillableMinion(minion);
                             }
 
-                            if (predHealth > 0 && predHealth <= Player.GetAutoAttackDamage(minion, true))
+                            if (predHealth > 0 && predHealth <= (Player.GetAutoAttackDamage(minion, true)))
                             {
                                 return minion;
                             }
@@ -720,7 +720,7 @@ namespace AutoSharp.Utils
                 {
                     /* turrets */
                     foreach (var turret in
-                        Turrets.EnemyTurrets.Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
+                        ObjectManager.Get<Obj_AI_Turret>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
                     {
                         return turret;
                     }
@@ -743,12 +743,21 @@ namespace AutoSharp.Utils
                 /*Champions*/
                 if (ActiveMode != OrbwalkingMode.LastHit)
                 {
-                    var target = TargetSelector.GetTarget(-1,
-                        TargetSelector.DamageType.Physical);
-
+                    var target = TargetSelector.GetTarget(-1, TargetSelector.DamageType.Physical);
                     if (target.IsValidTarget())
                     {
-                        return target;
+                            return target;
+                    }
+                }
+
+                if (ActiveMode == OrbwalkingMode.Combo && Items.HasItem((int)ItemId.The_Bloodthirster, Player))
+                {
+                    var minion =
+                        MinionManager.GetMinions(Player.ServerPosition, GetRealAutoAttackRange(null))
+                            .OrderBy(m => m.Armor).FirstOrDefault();
+                    if (Player.CountEnemiesInRange(600) == 0 && Player.HealthPercent < 60 && minion != null)
+                    {
+                        return minion;
                     }
                 }
 
@@ -756,17 +765,15 @@ namespace AutoSharp.Utils
                 if (ActiveMode == OrbwalkingMode.LaneClear || ActiveMode == OrbwalkingMode.Mixed)
                 {
                     result =
-                        Minions.EnemyMinions
+                        ObjectManager.Get<Obj_AI_Minion>()
                             .Where(
                                 mob =>
-                                    mob.IsValidTarget() && InAutoAttackRange(mob) && mob.Team == GameObjectTeam.Neutral)
+                                    mob.IsValidTarget() && mob.Team == GameObjectTeam.Neutral && InAutoAttackRange(mob) && mob.CharData.BaseSkinName != "gangplankbarrel")
                             .MaxOrDefault(mob => mob.MaxHealth);
                     if (result != null)
                     {
-                        var tg = (Obj_AI_Base) result;
-                        return tg.CharData.BaseSkinName != "gangplankbarrel" ? result : null;
+                        return result;
                     }
-
                 }
 
                 /*Lane Clear minions*/
@@ -786,8 +793,8 @@ namespace AutoSharp.Utils
                         }
 
                         result = (from minion in
-                                      Minions.EnemyMinions
-                                          .Where(minion => minion.IsValidTarget() && InAutoAttackRange(minion))
+                                      ObjectManager.Get<Obj_AI_Minion>()
+                                          .Where(minion => minion.IsValidTarget() && InAutoAttackRange(minion) && minion.CharData.BaseSkinName != "gangplankbarrel")
                                   let predHealth =
                                       HealthPrediction.LaneClearHealthPrediction(
                                           minion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay)
@@ -806,16 +813,10 @@ namespace AutoSharp.Utils
                 return result;
             }
 
-            private void GameOnOnGameUpdate(EventArgs args)
+            private void OnUpdate(EventArgs args)
             {
                 try
                 {
-                    if (Program.Map == Utility.Map.MapType.SummonersRift && Heroes.Player.InFountain() &&
-                        Heroes.Player.HealthPercent < 100)
-                    {
-                        return;
-                    }
-                
                     if (ActiveMode == OrbwalkingMode.None)
                     {
                         return;
@@ -841,12 +842,21 @@ namespace AutoSharp.Utils
 
             private void DrawingOnOnDraw(EventArgs args)
             {
-                if (Program.Config.Item("autosharp.mode").GetValue<StringList>().SelectedValue == "AUTO") return;
+                if (!_config.Item("AACircle2").GetValue<Circle>().Active
+                    && _config.Item("AACircle3").GetValue<Circle>().Active)
+                {
+                    var myTarget = GetTarget();
+                    if (myTarget != null)
+                    {
+                        Render.Circle.DrawCircle(myTarget.Position, myTarget.IsValid<Obj_AI_Hero>() ? GetRealAutoAttackRange(myTarget) : 75,
+                            _config.Item("AACircle3").GetValue<Circle>().Color);
+                    }
+                }
 
                 if (_config.Item("AACircle").GetValue<Circle>().Active)
                 {
                     Render.Circle.DrawCircle(
-                        Player.Position, GetRealAutoAttackRange(null) + 25,
+                        Player.Position, GetRealAutoAttackRange(null) + 65,
                         _config.Item("AACircle").GetValue<Circle>().Color);
                 }
 
@@ -867,6 +877,7 @@ namespace AutoSharp.Utils
                         Player.Position, _config.Item("HoldPosRadius").GetValue<Slider>().Value,
                         _config.Item("HoldZone").GetValue<Circle>().Color);
                 }
+
             }
         }
     }
