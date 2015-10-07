@@ -639,6 +639,10 @@ namespace AutoSharp.Utils
             {
                 _forcedTarget = target;
             }
+            public Vector3 GetOrbwalkingPoint()
+            {
+                return _orbwalkingPoint;
+            }
 
             /// <summary>
             ///     Forces the orbwalker to move to that point while orbwalking (Game.CursorPos by default).

@@ -125,7 +125,7 @@ namespace AutoSharp.Plugins
 
             // Caster ally hero / not me
             if (!missile.SpellCaster.IsValid<Obj_AI_Hero>() || !missile.SpellCaster.IsAlly || missile.SpellCaster.IsMe ||
-                missile.SpellCaster.IsMelee())
+                missile.SpellCaster.IsMelee)
             {
                 return;
             }
