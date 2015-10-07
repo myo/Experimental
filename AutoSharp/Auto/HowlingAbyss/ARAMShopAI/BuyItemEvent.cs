@@ -10,7 +10,8 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
     {
         public delegate void OnBoughtItem(InventorySlot item);
 
-        public static short BuyItemAns = 0x97;
+        //public static short BuyItemAns = 0x97;
+        public static int LastUpdate;
         private static List<ItemId> Inventory = new List<ItemId>();
 
         static BuyItemEvent()
@@ -23,16 +24,26 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         private static void Game_OnGameLoad(EventArgs args)
         {
             UpdateInventory();
-            Game.OnProcessPacket += Game_OnProcessPacket;
+            Game.OnUpdate += OnUpdate;
+            //Game.OnProcessPacket += Game_OnProcessPacket;
         }
 
-        private static void Game_OnProcessPacket(GamePacketEventArgs args)
+        private static void OnUpdate(EventArgs args)
+        {
+            if (ObjectManager.Player.InFountain() && LeagueSharp.Common.Utils.TickCount - LastUpdate > 500)
+            {
+                LastUpdate = LeagueSharp.Common.Utils.TickCount;
+                Utility.DelayAction.Add(300, UpdateInventory);
+            }
+        }
+
+        /*private static void Game_OnProcessPacket(GamePacketEventArgs args)
         {
             if (args.PacketData.GetPacketId().Equals(BuyItemAns))
             {
                 Utility.DelayAction.Add(300, UpdateInventory);
             }
-        }
+        }*/
 
         private static void UpdateInventory()
         {
