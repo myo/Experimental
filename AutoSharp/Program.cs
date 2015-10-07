@@ -81,7 +81,7 @@ namespace AutoSharp
             if (sender == null) return;
             if (args.TargetNetworkId == ObjectManager.Player.NetworkId && (sender is Obj_AI_Turret || sender is Obj_AI_Minion))
             {
-                    Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(Wizard.GetFarthestMinion().Position, 500).RandomizePosition());
+                    Orbwalker.SetOrbwalkingPoint(Heroes.Player.Position.Extend(Wizard.GetFarthestMinion().Position, 500).RandomizePosition());
             }
         }
 
@@ -106,7 +106,7 @@ namespace AutoSharp
                     Turrets.EnemyTurrets.FirstOrDefault(t => t.Distance(Heroes.Player.ServerPosition) < 950);
             if (turretNearTargetPosition != null && turretNearTargetPosition.CountNearbyAllyMinions(950) < 3)
             {
-                Orbwalker.ForceOrbwalkingPoint(Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 950));
+                Orbwalker.SetOrbwalkingPoint(Heroes.Player.Position.Extend(HeadQuarters.AllyHQ.Position, 950));
             }
         }
 
@@ -247,7 +247,7 @@ namespace AutoSharp
                     var minion = Wizard.GetClosestAllyMinion();
                     if (minion != null)
                     {
-                        Orbwalker.ForceOrbwalkingPoint(
+                        Orbwalker.SetOrbwalkingPoint(
                             Heroes.Player.Position.Extend(Wizard.GetClosestAllyMinion().Position, Heroes.Player.Distance(minion) + 100));
                     }
                 }
