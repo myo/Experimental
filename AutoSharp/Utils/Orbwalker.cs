@@ -821,6 +821,7 @@ namespace AutoSharp.Utils
             {
                 try
                 {
+                    if (ObjectManager.Player.IsDead) return;
                     if (ActiveMode == OrbwalkingMode.None)
                     {
                         return;
