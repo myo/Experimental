@@ -147,11 +147,6 @@ namespace AutoSharp.Utils
         //  </summary>
         public static event OnNonKillableMinionH OnNonKillableMinion;
 
-
-        public static Vector3 GetOrbwalkingPoint()
-        {
-            return LastMoveCommandPosition;
-        }
         private static void FireBeforeAttack(AttackableUnit target)
         {
             if (BeforeAttack != null)
@@ -597,6 +592,10 @@ namespace AutoSharp.Utils
                 Instances.Add(this);
             }
 
+            public Vector3 GetOrbwalkingPoint()
+            {
+                return _orbwalkingPoint;
+            }
             public virtual bool InAutoAttackRange(AttackableUnit target)
             {
                 return Orbwalking.InAutoAttackRange(target);
