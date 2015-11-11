@@ -14,6 +14,7 @@ namespace MySharpSupport.AI
 {
     public static class HeatMap
     {
+        // Copyright by jQuery
         public static Vector3
             BestPositionAccordingToDistanceFromCarryAndTheEnemyTeamTakingIntoAccountOnlyAttackRangeAndMenuSettingsVector3
         {
