@@ -12,6 +12,7 @@ using SharpDX;
 
 namespace AutoSharp
 {
+	broken because of the item changes.
     class Program
     {
         public static Utility.Map.MapType Map;

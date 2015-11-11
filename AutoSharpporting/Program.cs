@@ -28,6 +28,7 @@ using Version = System.Version;
 
 namespace Support
 {
+BROKEN BECAUSE OF THE NEW ITEM CHANGES
     internal class Program
     {
         public static Version Version;

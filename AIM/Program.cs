@@ -14,6 +14,7 @@ namespace AutoSharp
 {
     class Program
     {
+		BROKEN BECAUSE OF THE NEW ITEM CHANGES
         public static Utility.Map.MapType Map;
         public static Menu Config;
         public static MyOrbwalker.Orbwalker Orbwalker;
