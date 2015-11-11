@@ -25,12 +25,11 @@ namespace MySharpSupport.AI
                 //fill it with circles of enemies with their attackrange as radius
                 ObjectManager.Get<Obj_AI_Hero>()
                     .Where(h => h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 1000)
-                    .Select(e => new LeagueSharp.Common.Geometry.Polygon.Circle(e.ServerPosition, e.AttackRange).ToClipperPath().ToPolygon()).ForEach(poly => enemyTeamPolygon.Add(poly));
+                    .Select(e => new Geometry.Circle(e.ServerPosition, e.AttackRange).ToPolygon()).ForEach(poly => enemyTeamPolygon.Add(poly));
                 
                 //create a polygon to determine where the bot should stick at all the time
-                var myLimitPolygon =
-                    new LeagueSharp.Common.Geometry.Polygon.Circle(Core.Carry.ServerPosition, Core.MaxDistanceFromCarry)
-                        .ToClipperPath().ToPolygon();
+                var myLimitPolygon = new Geometry.Circle(Core.Carry.ServerPosition, Core.MaxDistanceFromCarry)
+                        .ToPolygon();
 
                 //try to find a position outside the enemy team polygon
                 var goodPosition = myLimitPolygon.Points.FirstOrDefault(point => enemyTeamPolygon.IsOutside(point));

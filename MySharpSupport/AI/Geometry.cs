@@ -130,6 +130,11 @@ namespace MySharpSupport.AI
                 Center = center;
                 Radius = radius;
             }
+            public Circle(Vector3 center, float radius)
+            {
+                Center = center.To2D();
+                Radius = radius;
+            }
 
             public Polygon ToPolygon(int offset = 0, float overrideWidth = -1)
             {
