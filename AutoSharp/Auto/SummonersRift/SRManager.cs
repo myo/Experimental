@@ -9,6 +9,8 @@ namespace AutoSharp.Auto.SummonersRift
     {
         public static void Load()
         {
+            Game.PrintChat("Disabled for SummonersRift");
+            return;
             RoleSwitcher.Load();
             SRShopAI.Main.Init();
             RoleSwitcher.Unpause();
