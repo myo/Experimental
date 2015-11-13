@@ -12,7 +12,6 @@ using SharpDX;
 
 namespace AutoSharp
 {
-	broken because of the item changes.
     class Program
     {
         public static Utility.Map.MapType Map;
@@ -37,7 +36,7 @@ namespace AutoSharp
                         Orbwalker.SetOrbwalkingPoint(Game.CursorPos);
                     }
                 };
-            Config.AddItem(new MenuItem("autosharp.humanizer", "Humanize Movement by ").SetValue(new Slider(175, 125, 350)));
+            Config.AddItem(new MenuItem("autosharp.humanizer", "Humanize Movement by ").SetValue(new Slider(new Random().Next(125, 350), 125, 350)));
             Config.AddItem(new MenuItem("autosharp.quit", "Quit after Game End").SetValue(true));
             Config.AddItem(new MenuItem("autosharp.shop", "AutoShop?").SetValue(true));
             var options = Config.AddSubMenu(new Menu("Options: ", "autosharp.options"));
