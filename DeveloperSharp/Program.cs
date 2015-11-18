@@ -30,7 +30,10 @@ namespace DeveloperSharp
 
         private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            Game.PrintChat("Detected Spell Name: " + args.SData.Name + " Missile Name: " + args.SData.MissileBoneName);
+            if (sender is Obj_AI_Hero)
+            {
+                Game.PrintChat("Detected Spell Name: " + args.SData.Name + " Missile Name: " + args.SData.MissileBoneName + " Issued By: " + sender.CharData.BaseSkinName);
+            }
         }
 
         private static void InitMenu()
