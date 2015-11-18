@@ -24,7 +24,13 @@ namespace DeveloperSharp
                 InitMenu();
                 Game.OnUpdate += OnUpdate;
                 Drawing.OnDraw += OnDraw;
+                Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             };
+        }
+
+        private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            Game.PrintChat("Detected Spell Name: " + args.SData.Name + " Missile Name: " + args.SData.MissileBoneName);
         }
 
         private static void InitMenu()
