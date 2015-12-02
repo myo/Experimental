@@ -14,7 +14,14 @@ namespace MySharpSupport.AI
         {
             if (!ObjectManager.Player.IsRecalling() && !ObjectManager.Player.IsChannelingImportantSpell() && !ObjectManager.Player.IsDead)
             {
-                Core.Orbwalker.ActiveMode = Orbwalking.OrbwalkingMode.Combo;
+                if (ObjectManager.Player.UnderTurret(true))
+                {
+                    Core.Orbwalker.ActiveMode = Orbwalking.OrbwalkingMode.LaneClear;
+                }
+                else
+                {
+                    Core.Orbwalker.ActiveMode = Orbwalking.OrbwalkingMode.Combo;
+                }
             }
             else
             {
