@@ -52,6 +52,10 @@ namespace MySharpSupport.AI
         }
         public static void UpdateCurrentItem()
         {
+            if ((ObjectManager.Player.Gold < 500 || ObjectManager.Player.Gold > 500) && CurrentItem == 0)
+            {
+                CurrentItem++;
+            }
             if (
                 ObjectManager.Player.InventoryItems.Any(
                     i =>

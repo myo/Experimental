@@ -40,6 +40,7 @@ namespace MySharpSupport.AI
         public static void OnUpdate(EventArgs args)
         {
             Shop.OnUpdate();
+            Walk.OnUpdate();
         }
     }
 }
