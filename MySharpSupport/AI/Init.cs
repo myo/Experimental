@@ -28,7 +28,7 @@ namespace MySharpSupport.AI
                 new MenuItem("mycarryis", "ADC to Follow").SetValue(
                     new StringList(
                         ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(h => h.IsAlly)
+                            .Where(h => h.IsAlly && !h.IsMe)
                             .OrderByDescending(a => a.Spellbook.Spells.Any(s => s.Name == "SummonerHeal"))
                             .Select(hero => hero.ChampionName)
                             .ToArray())));
@@ -91,7 +91,9 @@ namespace MySharpSupport.AI
             Core.MainMenu.AddToMainMenu();
 
             Game.OnUpdate += Core.OnUpdate;
-            Game.OnChat += ChatCommands.OnChat;
+            Game.OnChat += ChatCommands.OnChat; 
+            new AutoLevel(TreesAutoLevel.GetSequence().Select(l => l - 1));
+            AutoLevel.Enable();
         }
     }
 }

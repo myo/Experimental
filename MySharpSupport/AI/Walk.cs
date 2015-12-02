@@ -12,7 +12,7 @@ namespace MySharpSupport.AI
     {
         public static void OnUpdate()
         {
-            if (!ObjectManager.Player.IsRecalling() && !ObjectManager.Player.IsChannelingImportantSpell())
+            if (!ObjectManager.Player.IsRecalling() && !ObjectManager.Player.IsChannelingImportantSpell() && !ObjectManager.Player.IsDead)
             {
                 Core.Orbwalker.ActiveMode = Orbwalking.OrbwalkingMode.Combo;
             }
@@ -20,7 +20,16 @@ namespace MySharpSupport.AI
             {
                 Core.Orbwalker.ActiveMode = Orbwalking.OrbwalkingMode.None;
             }
-            Core.Orbwalker.SetOrbwalkingPoint(HeatMap.BestPositionAccordingToDistanceFromCarryAndTheEnemyTeamTakingIntoAccountOnlyAttackRangeAndMenuSettingsVector3);
+            if (RecallManager.ShouldRecall)
+            {
+                Core.Orbwalker.SetOrbwalkingPoint(RecallManager.SafestRecallPosition);
+            }
+            else
+            {
+                Core.Orbwalker.SetOrbwalkingPoint(
+                    HeatMap
+                        .BestPositionAccordingToDistanceFromCarryAndTheEnemyTeamTakingIntoAccountOnlyAttackRangeAndMenuSettingsVector3);
+            }
         }
     }
 }

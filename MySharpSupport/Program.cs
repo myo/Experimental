@@ -25,7 +25,7 @@
                         //Load AI
                         AI.Init.DoInitWithDelay();
 
-                        var type = Type.GetType("Support.Plugins." + ObjectManager.Player.ChampionName);
+                        var type = Type.GetType("MySharpSupport.Plugins." + ObjectManager.Player.ChampionName);
 
                         if (type != null)
                         {

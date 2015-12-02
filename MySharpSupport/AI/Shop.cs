@@ -124,7 +124,7 @@ namespace MySharpSupport.AI
             }
             if (nameToLower.Contains("zeke"))
             {
-                return ItemId.Zekes_Herald;
+                return ItemId.Rod_of_Ages;
             }
             if (nameToLower.Contains("locket"))
             {

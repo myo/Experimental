@@ -56,36 +56,39 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="clipper_library">
-      <HintPath>..\..\..\..\LeagueSharp\System\clipper_library.dll</HintPath>
+      <HintPath>C:\LeagueSharp\System\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
-      <HintPath>..\..\..\..\LeagueSharp\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\LeagueSharp\System\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>..\..\..\..\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>C:\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.SDK">
-      <HintPath>..\..\..\..\LeagueSharp\System\LeagueSharp.SDK.dll</HintPath>
+      <HintPath>C:\LeagueSharp\System\LeagueSharp.SDK.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\..\..\..\LeagueSharp\System\SharpDX.dll</HintPath>
+      <HintPath>C:\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>..\..\..\..\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\AutoLevel.cs" />
     <Compile Include="AI\ChatCommands.cs" />
     <Compile Include="AI\Geometry.cs" />
     <Compile Include="AI\HeatMap.cs" />
     <Compile Include="AI\Init.cs" />
     <Compile Include="AI\Core.cs" />
+    <Compile Include="AI\RecallManager.cs" />
     <Compile Include="AI\Shop.cs" />
     <Compile Include="AI\Walk.cs" />
     <Compile Include="Plugins\Annie.cs" />
+    <Compile Include="Plugins\Soraka.cs" />
     <Compile Include="Util\AntiGapcloser.cs" />
     <Compile Include="Util\AutoBushRevealer.cs" />
     <Compile Include="Util\DamageBoostDatabase.cs" />

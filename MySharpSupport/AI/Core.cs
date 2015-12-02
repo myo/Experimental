@@ -17,7 +17,7 @@ namespace MySharpSupport.AI
         public static Orbwalking.Orbwalker Orbwalker;
 
         //our preffered carry
-        public static Obj_AI_Base Carry
+        public static Obj_AI_Hero Carry
         {
             get
             {
@@ -40,6 +40,10 @@ namespace MySharpSupport.AI
         public static void OnUpdate(EventArgs args)
         {
             Shop.OnUpdate();
+            if (Utility.Map.GetMap().Type == Utility.Map.MapType.SummonersRift)
+            {
+                RecallManager.OnUpdate();
+            }
             Walk.OnUpdate();
         }
     }
