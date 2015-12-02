@@ -29,7 +29,7 @@ namespace MySharpSupport.AI
                         .FirstOrDefault(t => t.IsEnemy && t.IsValidTarget() && t.Distance(ObjectManager.Player) <= 800);
 
                 if (turret != null &&
-                    !MinionManager.GetMinions(1000, MinionTypes.All, MinionTeam.Ally).Any(m => m.Distance(turret) < 800))
+                    MinionManager.GetMinions(1000, MinionTypes.All, MinionTeam.Ally).Count(m => m.Distance(turret) < 800) < 3)
                 {
                     return myLimitPolygon.Points.OrderByDescending(point => point.Distance(turret.ServerPosition)).FirstOrDefault().To3D();
                 }
