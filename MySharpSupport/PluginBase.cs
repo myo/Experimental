@@ -1,4 +1,6 @@
-﻿namespace MySharpSupport
+﻿using MySharpSupport.AI;
+
+namespace MySharpSupport
 {
     using System;
     using System.Drawing;
@@ -465,6 +467,7 @@
         private void InitOrbwalker()
         {
             this.Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
+            Core.Orbwalker = this.Orbwalker;
         }
 
         /// <summary>

@@ -93,6 +93,11 @@
                 this.Center = center;
                 this.Radius = radius;
             }
+            public Circle(Vector3 center, float radius)
+            {
+                this.Center = center.To2D();
+                this.Radius = radius;
+            }
 
             public Vector2 Center;
 

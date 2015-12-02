@@ -13,6 +13,9 @@ namespace MySharpSupport.AI
         //our main menu
         public static Menu MainMenu;
 
+        //our link to the Orbwalker
+        public static Orbwalking.Orbwalker Orbwalker;
+
         //our preffered carry
         public static Obj_AI_Base Carry
         {
@@ -36,7 +39,7 @@ namespace MySharpSupport.AI
 
         public static void OnUpdate(EventArgs args)
         {
-            
+            Shop.OnUpdate();
         }
     }
 }

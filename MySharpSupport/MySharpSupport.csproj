@@ -83,6 +83,7 @@
     <Compile Include="AI\HeatMap.cs" />
     <Compile Include="AI\Init.cs" />
     <Compile Include="AI\Core.cs" />
+    <Compile Include="AI\Shop.cs" />
     <Compile Include="AI\Walk.cs" />
     <Compile Include="Plugins\Annie.cs" />
     <Compile Include="Util\AntiGapcloser.cs" />

@@ -29,7 +29,6 @@
 
                         if (type != null)
                         {
-                            Helpers.UpdateCheck();
                             Protector.Init();
                             //SpellDetector.Init();
                             DynamicInitializer.NewInstance(type);
