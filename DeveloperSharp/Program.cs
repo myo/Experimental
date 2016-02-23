@@ -32,7 +32,7 @@ namespace DeveloperSharp
         private static void ObjAiBaseOnOnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs args)
         {
             if (sender.IsMe)
-            Game.PrintChat(args.Buff.Name);
+            Game.PrintChat(args.Buff.Name+ " " + args.Buff.Type);
         }
 
         private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
