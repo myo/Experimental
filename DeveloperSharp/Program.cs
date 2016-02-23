@@ -31,6 +31,7 @@ namespace DeveloperSharp
 
         private static void ObjAiBaseOnOnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs args)
         {
+            if (sender.IsMe)
             Game.PrintChat(args.Buff.Name);
         }
 
