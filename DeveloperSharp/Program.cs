@@ -25,12 +25,18 @@ namespace DeveloperSharp
                 Game.OnUpdate += OnUpdate;
                 Drawing.OnDraw += OnDraw;
                 Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
+                Obj_AI_Base.OnBuffAdd += ObjAiBaseOnOnBuffAdd;
             };
+        }
+
+        private static void ObjAiBaseOnOnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs args)
+        {
+            Game.PrintChat(args.Buff.Name);
         }
 
         private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender is Obj_AI_Hero)
+            if (sender.IsMe)
             {
                 Game.PrintChat("Detected Spell Name: " + args.SData.Name + " Missile Name: " + args.SData.MissileBoneName + " Issued By: " + sender.CharData.BaseSkinName);
             }
