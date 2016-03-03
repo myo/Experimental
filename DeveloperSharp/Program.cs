@@ -12,9 +12,8 @@ namespace DeveloperSharp
 {
     class Program
     {
-        private static List<GameObject> _lstGameObjects = new List<GameObject>(); 
-        private static List<GameObject> _lstObjCloseToMouse = new List<GameObject>();
         private static Menu Config;
+        private static Menu Types;
         private static int _lastUpdateTick = 0;
         private static int _lastMovementTick = 0;
         static void Main(string[] args)
@@ -25,21 +24,14 @@ namespace DeveloperSharp
                 Game.OnUpdate += OnUpdate;
                 Drawing.OnDraw += OnDraw;
                 Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
-                Obj_AI_Base.OnBuffAdd += ObjAiBaseOnOnBuffAdd;
             };
-        }
-
-        private static void ObjAiBaseOnOnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs args)
-        {
-            if (sender.IsMe)
-            Game.PrintChat(args.Buff.Name+ " " + args.Buff.Type);
         }
 
         private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (sender.IsMe)
             {
-                Game.PrintChat("Detected Spell Name: " + args.SData.Name + " Missile Name: " + args.SData.MissileBoneName + " Issued By: " + sender.CharData.BaseSkinName);
+                //Game.PrintChat("Detected Spell Name: " + args.SData.Name + " Missile Name: " + args.SData.MissileBoneName + " Issued By: " + sender.CharData.BaseSkinName);
             }
         }
 
@@ -52,13 +44,6 @@ namespace DeveloperSharp
 
         private static void OnUpdate(EventArgs args)
         {
-            if (Environment.TickCount - _lastUpdateTick > 150)
-            {
-                _lstGameObjects = ObjectManager.Get<GameObject>().ToList();
-                _lstObjCloseToMouse =
-                    _lstGameObjects.Where(o => o.Position.Distance(Game.CursorPos) < Config.Item("range").GetValue<Slider>().Value && !(o is Obj_Turret) && o.Name != "missile" && !(o is Obj_LampBulb) && !(o is Obj_SpellMissile) && !(o is GrassObject) && !(o is DrawFX) && !(o is LevelPropSpawnerPoint) && !(o is Obj_GeneralParticleEmitter) && !o.Name.Contains("MoveTo")).ToList();
-                _lastUpdateTick = Environment.TickCount;
-            }
             if (Environment.TickCount - _lastMovementTick > 140000)
             {
                 ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo,
@@ -69,12 +54,12 @@ namespace DeveloperSharp
 
         private static void OnDraw(EventArgs args)
         {
-            foreach (var obj in _lstObjCloseToMouse)
+            foreach (var obj in ObjectManager.Get<GameObject>().Where(o=>o.Position.Distance(Game.CursorPos) < Config.Item("range").GetValue<Slider>().Value && !(o is Obj_Turret) && o.Name != "missile" && !(o is Obj_LampBulb) && !(o is Obj_SpellMissile) && !(o is GrassObject) && !(o is DrawFX) && !(o is LevelPropSpawnerPoint) && !(o is Obj_GeneralParticleEmitter) && !o.Name.Contains("MoveTo")))
             {
                 if (!obj.IsValid) return;
                 var X = Drawing.WorldToScreen(obj.Position).X;
                 var Y = Drawing.WorldToScreen(obj.Position).Y;
-                Drawing.DrawText(X, Y, Color.DarkTurquoise, (obj is Obj_AI_Hero) ? ((Obj_AI_Hero)obj).CharData.BaseSkinName : obj.Name);
+                Drawing.DrawText(X, Y, Color.DarkTurquoise, (obj is Obj_AI_Hero) ? ((Obj_AI_Hero)obj).CharData.BaseSkinName : (obj is Obj_AI_Minion) ? (obj as Obj_AI_Minion).CharData.BaseSkinName : (obj is Obj_AI_Turret) ? (obj as Obj_AI_Turret).CharData.BaseSkinName : obj.Name);
                 Drawing.DrawText(X, Y + 10, Color.DarkTurquoise, obj.Type.ToString());
                 Drawing.DrawText(X, Y + 20, Color.DarkTurquoise, "NetworkID: " + obj.NetworkId);
                 Drawing.DrawText(X, Y + 30, Color.DarkTurquoise, obj.Position.ToString());
