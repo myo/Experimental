@@ -21,6 +21,7 @@ using System;
 using System.Reflection;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Support;
 using Support.Util;
 using Version = System.Version;
 
@@ -28,7 +29,6 @@ using Version = System.Version;
 
 namespace Support
 {
-BROKEN BECAUSE OF THE NEW ITEM CHANGES
     internal class Program
     {
         public static Version Version;
