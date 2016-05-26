@@ -1,24 +1,15 @@
-﻿/* Borrowed from Trees:
- * https://github.com/trees-software/LeagueSharp/blob/master/AutoLevelSpells/Program.cs 
- */
-#region
+﻿using LeagueSharp;
 
-using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-#endregion
-
-namespace Support
+namespace AutoSharpporting
 {
-    internal class TreesAutoLevel
+
+    public partial class AutoLevel
     {
-        public static int[] GetSequence()
+        public static int[] GetSequenceFromDb()
         {
             var sequence = new int[18];
-            switch (ObjectManager.Player.ChampionName)
+            switch (ObjectManager.Player.CharData.BaseSkinName)
             {
-
                 case "Aatrox":
                     sequence = new[] {1, 2, 3, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1};
                     break;

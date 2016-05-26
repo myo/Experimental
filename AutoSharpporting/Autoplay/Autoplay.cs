@@ -13,6 +13,9 @@ using System.Diagnostics;
 using System.Drawing.Text;
 using System.Linq;
 using System.Net.Mime;
+using System.Runtime.Serialization;
+using AutoSharpporting;
+using AutoSharpporting.SRShopAI;
 using Support.Util;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -24,7 +27,7 @@ namespace Support
     {
         public const int Blue = 200;
         public const int Purple = -200;
-        public static Obj_AI_Hero Bot = ObjectManager.Player;
+        public static Obj_AI_Hero Bot = LeagueSharp.ObjectManager.Player;
         public static Obj_AI_Hero Carry;
         public static Obj_AI_Hero NearestAllyHero;
         public static Obj_AI_Turret NearestAllyTurret;
@@ -54,7 +57,7 @@ namespace Support
 
         public Autoplay()
         {
-            CustomEvents.Game.OnGameLoad += OnGameLoad;
+            LeagueSharp.Common.CustomEvents.Game.OnGameLoad += OnGameLoad;
             Game.OnUpdate += OnUpdate;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
         }
@@ -103,8 +106,8 @@ namespace Support
                 _chosen += Rand.Next(-100, 100);
                 _safe += Rand.Next(-100, 100);
             }
-            new AutoLevel(TreesAutoLevel.GetSequence().Select(l=>l-1));
-            AutoLevel.Enable();
+            var _autoLevel = new AutoSharpporting.AutoLevel(AutoSharpporting.AutoLevel.GetSequenceFromDb());
+            _autoLevel.Enable();
             MetaHandler.LoadObjects();
             
         }
