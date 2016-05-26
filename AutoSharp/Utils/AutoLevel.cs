@@ -1,385 +1,198 @@
-﻿using LeagueSharp;
+﻿#region LICENSE
+
+/*
+ Copyright 2014 - 2015 LeagueSharp
+ AutoLevel.cs is part of LeagueSharp.Common.
+ 
+ LeagueSharp.Common is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ LeagueSharp.Common is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with LeagueSharp.Common. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion
+
+#region
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using LeagueSharp;
+
+#endregion
 
 namespace AutoSharp.Utils
 {
-    internal class AutoLevel
+    /// <summary>
+    /// Automatically levels skills.
+    /// </summary>
+    public partial class AutoLevel
     {
+        /// <summary>
+        /// The order
+        /// </summary>
+        private static List<int> order = new List<int>();
+
+        /// <summary>
+        /// The last leveled
+        /// </summary>
+        private static float LastLeveled;
+
+        /// <summary>
+        /// The next delay
+        /// </summary>
+        private static float NextDelay;
+
+        /// <summary>
+        /// The player
+        /// </summary>
+        private static readonly Obj_AI_Hero Player = ObjectManager.Player;
+
+        /// <summary>
+        /// The random number
+        /// </summary>
+        private static System.Random RandomNumber;
+
+        /// <summary>
+        /// The enabled
+        /// </summary>
+        private static bool enabled;
+
+        /// <summary>
+        /// The initialize
+        /// </summary>
+        private static bool init;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AutoLevel"/> class.
+        /// </summary>
+        /// <param name="levels">The levels.</param>
+        public AutoLevel(IEnumerable<int> levels)
+        {
+            UpdateSequence(levels);
+            Init();
+        }
+
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        private static void Init()
+        {
+            if (init)
+            {
+                return;
+            }
+
+            init = true;
+            RandomNumber = new System.Random(Environment.TickCount);
+            Game.OnUpdate += Game_OnGameUpdate;
+        }
+
+        /// <summary>
+        /// Fired when the game updates.
+        /// </summary>
+        /// <param name="args">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private static void Game_OnGameUpdate(EventArgs args)
+        {
+            if (!enabled || Player.SpellTrainingPoints < 1 || Environment.TickCount - LastLeveled < NextDelay || MenuGUI.IsShopOpen)
+            {
+                return;
+            }
+
+            NextDelay = RandomNumber.Next(300, 1200);
+            LastLeveled = Environment.TickCount;
+            // subtract 1 from spell int cuz in enum q=0 but it looks better to have q=1, w=2 etc.
+            var spell = (SpellSlot)(order[ObjectManager.Player.Level-1] - 1);
+            if (ObjectManager.Player.Spellbook.GetSpell(spell).Level < 5)
+            {
+                Player.Spellbook.LevelSpell(spell);
+            }
+            else
+            {
+               var list = new List<SpellDataInst> {Player.Spellbook.GetSpell(SpellSlot.Q), Player.Spellbook.GetSpell(SpellSlot.W), Player.Spellbook.GetSpell(SpellSlot.E), Player.Spellbook.GetSpell(SpellSlot.R)};
+                var spellWithLowestLevel = list.OrderBy(entry => entry.Level).FirstOrDefault();
+                if (spellWithLowestLevel != null)
+                {
+                Player.Spellbook.LevelSpell(spellWithLowestLevel.Slot);
+}
+            }
+        }
+
+        /// <summary>
+        /// Gets the total points.
+        /// </summary>
+        /// <returns></returns>
+        private static int GetTotalPoints()
+        {
+            var spell = Player.Spellbook;
+            var q = spell.GetSpell(SpellSlot.Q).Level;
+            var w = spell.GetSpell(SpellSlot.W).Level;
+            var e = spell.GetSpell(SpellSlot.E).Level;
+            var r = spell.GetSpell(SpellSlot.R).Level;
+
+            return q + w + e + r;
+        }
+
+        /// <summary>
+        /// Enables this instance.
+        /// </summary>
+        public void Enable()
+        {
+            enabled = true;
+        }
+
+        /// <summary>
+        /// Disables this instance.
+        /// </summary>
+        public static void Disable()
+        {
+            enabled = false;
+        }
+
+        /// <summary>
+        /// Sets if this instance is enabled or not according to the <paramref name="b"/>.
+        /// </summary>
+        /// <param name="b">if set to <c>true</c> [b].</param>
+        public static void Enabled(bool b)
+        {
+            enabled = b;
+        }
+
+        /// <summary>
+        /// Updates the sequence.
+        /// </summary>
+        /// <param name="levels">The levels.</param>
+        public static void UpdateSequence(IEnumerable<int> levels)
+        {
+            Init();
+            order.Clear();
+            order = levels.ToList();
+        }
+
+        /// <summary>
+        /// Gets the sequence.
+        /// </summary>
+        /// <returns></returns>
         public static int[] GetSequence()
         {
-            var sequence = new int[18];
-            switch (Heroes.Player.ChampionName)
-            {
-                case "Aatrox":
-                    sequence = new[] { 1, 2, 3, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1 };
-                    break;
-                case "Ahri":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 2, 2 };
-                    break;
-                case "Akali":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Alistar":
-                    sequence = new[] { 1, 3, 2, 1, 3, 4, 1, 3, 1, 3, 4, 1, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Amumu":
-                    sequence = new[] { 2, 3, 3, 1, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2 };
-                    break;
-                case "Anivia":
-                    sequence = new[] { 1, 3, 1, 3, 3, 4, 3, 2, 3, 2, 4, 1, 1, 1, 2, 4, 2, 2 };
-                    break;
-                case "Annie":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Ashe":
-                    sequence = new[] { 2, 3, 2, 1, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3 };
-                    break;
-                case "Azir":
-                    sequence = new[] { 2, 1, 3, 1, 1, 4, 1, 2, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Blitzcrank":
-                    sequence = new[] { 1, 3, 2, 3, 2, 4, 3, 2, 3, 2, 4, 3, 2, 1, 1, 4, 1, 1 };
-                    break;
-                case "Brand":
-                    sequence = new[] { 2, 3, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1 };
-                    break;
-                case "Braum":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Caitlyn":
-                    sequence = new[] { 2, 1, 1, 3, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Cassiopeia":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Chogath":
-                    sequence = new[] { 1, 3, 2, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1 };
-                    break;
-                case "Corki":
-                    sequence = new[] { 1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Darius":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3 };
-                    break;
-                case "Diana":
-                    sequence = new[] { 2, 1, 2, 3, 1, 4, 1, 1, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "DrMundo":
-                    sequence = new[] { 2, 1, 3, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1 };
-                    break;
-                case "Draven":
-                    sequence = new[] { 1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Elise":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Evelynn":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Ezreal":
-                    sequence = new[] { 1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "FiddleSticks":
-                    sequence = new[] { 3, 2, 2, 1, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3 };
-                    break;
-                case "Fiora":
-                    sequence = new[] { 2, 1, 3, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1 };
-                    break;
-                case "Fizz":
-                    sequence = new[] { 3, 1, 2, 1, 2, 4, 1, 1, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Galio":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 2, 1, 2, 4, 3, 3, 2, 2, 4, 3, 3 };
-                    break;
-                case "Gangplank":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Garen":
-                    sequence = new[] { 1, 2, 3, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2 };
-                    break;
-                case "Gnar":
-                    sequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Gragas":
-                    sequence = new[] { 1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3 };
-                    break;
-                case "Graves":
-                    sequence = new[] { 1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Hecarim":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Heimerdinger":
-                    sequence = new[] { 1, 2, 2, 1, 1, 4, 3, 2, 2, 2, 4, 1, 1, 3, 3, 4, 1, 1 };
-                    break;
-                case "Irelia":
-                    sequence = new[] { 3, 1, 2, 2, 2, 4, 2, 3, 2, 3, 4, 1, 1, 3, 1, 4, 3, 1 };
-                    break;
-                case "Janna":
-                    sequence = new[] { 3, 1, 3, 2, 3, 4, 3, 2, 3, 2, 1, 2, 2, 1, 1, 1, 4, 4 };
-                    break;
-                case "JarvanIV":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 3, 2, 1, 4, 3, 3, 3, 2, 4, 2, 2 };
-                    break;
-                case "Jax":
-                    sequence = new[] { 3, 2, 1, 2, 2, 4, 2, 3, 2, 3, 4, 1, 3, 1, 1, 4, 3, 1 };
-                    break;
-                case "Jayce":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Jinx":
-                    sequence = new[] { 1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Karma":
-                    sequence = new[] { 1, 3, 1, 2, 3, 1, 3, 1, 3, 1, 3, 1, 3, 2, 2, 2, 2, 2 };
-                    break;
-                case "Karthus":
-                    sequence = new[] { 1, 3, 2, 1, 1, 4, 1, 1, 3, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Kassadin":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Katarina":
-                    sequence = new[] { 1, 3, 2, 2, 2, 4, 2, 3, 2, 1, 4, 1, 1, 1, 3, 4, 3, 3 };
-                    break;
-                case "Kayle":
-                    sequence = new[] { 3, 2, 3, 1, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1 };
-                    break;
-                case "Kennen":
-                    sequence = new[] { 1, 3, 2, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3 };
-                    break;
-                case "Khazix":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "KogMaw":
-                    sequence = new[] { 2, 3, 2, 1, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3 };
-                    break;
-                case "Leblanc":
-                    sequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3 };
-                    break;
-                case "LeeSin":
-                    sequence = new[] { 3, 1, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Leona":
-                    sequence = new[] { 1, 3, 2, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1 };
-                    break;
-                case "Lissandra":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Lucian":
-                    sequence = new[] { 1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Lulu":
-                    sequence = new[] { 3, 2, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1 };
-                    break;
-                case "Lux":
-                    sequence = new[] { 3, 1, 3, 2, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2 };
-                    break;
-                case "Malphite":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 2, 3, 2, 4, 2, 2 };
-                    break;
-                case "Malzahar":
-                    sequence = new[] { 1, 3, 3, 2, 3, 4, 1, 3, 1, 3, 4, 2, 1, 2, 1, 4, 2, 2 };
-                    break;
-                case "Maokai":
-                    sequence = new[] { 3, 1, 2, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1 };
-                    break;
-                case "MasterYi":
-                    sequence = new[] { 3, 1, 3, 1, 3, 4, 3, 1, 3, 1, 4, 1, 2, 2, 2, 4, 2, 2 };
-                    break;
-                case "MissFortune":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "MonkeyKing":
-                    sequence = new[] { 3, 1, 2, 1, 1, 4, 3, 1, 3, 1, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Mordekaiser":
-                    sequence = new[] { 3, 1, 3, 2, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2 };
-                    break;
-                case "Morgana":
-                    sequence = new[] { 1, 2, 2, 3, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3 };
-                    break;
-                case "Nami":
-                    sequence = new[] { 1, 2, 3, 2, 2, 4, 2, 2, 3, 3, 4, 3, 3, 1, 1, 4, 1, 1 };
-                    break;
-                case "Nasus":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3 };
-                    break;
-                case "Nautilus":
-                    sequence = new[] { 2, 3, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1 };
-                    break;
-                case "Nidalee":
-                    sequence = new[] { 2, 3, 1, 3, 1, 4, 3, 2, 3, 1, 4, 3, 1, 1, 2, 4, 2, 2 };
-                    break;
-                case "Nocturne":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Nunu":
-                    sequence = new[] { 3, 1, 3, 2, 1, 4, 3, 1, 3, 1, 4, 1, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Olaf":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Orianna":
-                    sequence = new[] { 1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Pantheon":
-                    sequence = new[] { 1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 2, 3, 2, 4, 2, 2 };
-                    break;
-                case "Poppy":
-                    sequence = new[] { 3, 2, 1, 1, 1, 4, 1, 2, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4 };
-                    break;
-                case "Quinn":
-                    sequence = new[] { 3, 1, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Rammus":
-                    sequence = new[] { 1, 2, 3, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1 };
-                    break;
-                case "RekSai":
-                    sequence = new[] { 1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Renekton":
-                    sequence = new[] { 2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Rengar":
-                    sequence = new[] { 1, 3, 2, 1, 1, 4, 2, 1, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Riven":
-                    sequence = new[] { 1, 3, 2, 1, 3, 4, 1, 1, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Rumble":
-                    sequence = new[] { 3, 1, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Ryze":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Sejuani":
-                    sequence = new[] { 2, 1, 3, 3, 2, 4, 3, 2, 3, 3, 4, 2, 1, 2, 1, 4, 1, 1 };
-                    break;
-                case "Shaco":
-                    sequence = new[] { 2, 3, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1 };
-                    break;
-                case "Shen":
-                    sequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Shyvana":
-                    sequence = new[] { 2, 1, 2, 3, 2, 4, 2, 3, 2, 3, 4, 3, 1, 3, 1, 4, 1, 1 };
-                    break;
-                case "Singed":
-                    sequence = new[] { 1, 3, 1, 3, 1, 4, 1, 2, 1, 2, 4, 3, 2, 3, 2, 4, 2, 3 };
-                    break;
-                case "Sion":
-                    sequence = new[] { 1, 3, 3, 2, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2 };
-                    break;
-                case "Sivir":
-                    sequence = new[] { 2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Skarner":
-                    sequence = new[] { 1, 2, 1, 2, 1, 4, 1, 2, 1, 2, 4, 2, 3, 3, 3, 4, 3, 3 };
-                    break;
-                case "Sona":
-                    sequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Soraka":
-                    sequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 3, 4, 2, 3, 2, 3, 4, 2, 3 };
-                    break;
-                case "Swain":
-                    sequence = new[] { 2, 3, 3, 1, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2 };
-                    break;
-                case "Syndra":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Talon":
-                    sequence = new[] { 2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3 };
-                    break;
-                case "Taric":
-                    sequence = new[] { 3, 2, 1, 2, 2, 4, 1, 2, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3 };
-                    break;
-                case "Teemo":
-                    sequence = new[] { 1, 3, 2, 3, 1, 4, 3, 3, 3, 1, 4, 2, 2, 1, 2, 4, 2, 1 };
-                    break;
-                case "Thresh":
-                    sequence = new[] { 1, 3, 2, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1 };
-                    break;
-                case "Tristana":
-                    sequence = new[] { 3, 2, 2, 3, 2, 4, 2, 1, 2, 1, 4, 1, 1, 1, 3, 4, 3, 3 };
-                    break;
-                case "Trundle":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 2, 1, 3, 4, 2, 3, 2, 3, 4, 2, 3 };
-                    break;
-                case "Tryndamere":
-                    sequence = new[] { 3, 1, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "TwistedFate":
-                    sequence = new[] { 2, 1, 1, 3, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Twitch":
-                    sequence = new[] { 3, 2, 1, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2 };
-                    break;
-                case "Udyr":
-                    sequence = new[] { 4, 2, 3, 4, 4, 2, 4, 2, 4, 2, 2, 1, 3, 3, 3, 3, 1, 1 };
-                    break;
-                case "Urgot":
-                    sequence = new[] { 3, 1, 1, 2, 1, 4, 1, 2, 1, 3, 4, 2, 3, 2, 3, 4, 2, 3 };
-                    break;
-                case "Varus":
-                    sequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Vayne":
-                    sequence = new[] { 1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Veigar":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 2, 2, 2, 2, 4, 3, 1, 1, 3, 4, 3, 3 };
-                    break;
-                case "VelKoz":
-                    sequence = new[] { 1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3 };
-                    break;
-                case "Vi":
-                    sequence = new[] { 2, 3, 1, 1, 1, 4, 1, 2, 1, 1, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Viktor":
-                    sequence = new[] { 3, 2, 3, 1, 3, 4, 3, 1, 3, 1, 4, 1, 2, 1, 2, 4, 2, 2 };
-                    break;
-                case "Vladimir":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Volibear":
-                    sequence = new[] { 2, 3, 2, 1, 2, 4, 3, 2, 1, 2, 4, 3, 1, 3, 1, 4, 3, 1 };
-                    break;
-                case "Warwick":
-                    sequence = new[] { 2, 1, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 3, 2, 4, 2, 2 };
-                    break;
-                case "Xerath":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "XinZhao":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Yasuo":
-                    sequence = new[] { 1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Yorick":
-                    sequence = new[] { 2, 3, 1, 3, 3, 4, 3, 2, 3, 1, 4, 2, 1, 2, 1, 4, 2, 1 };
-                    break;
-                case "Zac":
-                    sequence = new[] { 1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Zed":
-                    sequence = new[] { 1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Ziggs":
-                    sequence = new[] { 1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                case "Zilean":
-                    sequence = new[] { 1, 2, 1, 3, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3 };
-                    break;
-                case "Zyra":
-                    sequence = new[] { 3, 2, 1, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2 };
-                    break;
-                default:
-                    sequence = new[] { 1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3 };
-                    break;
-            }
-            return sequence;
+            return order.Select(spell => spell).ToArray();
+        }
+
+        /// <summary>
+        /// Gets the sequence list.
+        /// </summary>
+        /// <returns></returns>
+        public static List<int> GetSequenceList()
+        {
+            return order;
         }
     }
 }

@@ -70,7 +70,8 @@ namespace AutoSharp
             Utility.DelayAction.Add(
                     new Random().Next(1000, 10000), () =>
                     {
-                        new LeagueSharp.Common.AutoLevel(Utils.AutoLevel.GetSequence().Select(num => num - 1).ToArray());
+                        var _autoLevel = new Utils.AutoLevel(Utils.AutoLevel.GetSequenceFromDb());
+                        _autoLevel.Enable();
                         LeagueSharp.Common.AutoLevel.Enable();
                         Console.WriteLine("AutoLevel Init Success!");
                     });

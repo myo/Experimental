@@ -52,7 +52,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
             return responseFromServer;
         }
 
-        public static string[] List = new[] {"", "", "", "", "", ""};
+        public static string[] List = new[] { "", "", "", "", "", "" };
 
         public static string[] Aatrox =
         {
@@ -206,7 +206,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
 
         public static string[] FiddleSticks =
         {
-            "Athene's Unholy Grail", "Will of the Ancients",
+            "Athene's Unholy Grail", "Rod of Ages",
             "Sorcerer's Shoes", "Void Staff", "Rabadon's Deathcap", "Liandry's Torment"
         };
 
@@ -434,7 +434,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
 
         public static string[] Mordekaiser =
         {
-            "Will of the Ancients", "Rabadon's Deathcap",
+            "Rod of Ages", "Rabadon's Deathcap",
             "Sorcerer's Shoes", "Spirit Visage", "Zhonya's Hourglass", "Liandry's Torment"
         };
 
@@ -542,14 +542,14 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
 
         public static string[] Rumble =
         {
-            "Will of the Ancients", "Rabadon's Deathcap",
+            "Rod of Ages", "Rabadon's Deathcap",
             "Sorcerer's Shoes", "Spirit Visage", "Zhonya's Hourglass", "Liandry's Torment"
         };
 
         public static string[] Ryze =
         {
             "Archangel's Staff", "Rod of Ages", "Frozen Heart", "Sorcerer's Shoes",
-            "Void Staff", "Will of the Ancients"
+            "Void Staff", "Rod of Ages"
         };
 
         public static string[] Sejuani =
@@ -614,7 +614,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
 
         public static string[] Swain =
         {
-            "Athene's Unholy Grail", "Will of the Ancients",
+            "Athene's Unholy Grail", "Rod of Ages",
             "Sorcerer's Shoes", "Rod of Ages", "Rabadon's Deathcap", "Liandry's Torment"
         };
 
@@ -734,7 +734,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
 
         public static string[] Vladimir =
         {
-            "Will of the Ancients", "Rabadon's Deathcap",
+            "Rod of Ages", "Rabadon's Deathcap",
             "Sorcerer's Shoes", "Spirit Visage", "Zhonya's Hourglass", "Liandry's Torment"
         };
 
@@ -817,280 +817,403 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
         {
             string itemJson = "https://raw.githubusercontent.com/myo/Experimental/master/item.json";
             string itemsData = Request(itemJson);
-            string itemArray = itemsData.Split(new[] {"data"}, StringSplitOptions.None)[1];
+            string itemArray = itemsData.Split(new[] { "data" }, StringSplitOptions.None)[1];
             MatchCollection itemIdArray = Regex.Matches(itemArray, "[\"]\\d*[\"][:][{].*?(?=},\"\\d)");
             foreach (Item item in from object iItem in itemIdArray select new Item(iItem.ToString()))
                 ItemList.Add(item);
-            Console.WriteLine("Auto Buy Activated");
             LeagueSharp.Common.CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
         }
 
         private static void Game_OnGameLoad(EventArgs args)
         {
             var name = ObjectManager.Player.ChampionName;
-            if (name.Equals("Aatrox"))
-                List = Aatrox;
-            if (name.Equals("Ahri"))
-                List = Ahri;
-            if (name.Equals("Akali"))
-                List = Akali;
-            if (name.Equals("Alistar"))
-                List = Alistar;
-            if (name.Equals("Amumu"))
-                List = Amumu;
-            if (name.Equals("Anivia"))
-                List = Anivia;
-            if (name.Equals("Annie"))
-                List = Annie;
-            if (name.Equals("Ashe"))
-                List = Ashe;
-            if (name.Equals("Azir"))
-                List = Azir;
-            if (name.Equals("Bard"))
-                List = Bard;
-            if (name.Equals("Blitzcrank"))
-                List = Blitzcrank;
-            if (name.Equals("Brand"))
-                List = Brand;
-            if (name.Equals("Braum"))
-                List = Braum;
-            if (name.Equals("Caitlyn"))
-                List = Caitlyn;
-            if (name.Equals("Cassiopeia"))
-                List = Cassiopeia;
-            if (name.Equals("Chogath"))
-                List = Chogath;
-            if (name.Equals("Corki"))
-                List = Corki;
-            if (name.Equals("Darius"))
-                List = Darius;
-            if (name.Equals("Diana"))
-                List = Diana;
-            if (name.Equals("DrMundo"))
-                List = DrMundo;
-            if (name.Equals("Draven"))
-                List = Draven;
-            if (name.Equals("Ekko"))
-                List = Ekko;
-            if (name.Equals("Elise"))
-                List = Elise;
-            if (name.Equals("Evelynn"))
-                List = Evelynn;
-            if (name.Equals("Ezreal"))
-                List = Ezreal;
-            if (name.Equals("FiddleSticks"))
-                List = FiddleSticks;
-            if (name.Equals("Fiora"))
-                List = Fiora;
-            if (name.Equals("Fizz"))
-                List = Fizz;
-            if (name.Equals("Galio"))
-                List = Galio;
-            if (name.Equals("Gangplank"))
-                List = Gangplank;
-            if (name.Equals("Garen"))
-                List = Garen;
-            if (name.Equals("Gnar"))
-                List = Gnar;
-            if (name.Equals("Gragas"))
-                List = Gragas;
-            if (name.Equals("Graves"))
-                List = Graves;
-            if (name.Equals("Hecarim"))
-                List = Hecarim;
-            if (name.Equals("Heimerdinger"))
-                List = Heimerdinger;
-            if (name.Equals("Irelia"))
-                List = Irelia;
-            if (name.Equals("Janna"))
-                List = Janna;
-            if (name.Equals("JarvanIV"))
-                List = JarvanIV;
-            if (name.Equals("Jax"))
-                List = Jax;
-            if (name.Equals("Jayce"))
-                List = Jayce;
-            if (name.Equals("Jinx"))
-                List = Jinx;
-            if (name.Equals("Kalista"))
-                List = Kalista;
-            if (name.Equals("Karma"))
-                List = Karma;
-            if (name.Equals("Karthus"))
-                List = Karthus;
-            if (name.Equals("Kassadin"))
-                List = Kassadin;
-            if (name.Equals("Katarina"))
-                List = Katarina;
-            if (name.Equals("Kayle"))
-                List = Kayle;
-            if (name.Equals("Kennen"))
-                List = Kennen;
-            if (name.Equals("Khazix"))
-                List = Khazix;
-            if (name.Equals("KogMaw"))
-                List = KogMaw;
-            if (name.Equals("Leblanc"))
-                List = Leblanc;
-            if (name.Equals("LeeSin"))
-                List = LeeSin;
-            if (name.Equals("Leona"))
-                List = Leona;
-            if (name.Equals("Lissandra"))
-                List = Lissandra;
-            if (name.Equals("Lucian"))
-                List = Lucian;
-            if (name.Equals("Lulu"))
-                List = Lulu;
-            if (name.Equals("Lux"))
-                List = Lux;
-            if (name.Equals("Malphite"))
-                List = Malphite;
-            if (name.Equals("Malzahar"))
-                List = Malzahar;
-            if (name.Equals("Maokai"))
-                List = Maokai;
-            if (name.Equals("MasterYi"))
-                List = MasterYi;
-            if (name.Equals("MissFortune"))
-                List = MissFortune;
-            if (name.Equals("Mordekaiser"))
-                List = Mordekaiser;
-            if (name.Equals("Morgana"))
-                List = Morgana;
-            if (name.Equals("Nami"))
-                List = Nami;
-            if (name.Equals("Nasus"))
-                List = Nasus;
-            if (name.Equals("Nautilus"))
-                List = Nautilus;
-            if (name.Equals("Nidalee"))
-                List = Nidalee;
-            if (name.Equals("Nocturne"))
-                List = Nocturne;
-            if (name.Equals("Nunu"))
-                List = Nunu;
-            if (name.Equals("Olaf"))
-                List = Olaf;
-            if (name.Equals("Orianna"))
-                List = Orianna;
-            if (name.Equals("Pantheon"))
-                List = Pantheon;
-            if (name.Equals("Poppy"))
-                List = Poppy;
-            if (name.Equals("Quinn"))
-                List = Quinn;
-            if (name.Equals("Rammus"))
-                List = Rammus;
-            if (name.Equals("RekSai"))
-                List = RekSai;
-            if (name.Equals("Renekton"))
-                List = Renekton;
-            if (name.Equals("Rengar"))
-                List = Rengar;
-            if (name.Equals("Riven"))
-                List = Riven;
-            if (name.Equals("Rumble"))
-                List = Rumble;
-            if (name.Equals("Ryze"))
-                List = Ryze;
-            if (name.Equals("Sejuani"))
-                List = Sejuani;
-            if (name.Equals("Shaco"))
-                List = Shaco;
-            if (name.Equals("Shen"))
-                List = Shen;
-            if (name.Equals("Shyvana"))
-                List = Shyvana;
-            if (name.Equals("Singed"))
-                List = Singed;
-            if (name.Equals("Sion"))
-                List = Sion;
-            if (name.Equals("Sivir"))
-                List = Sivir;
-            if (name.Equals("Skarner"))
-                List = Skarner;
-            if (name.Equals("Sona"))
-                List = Sona;
-            if (name.Equals("Soraka"))
-                List = Soraka;
-            if (name.Equals("Swain"))
-                List = Swain;
-            if (name.Equals("Syndra"))
-                List = Syndra;
-            if (name.Equals("TahmKench"))
-                List = TahmKench;
-            if (name.Equals("Talon"))
-                List = Talon;
-            if (name.Equals("Taric"))
-                List = Taric;
-            if (name.Equals("Teemo"))
-                List = Teemo;
-            if (name.Equals("Thresh"))
-                List = Thresh;
-            if (name.Equals("Tristana"))
-                List = Tristana;
-            if (name.Equals("Trundle"))
-                List = Trundle;
-            if (name.Equals("Tryndamere"))
-                List = Tryndamere;
-            if (name.Equals("TwistedFate"))
-                List = TwistedFate;
-            if (name.Equals("Twitch"))
-                List = Twitch;
-            if (name.Equals("Udyr"))
-                List = Udyr;
-            if (name.Equals("Urgot"))
-                List = Urgot;
-            if (name.Equals("Varus"))
-                List = Varus;
-            if (name.Equals("Vayne"))
-                List = Vayne;
-            if (name.Equals("Veigar"))
-                List = Veigar;
-            if (name.Equals("Velkoz"))
-                List = Velkoz;
-            if (name.Equals("Vi"))
-                List = Vi;
-            if (name.Equals("Viktor"))
-                List = Viktor;
-            if (name.Equals("Vladimir"))
-                List = Vladimir;
-            if (name.Equals("Volibear"))
-                List = Volibear;
-            if (name.Equals("Warwick"))
-                List = Warwick;
-            if (name.Equals("MonkeyKing"))
-                List = MonkeyKing;
-            if (name.Equals("Xerath"))
-                List = Xerath;
-            if (name.Equals("XinZhao"))
-                List = XinZhao;
-            if (name.Equals("Yasuo"))
-                List = Yasuo;
-            if (name.Equals("Yorick"))
-                List = Yorick;
-            if (name.Equals("Zac"))
-                List = Zac;
-            if (name.Equals("Zed"))
-                List = Zed;
-            if (name.Equals("Ziggs"))
-                List = Ziggs;
-            if (name.Equals("Zilean"))
-                List = Zilean;
-            if (name.Equals("Zyra"))
-                List = Zyra;
+            switch (name)
+            {
+
+                case "Aatrox":
+                    List = Aatrox;
+                    break;
+                case "Ahri":
+                    List = Ahri;
+                    break;
+                case "Akali":
+                    List = Akali;
+                    break;
+                case "Alistar":
+                    List = Alistar;
+                    break;
+                case "Amumu":
+                    List = Amumu;
+                    break;
+                case "Anivia":
+                    List = Anivia;
+                    break;
+                case "Annie":
+                    List = Annie;
+                    break;
+                case "Ashe":
+                    List = Ashe;
+                    break;
+                case "Azir":
+                    List = Azir;
+                    break;
+                case "Bard":
+                    List = Bard;
+                    break;
+                case "Blitzcrank":
+                    List = Blitzcrank;
+                    break;
+                case "Brand":
+                    List = Brand;
+                    break;
+                case "Braum":
+                    List = Braum;
+                    break;
+                case "Caitlyn":
+                    List = Caitlyn;
+                    break;
+                case "Cassiopeia":
+                    List = Cassiopeia;
+                    break;
+                case "Chogath":
+                    List = Chogath;
+                    break;
+                case "Corki":
+                    List = Corki;
+                    break;
+                case "Darius":
+                    List = Darius;
+                    break;
+                case "Diana":
+                    List = Diana;
+                    break;
+                case "DrMundo":
+                    List = DrMundo;
+                    break;
+                case "Draven":
+                    List = Draven;
+                    break;
+                case "Ekko":
+                    List = Ekko;
+                    break;
+                case "Elise":
+                    List = Elise;
+                    break;
+                case "Evelynn":
+                    List = Evelynn;
+                    break;
+                case "Ezreal":
+                    List = Ezreal;
+                    break;
+                case "FiddleSticks":
+                    List = FiddleSticks;
+                    break;
+                case "Fiora":
+                    List = Fiora;
+                    break;
+                case "Fizz":
+                    List = Fizz;
+                    break;
+                case "Galio":
+                    List = Galio;
+                    break;
+                case "Gangplank":
+                    List = Gangplank;
+                    break;
+                case "Garen":
+                    List = Garen;
+                    break;
+                case "Gnar":
+                    List = Gnar;
+                    break;
+                case "Gragas":
+                    List = Gragas;
+                    break;
+                case "Graves":
+                    List = Graves;
+                    break;
+                case "Hecarim":
+                    List = Hecarim;
+                    break;
+                case "Heimerdinger":
+                    List = Heimerdinger;
+                    break;
+                case "Irelia":
+                    List = Irelia;
+                    break;
+                case "Janna":
+                    List = Janna;
+                    break;
+                case "JarvanIV":
+                    List = JarvanIV;
+                    break;
+                case "Jax":
+                    List = Jax;
+                    break;
+                case "Jayce":
+                    List = Jayce;
+                    break;
+                case "Jinx":
+                    List = Jinx;
+                    break;
+                case "Kalista":
+                    List = Kalista;
+                    break;
+                case "Karma":
+                    List = Karma;
+                    break;
+                case "Karthus":
+                    List = Karthus;
+                    break;
+                case "Kassadin":
+                    List = Kassadin;
+                    break;
+                case "Katarina":
+                    List = Katarina;
+                    break;
+                case "Kayle":
+                    List = Kayle;
+                    break;
+                case "Kennen":
+                    List = Kennen;
+                    break;
+                case "Khazix":
+                    List = Khazix;
+                    break;
+                case "KogMaw":
+                    List = KogMaw;
+                    break;
+                case "Leblanc":
+                    List = Leblanc;
+                    break;
+                case "LeeSin":
+                    List = LeeSin;
+                    break;
+                case "Leona":
+                    List = Leona;
+                    break;
+                case "Lissandra":
+                    List = Lissandra;
+                    break;
+                case "Lucian":
+                    List = Lucian;
+                    break;
+                case "Lulu":
+                    List = Lulu;
+                    break;
+                case "Lux":
+                    List = Lux;
+                    break;
+                case "Malphite":
+                    List = Malphite;
+                    break;
+                case "Malzahar":
+                    List = Malzahar;
+                    break;
+                case "Maokai":
+                    List = Maokai;
+                    break;
+                case "MasterYi":
+                    List = MasterYi;
+                    break;
+                case "MissFortune":
+                    List = MissFortune;
+                    break;
+                case "Mordekaiser":
+                    List = Mordekaiser;
+                    break;
+                case "Morgana":
+                    List = Morgana;
+                    break;
+                case "Nami":
+                    List = Nami;
+                    break;
+                case "Nasus":
+                    List = Nasus;
+                    break;
+                case "Nautilus":
+                    List = Nautilus;
+                    break;
+                case "Nidalee":
+                    List = Nidalee;
+                    break;
+                case "Nocturne":
+                    List = Nocturne;
+                    break;
+                case "Nunu":
+                    List = Nunu;
+                    break;
+                case "Olaf":
+                    List = Olaf;
+                    break;
+                case "Orianna":
+                    List = Orianna;
+                    break;
+                case "Pantheon":
+                    List = Pantheon;
+                    break;
+                case "Poppy":
+                    List = Poppy;
+                    break;
+                case "Quinn":
+                    List = Quinn;
+                    break;
+                case "Rammus":
+                    List = Rammus;
+                    break;
+                case "RekSai":
+                    List = RekSai;
+                    break;
+                case "Renekton":
+                    List = Renekton;
+                    break;
+                case "Rengar":
+                    List = Rengar;
+                    break;
+                case "Riven":
+                    List = Riven;
+                    break;
+                case "Rumble":
+                    List = Rumble;
+                    break;
+                case "Ryze":
+                    List = Ryze;
+                    break;
+                case "Sejuani":
+                    List = Sejuani;
+                    break;
+                case "Shaco":
+                    List = Shaco;
+                    break;
+                case "Shen":
+                    List = Shen;
+                    break;
+                case "Shyvana":
+                    List = Shyvana;
+                    break;
+                case "Singed":
+                    List = Singed;
+                    break;
+                case "Sion":
+                    List = Sion;
+                    break;
+                case "Sivir":
+                    List = Sivir;
+                    break;
+                case "Skarner":
+                    List = Skarner;
+                    break;
+                case "Sona":
+                    List = Sona;
+                    break;
+                case "Soraka":
+                    List = Soraka;
+                    break;
+                case "Swain":
+                    List = Swain;
+                    break;
+                case "Syndra":
+                    List = Syndra;
+                    break;
+                case "TahmKench":
+                    List = TahmKench;
+                    break;
+                case "Talon":
+                    List = Talon;
+                    break;
+                case "Taric":
+                    List = Taric;
+                    break;
+                case "Teemo":
+                    List = Teemo;
+                    break;
+                case "Thresh":
+                    List = Thresh;
+                    break;
+                case "Tristana":
+                    List = Tristana;
+                    break;
+                case "Trundle":
+                    List = Trundle;
+                    break;
+                case "Tryndamere":
+                    List = Tryndamere;
+                    break;
+                case "TwistedFate":
+                    List = TwistedFate;
+                    break;
+                case "Twitch":
+                    List = Twitch;
+                    break;
+                case "Udyr":
+                    List = Udyr;
+                    break;
+                case "Urgot":
+                    List = Urgot;
+                    break;
+                case "Varus":
+                    List = Varus;
+                    break;
+                case "Vayne":
+                    List = Vayne;
+                    break;
+                case "Veigar":
+                    List = Veigar;
+                    break;
+                case "Velkoz":
+                    List = Velkoz;
+                    break;
+                case "Vi":
+                    List = Vi;
+                    break;
+                case "Viktor":
+                    List = Viktor;
+                    break;
+                case "Vladimir":
+                    List = Vladimir;
+                    break;
+                case "Volibear":
+                    List = Volibear;
+                    break;
+                case "Warwick":
+                    List = Warwick;
+                    break;
+                case "MonkeyKing":
+                    List = MonkeyKing;
+                    break;
+                case "Xerath":
+                    List = Xerath;
+                    break;
+                case "XinZhao":
+                    List = XinZhao;
+                    break;
+                case "Yasuo":
+                    List = Yasuo;
+                    break;
+                case "Yorick":
+                    List = Yorick;
+                    break;
+                case "Zac":
+                    List = Zac;
+                    break;
+                case "Zed":
+                    List = Zed;
+                    break;
+                case "Ziggs":
+                    List = Ziggs;
+                    break;
+                case "Zilean":
+                    List = Zilean;
+                    break;
+                case "Zyra":
+                    List = Zyra;
+                    break;
+                default:
+                    List = Vayne;
+                    break;
+            }
             Queue = ShoppingQueue();
             AlterInventory();
-
-            if (Program.Config.Item("autosharp.shop").GetValue<bool>())
-            {
-                Game.PrintChat("[{0}] Autobuy Loaded", ObjectManager.Player.ChampionName);
-            }
-            else
-            {
-                Game.PrintChat("Autobuy has been disabled in the menu.");
-            }
             Game.OnUpdate += BuyItems;
         }
 
@@ -1109,8 +1232,11 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
 
         public static void BuyItems(EventArgs args)
         {
-            if (!Program.Config.Item("autosharp.shop").GetValue<bool>()) return;
-            if ((ObjectManager.Player.InFountain() || ObjectManager.Player.IsDead) && Environment.TickCount - _lastShop < 350) return;
+            if ((ObjectManager.Player.InFountain() || ObjectManager.Player.IsDead) && Environment.TickCount - _lastShop < new Random().Next(350, 450)) return;
+            if (!InventoryFull() && !Items.HasItem(2003) && ObjectManager.Player.Gold > 400)
+            {
+                ObjectManager.Player.BuyItem(ItemId.Health_Potion);
+            }
             if ((Queue.Peek() != null && InventoryFull()) &&
                    (Queue.Peek().From == null ||
                     (Queue.Peek().From != null && !Queue.Peek().From.Contains(_lastItem.Id))))
@@ -1122,7 +1248,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
                    ObjectManager.Player.InShop())
             {
                 var y = Queue.Dequeue();
-                ObjectManager.Player.BuyItem((ItemId) y.Id);
+                ObjectManager.Player.BuyItem((ItemId)y.Id);
                 _lastItem = y;
                 _priceAddup = 0;
             }
@@ -1145,7 +1271,7 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
             var z = ObjectManager.Player.InventoryItems.ToList().OrderBy(i => i.Slot).Select(item => item.Id).ToList();
             for (int i = 0; i < z.Count - 2; i++)
             {
-                var x = GetItemById((int) z[i]);
+                var x = GetItemById((int)z[i]);
                 Queue<Item> temp = new Queue<Item>();
                 ItemSequence(x, temp);
                 y += temp.Count;
