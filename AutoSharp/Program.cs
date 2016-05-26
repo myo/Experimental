@@ -39,6 +39,7 @@ namespace AutoSharp
             Config.AddItem(new MenuItem("autosharp.humanizer", "Humanize Movement by ").SetValue(new Slider(new Random().Next(125, 350), 125, 350)));
             Config.AddItem(new MenuItem("autosharp.quit", "Quit after Game End").SetValue(true));
             Config.AddItem(new MenuItem("autosharp.shop", "AutoShop?").SetValue(true));
+            Config.AddItem(new MenuItem("autosharp.disablesr", "Disable for Summoners Rift?").SetValue(true));
             var options = Config.AddSubMenu(new Menu("Options: ", "autosharp.options"));
             options.AddItem(new MenuItem("autosharp.options.healup", "Take Heals?").SetValue(true));
             options.AddItem(new MenuItem("onlyfarm", "Only Farm").SetValue(false));
