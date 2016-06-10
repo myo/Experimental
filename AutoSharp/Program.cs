@@ -68,13 +68,13 @@ namespace AutoSharp
 
             Orbwalker = new MyOrbwalker.Orbwalker(orbwalker);
 
-            /*Utility.DelayAction.Add(
+            Utility.DelayAction.Add(
                     new Random().Next(1000, 10000), () =>
                     {
                         var _autoLevel = new Utils.AutoLevel(Utils.AutoLevel.GetSequenceFromDb());
                         _autoLevel.Enable();
                         Console.WriteLine("AutoLevel Init Success!");
-                    });*/
+                    });
         }
 
         public static void OnDamage(AttackableUnit sender, AttackableUnitDamageEventArgs args)
