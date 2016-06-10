@@ -110,19 +110,19 @@ namespace AutoSharp.Utils
             NextDelay = RandomNumber.Next(300, 1200);
             LastLeveled = Environment.TickCount;
             // subtract 1 from spell int cuz in enum q=0 but it looks better to have q=1, w=2 etc.
-            var spell = (SpellSlot)(order[ObjectManager.Player.Level-1] - 1);
+            var spell = (SpellSlot)(order[ObjectManager.Player.Level - 1] - 1);
             if (ObjectManager.Player.Spellbook.GetSpell(spell).Level < 5)
             {
                 Player.Spellbook.LevelSpell(spell);
             }
             else
             {
-               var list = new List<SpellDataInst> {Player.Spellbook.GetSpell(SpellSlot.Q), Player.Spellbook.GetSpell(SpellSlot.W), Player.Spellbook.GetSpell(SpellSlot.E), Player.Spellbook.GetSpell(SpellSlot.R)};
+                var list = new List<SpellDataInst> { Player.Spellbook.GetSpell(SpellSlot.Q), Player.Spellbook.GetSpell(SpellSlot.W), Player.Spellbook.GetSpell(SpellSlot.E), Player.Spellbook.GetSpell(SpellSlot.R) };
                 var spellWithLowestLevel = list.OrderBy(entry => entry.Level).FirstOrDefault();
                 if (spellWithLowestLevel != null)
                 {
-                Player.Spellbook.LevelSpell(spellWithLowestLevel.Slot);
-}
+                    Player.Spellbook.LevelSpell(spellWithLowestLevel.Slot);
+                }
             }
         }
 

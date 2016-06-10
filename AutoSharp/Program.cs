@@ -73,7 +73,6 @@ namespace AutoSharp
                     {
                         var _autoLevel = new Utils.AutoLevel(Utils.AutoLevel.GetSequenceFromDb());
                         _autoLevel.Enable();
-                        LeagueSharp.Common.AutoLevel.Enable();
                         Console.WriteLine("AutoLevel Init Success!");
                     });
         }
