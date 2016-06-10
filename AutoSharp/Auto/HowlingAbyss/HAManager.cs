@@ -10,7 +10,7 @@ namespace AutoSharp.Auto.HowlingAbyss
         public static void Load()
         {
             Game.OnUpdate += DecisionMaker.OnUpdate;
-            ARAMShopAI.Main.Init(); 
+            ARAMShopAI.Main.Init();
         }
 
         public static void Unload()
