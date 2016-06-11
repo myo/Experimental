@@ -111,7 +111,7 @@ namespace AutoSharp.Utils
 
         internal static void UseAIMARAMPositioning()
         {
-            var random = new Random();
+            var random = new Random(Environment.TickCount);
             var allyZonePathList = AllyZone().OrderBy(p => random.Next()).FirstOrDefault();
             var allyZoneVectorList = new List<Vector2>();
 

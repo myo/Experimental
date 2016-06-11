@@ -23,7 +23,7 @@ namespace AutoSharp.Plugins
 		{
 			var target1 = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
 			if (target1==null) return;
-			var rnd = new Random();
+			var rnd = new Random(Environment.TickCount);
 			var move = rnd.Next(100, 200);
 
 			if (Q.IsReady() && Player.HealthPercent < 50 && Player.CountEnemiesInRange(1300) >= 1)

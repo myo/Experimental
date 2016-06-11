@@ -46,7 +46,7 @@ namespace AutoSharp.Plugins
                 }
                 if (Q.IsReady() && Player.CountEnemiesInRange(1300) >= 2)
                 {
-                    var rnd = new Random();
+                    var rnd = new Random(Environment.TickCount);
                     Pos.X = Player.Position.X + rnd.Next(-50, 50);
                     Pos.Y = Player.Position.Y + rnd.Next(-50, 50);
                     Q.Cast(Pos.To3D());

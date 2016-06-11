@@ -61,7 +61,7 @@ namespace AutoSharp.Plugins
             if (!Q.IsReady())
                 return;
 
-            Random rnd = new Random();
+            Random rnd = new Random(Environment.TickCount);
             var randQ = rnd.Next(1000, 1400); //Rand minQRange
 
             if (Q.IsCharging)
