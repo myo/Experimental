@@ -11,7 +11,7 @@ namespace AutoSharp.Utils
             switch (ObjectManager.Player.CharData.BaseSkinName)
             {
                 case "Aatrox":
-                    sequence = new[] {1, 2, 3, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1};
+                    sequence = new[] {1, 2, 3, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2};
                     break;
                 case "Ahri":
                     sequence = new[] {1, 3, 1, 2, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 2, 2};
@@ -47,7 +47,7 @@ namespace AutoSharp.Utils
                     sequence = new[] {1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2};
                     break;
                 case "Caitlyn":
-                    sequence = new[] {2, 1, 1, 3, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2};
+                    sequence = new[] {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3};
                     break;
                 case "Cassiopeia":
                     sequence = new[] {1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2};
@@ -130,8 +130,11 @@ namespace AutoSharp.Utils
                 case "Jinx":
                     sequence = new[] {1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3};
                     break;
+                case "Kalista":
+                    sequence = new[] {3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2};
+                    break;
                 case "Karma":
-                    sequence = new[] {1, 3, 1, 2, 3, 1, 3, 1, 3, 1, 3, 1, 3, 2, 2, 2, 2, 2};
+                    sequence = new[] {1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2};
                     break;
                 case "Karthus":
                     sequence = new[] {1, 3, 2, 1, 1, 4, 1, 1, 3, 3, 4, 3, 3, 2, 2, 4, 2, 2};
@@ -179,7 +182,7 @@ namespace AutoSharp.Utils
                     sequence = new[] {1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 2, 3, 2, 4, 2, 2};
                     break;
                 case "Malzahar":
-                    sequence = new[] {1, 3, 3, 2, 3, 4, 1, 3, 1, 3, 4, 2, 1, 2, 1, 4, 2, 2};
+                    sequence = new[] {1, 2, 3, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2};
                     break;
                 case "Maokai":
                     sequence = new[] {3, 1, 2, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1};
@@ -203,7 +206,7 @@ namespace AutoSharp.Utils
                     sequence = new[] {1, 2, 3, 2, 2, 4, 2, 2, 3, 3, 4, 3, 3, 1, 1, 4, 1, 1};
                     break;
                 case "Nasus":
-                    sequence = new[] {1, 2, 1, 3, 1, 4, 1, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3};
+                    sequence = new[] {1, 2, 3, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2};
                     break;
                 case "Nautilus":
                     sequence = new[] {2, 3, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1};
@@ -263,7 +266,7 @@ namespace AutoSharp.Utils
                     sequence = new[] {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3};
                     break;
                 case "Shyvana":
-                    sequence = new[] {2, 1, 2, 3, 2, 4, 2, 3, 2, 3, 4, 3, 1, 3, 1, 4, 1, 1};
+                    sequence = new[] {1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3};
                     break;
                 case "Singed":
                     sequence = new[] {1, 3, 1, 3, 1, 4, 1, 2, 1, 2, 4, 3, 2, 3, 2, 4, 2, 3};
@@ -288,6 +291,9 @@ namespace AutoSharp.Utils
                     break;
                 case "Syndra":
                     sequence = new[] {1, 3, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2};
+                    break;
+                case "Taliyah":
+                    sequence = new[] {1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2};
                     break;
                 case "Talon":
                     sequence = new[] {2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3};
@@ -347,7 +353,7 @@ namespace AutoSharp.Utils
                     sequence = new[] {2, 3, 2, 1, 2, 4, 3, 2, 1, 2, 4, 3, 1, 3, 1, 4, 3, 1};
                     break;
                 case "Warwick":
-                    sequence = new[] {2, 1, 1, 2, 1, 4, 1, 3, 1, 3, 4, 3, 3, 3, 2, 4, 2, 2};
+                    sequence = new[] {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3};
                     break;
                 case "Xerath":
                     sequence = new[] {1, 3, 1, 2, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3};
