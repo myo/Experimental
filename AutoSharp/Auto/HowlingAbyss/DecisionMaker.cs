@@ -27,14 +27,14 @@ namespace AutoSharp.Auto.HowlingAbyss
                 return;
             }
 
-            if (player.UnderTurret(true) && Wizard.GetClosestEnemyTurret().CountNearbyAllyMinions(700) <= 3 && Wizard.GetClosestEnemyTurret().CountAlliesInRange(700) == 0)
+            if (player.UnderTurret(true) && Wizard.GetClosestEnemyTurret().CountNearbyAllyMinions(700) <= 2 && Wizard.GetClosestEnemyTurret().CountAlliesInRange(700) == 0)
             {
                 Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.Mixed;
                 player.IssueOrder(GameObjectOrder.MoveTo, player.Position.Extend(HeadQuarters.AllyHQ.Position.RandomizePosition(), 800));
                 return;
             }
 
-            if (Heroes.Player.InFountain())
+            if (Heroes.Player.IsDead)
             {
                 Shopping.Shop();
                 Wizard.AntiAfk();
