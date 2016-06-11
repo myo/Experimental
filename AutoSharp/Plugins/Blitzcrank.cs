@@ -109,11 +109,6 @@ namespace AutoSharp.Plugins
                         }
                     }
 
-                    if (W.IsReady() && Player.CountEnemiesInRange(1500) > 0)
-                    {
-                        W.Cast();
-                    }
-
                     if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range)
                     {
                         if (Helpers.EnemyInRange(ConfigValue<Slider>("ComboCountR").Value, R.Range))

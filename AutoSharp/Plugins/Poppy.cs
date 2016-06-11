@@ -31,7 +31,7 @@ namespace AutoSharp.Plugins
 			{
 				if (unit.IsMe && Q.IsReady() && t.IsValidTarget(Q.Range))
 				{
-					Q.Cast();
+					//Q.Cast();
 					Orbwalking.ResetAutoAttackTimer();
 				}
 			}
@@ -41,7 +41,7 @@ namespace AutoSharp.Plugins
 		{
 			if (Q.IsReady()&&Player.CountEnemiesInRange(900) >= 1)
 			{
-				Q.Cast();
+				//Q.Cast();
 			}	var tarpop = TargetSelector.GetTarget(900, TargetSelector.DamageType.Physical);
 
                 DoCombo(tarpop);
@@ -97,16 +97,16 @@ namespace AutoSharp.Plugins
                 {
                     if (hero != null)
                     {
-                        R.Cast(hero);
+                        //R.Cast(hero);
                     }
                 }
 
-                R.Cast(FindTank());
+                //R.Cast(FindTank());
             }
 
             if (W.IsReady() && W.Range >= Player.Distance(target))
             {
-                W.Cast();
+                //W.Cast();
             }
 
             if (E.IsReady())
@@ -126,7 +126,7 @@ namespace AutoSharp.Plugins
                                     .To3D()).HasFlag(CollisionFlags.Wall)
                         select hero)
                 {
-                    E.Cast(hero);
+                    //E.Cast(hero);
                 }
             }
         }

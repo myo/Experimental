@@ -53,22 +53,22 @@ namespace AutoSharp.Plugins
                 var ally = Helpers.AllyBelowHp(ConfigValue<Slider>("ComboHealthQ").Value, Q.Range);
                 if (Q.CastCheck(ally, "ComboQ", true, false))
                 {
-                    Q.Cast(ally);
+                    //Q.Cast(ally);
                 }
 
                 if (W.IsReady() && Heroes.Player.Distance(Target) < W.Range)
                 {
-                    W.Cast();
+                    //W.Cast();
                 }
 
                 if (E.IsReady() && Heroes.Player.Distance(Target) < E.Range)
                 {
-                    E.Cast(Target);
+                    //E.Cast(Target);
                 }
 
                 if (R.IsReady() && Heroes.Player.Distance(Target) < R.Range)
                 {
-                    R.Cast();
+                    //R.Cast();
                 }
             }
 
@@ -77,12 +77,12 @@ namespace AutoSharp.Plugins
                 var ally = Helpers.AllyBelowHp(ConfigValue<Slider>("HarassHealthQ").Value, Q.Range);
                 if (Q.CastCheck(ally, "HarassQ", true, false))
                 {
-                    Q.Cast(ally);
+                    //Q.Cast(ally);
                 }
 
                 if (E.CastCheck(Target, "HarassE"))
                 {
-                    E.Cast(Target);
+                    //E.Cast(Target);
                 }
             }
         }
@@ -96,7 +96,7 @@ namespace AutoSharp.Plugins
 
             if (E.CastCheck(gapcloser.Sender, "GapcloserE"))
             {
-                E.Cast(gapcloser.Sender);
+                //E.Cast(gapcloser.Sender);
             }
         }
 
@@ -109,7 +109,7 @@ namespace AutoSharp.Plugins
 
             if (E.CastCheck(unit, "InterruptE"))
             {
-                E.Cast(unit);
+                //E.Cast(unit);
             }
         }
 
