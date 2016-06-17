@@ -572,8 +572,8 @@ namespace AutoSharp.Auto.HowlingAbyss.ARAMShopAI
 
         public static string[] Shyvana =
         {
-            "Mercury's Treads"", "Sunfire Cape",
-            Blade of the Ruined King, "", "Dead Man's Plate", "Spirit Visage", "Warmog's Armor"
+            "Mercury's Treads", "Sunfire Cape",
+            "Blade of the Ruined King", "Dead Man's Plate", "Spirit Visage", "Warmog's Armor"
         };
 
         public static string[] Singed =
