@@ -15,7 +15,7 @@ namespace AutoSharp.Auto.HowlingAbyss
                 return true;
             }
 
-            if (Heroes.Player.HealthPercent >= 75) return false;
+            if (Heroes.Player.HealthPercent >= 75 || Heroes.Player.ManaPercent < 15) return false;
 
             var closestEnemyBuff = HealingBuffs.EnemyBuffs.FirstOrDefault(eb => eb.IsVisible && eb.IsValid && eb.Position.Distance(Heroes.Player.Position) < 800 && (eb.Position.CountEnemiesInRange(600) == 0 || eb.Position.CountEnemiesInRange(600) < eb.Position.CountAlliesInRange(600)));
             var closestAllyBuff = HealingBuffs.AllyBuffs.FirstOrDefault(ab => ab.IsVisible && ab.IsValid);
@@ -59,8 +59,17 @@ namespace AutoSharp.Auto.HowlingAbyss
             if (Heroes.AllyHeroes.OrderByDescending(h => h.Distance(HeadQuarters.AllyHQ)).FirstOrDefault().CountEnemiesInRange(1400) != 0) return false;
             //IF WERE FUGGD WE WILL FIGHT SKIP FARMING CUZ WE CANT FARM WHILE FUGGING XDD
             if (Heroes.Player.CountEnemiesInRange(1000) > Heroes.Player.CountAlliesInRange(1000)) return false;
-            //FOLLOW MINION
-            Program.Orbwalker.SetOrbwalkingPoint(minionPos.RandomizePosition());
+            //FOLLOW MINION IF ITS FARTHER FROM NEXUS THAN ALLIES
+            if (Heroes.AllyHeroes.All(h => h.IsDead) ||
+                minion.Position.Distance(HeadQuarters.AllyHQ.Position) >
+                Heroes.AllyHeroes.OrderByDescending(h => h.Position.Distance(HeadQuarters.AllyHQ.Position)).FirstOrDefault().Distance(HeadQuarters.AllyHQ.Position))
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(minionPos.RandomizePosition());
+            }
+            else
+            {
+                Program.Orbwalker.SetOrbwalkingPoint(Positioning.RandomlyChosenMove);
+            }
             Program.Orbwalker.ActiveMode = MyOrbwalker.OrbwalkingMode.LaneClear;
             //IF I JUST FARM A BIT GUYS WE MIGHT WIN...
             return true;
