@@ -54,9 +54,9 @@ namespace DeveloperSharp
 
         private static void OnDraw(EventArgs args)
         {
-            foreach (var obj in ObjectManager.Get<GameObject>().Where(o=>o.Position.Distance(Game.CursorPos) < Config.Item("range").GetValue<Slider>().Value && !(o is Obj_Turret) && o.Name != "missile" && !(o is Obj_LampBulb) && !(o is Obj_SpellMissile) && !(o is GrassObject) && !(o is DrawFX) && !(o is LevelPropSpawnerPoint) && !(o is Obj_GeneralParticleEmitter) && !o.Name.Contains("MoveTo")))
+            foreach (var obj in ObjectManager.Get<GameObject>().Where(o=>o.Position.Distance(Game.CursorPos) < Config.Item("range").GetValue<Slider>().Value && !(o is Obj_Turret) && o.Name != "missile" && !(o is Obj_LampBulb) && !(o is GrassObject) && !(o is DrawFX) && !(o is LevelPropSpawnerPoint) && !(o is Obj_GeneralParticleEmitter) && !o.Name.Contains("MoveTo")))
             {
-                if (!obj.IsValid) return;
+                if (!obj.IsValid<GameObject>()) return;
                 var X = Drawing.WorldToScreen(obj.Position).X;
                 var Y = Drawing.WorldToScreen(obj.Position).Y;
                 Drawing.DrawText(X, Y, Color.DarkTurquoise, (obj is Obj_AI_Hero) ? ((Obj_AI_Hero)obj).CharData.BaseSkinName : (obj is Obj_AI_Minion) ? (obj as Obj_AI_Minion).CharData.BaseSkinName : (obj is Obj_AI_Turret) ? (obj as Obj_AI_Turret).CharData.BaseSkinName : obj.Name);
@@ -89,13 +89,6 @@ namespace DeveloperSharp
                     }
 
                 }
-                if (obj is Obj_SpellMissile)
-                {
-                    var missile = obj as Obj_SpellMissile;
-                    Drawing.DrawText(X, Y + 40, Color.DarkTurquoise, "Missile Speed: " + missile.SData.MissileSpeed);
-                    Drawing.DrawText(X, Y + 50, Color.DarkTurquoise, "Cast Range: " + missile.SData.CastRange);
-                }
-
                 if (obj is MissileClient && obj.Name != "missile")
                 {
                     var missile = obj as MissileClient;
