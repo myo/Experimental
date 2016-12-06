@@ -50,7 +50,7 @@ namespace AutoSharp.Utils
         {
             if (Environment.TickCount > LastUpdate + 1000)
             {
-                foreach (var buff in _healingBuffs)
+                foreach (var buff in _healingBuffs.ToArray())
                 {
                     if (Heroes.Player.ServerPosition.Distance(buff.Position) < 80) _healingBuffs.Remove(buff);
                 }
@@ -68,7 +68,7 @@ namespace AutoSharp.Utils
 
         private static void OnDelete(GameObject sender, EventArgs args)
         {
-            var iList = _healingBuffs.Where(buff => buff.NetworkId == sender.NetworkId);
+            var iList = _healingBuffs.ToArray().Where(buff => buff.NetworkId == sender.NetworkId);
             foreach (var i in iList)
             {
                 _healingBuffs.Remove(i);
